@@ -406,4 +406,13 @@ class AbsensiCommandService
     }
     return 'Database error: ' . ($e->getMessage() ?? 'Unknown');
   }
+
+  public function logCorrectionReason(string $absensiId, string $adminId, ?string $reason): void {
+    $stmt = $this->db->prepare("
+      INSERT INTO absensi_audit (
+        absensi_id, changed_by, action_type, reason
+      ) VALUES (?, ?, 'CORRECTION_REASON', ?)
+    ");
+    $stmt->execute([$absensiId, $adminId, $reason ?: null]);
+  }
 }

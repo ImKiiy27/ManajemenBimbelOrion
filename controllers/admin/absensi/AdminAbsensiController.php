@@ -57,8 +57,8 @@ class AdminAbsensiController extends BaseAdminController
     $totalPages = max(1, (int)ceil($totalCount / $perPage));
 
     // Get filter options
-    $guruList = $this->getGuruList();
-    $siswaList = $this->getSiswaList();
+    $guruList = $this->queryService->getGuruList();
+    $siswaList = $this->queryService->getSiswaList();
 
     $pageTitle = 'Absensi - Bimbel Orion';
     $activePage = 'admin-absensi';
@@ -141,7 +141,7 @@ class AdminAbsensiController extends BaseAdminController
 
       if ($result['status'] === 'success') {
         // Log correction reason ke audit table
-        $this->logCorrectionReason($absensiId, $adminId, $correctionReason);
+        $this->commandService->logCorrectionReason($absensiId, $adminId, $correctionReason);
       }
 
       echo json_encode($result);
@@ -180,32 +180,4 @@ class AdminAbsensiController extends BaseAdminController
     ]);
   }
 
-  // ========== PRIVATE HELPERS ==========
-
-  private function getGuruList(): array {
-    $stmt = getDB()->prepare("
-      SELECT DISTINCT g.id, g.nama
-      FROM guru g
-      ORDER BY g.nama ASC
-    ");
-    $stmt->execute();
-    return $stmt->fetchAll();
-  }
-
-  private function getSiswaList(): array {
-    $stmt = getDB()->prepare("
-      SELECT id, nama FROM siswa ORDER BY nama ASC
-    ");
-    $stmt->execute();
-    return $stmt->fetchAll();
-  }
-
-  private function logCorrectionReason(string $absensiId, string $adminId, string $reason): void {
-    $stmt = getDB()->prepare("
-      INSERT INTO absensi_audit (
-        absensi_id, changed_by, action_type, reason
-      ) VALUES (?, ?, 'CORRECTION_REASON', ?)
-    ");
-    $stmt->execute([$absensiId, $adminId, $reason ?: null]);
-  }
 }

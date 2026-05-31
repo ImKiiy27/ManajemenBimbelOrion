@@ -1,6 +1,7 @@
 ﻿<?php
 $pageTitle = 'Login - Bimbel Orion';
 require __DIR__ . '/../layouts/header.php';
+$oldInput = is_array($oldInput ?? null) ? $oldInput : [];
 ?>
 
 <div class="login-page">
@@ -88,7 +89,7 @@ require __DIR__ . '/../layouts/header.php';
               <input type="hidden" name="_csrf" value="<?= htmlspecialchars(getCsrfToken()) ?>">
               <div class="input-group">
                 <input type="email" name="email" id="email" placeholder=" "
-                      value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+                      value="<?= htmlspecialchars((string)($oldInput['email'] ?? '')) ?>">
                 <label for="email">Email / Username</label>
                 <i class="fas fa-envelope input-icon"></i>
               </div>
@@ -104,7 +105,7 @@ require __DIR__ . '/../layouts/header.php';
 
               <div class="form-options">
                 <label class="remember-me">
-                  <input type="checkbox" name="remember">
+                  <input type="checkbox" name="remember" <?= !empty($oldInput['remember']) ? 'checked' : '' ?>>
                   <span>Ingat saya</span>
                 </label>
                 <a href="#" class="forgot-password">Lupa password?</a>

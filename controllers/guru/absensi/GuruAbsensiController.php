@@ -104,15 +104,9 @@ class GuruAbsensiController extends BaseGuruController
    */
   private function getJadwalWithValidation(string $jadwalId): array|false {
     $guruId = SessionHelper::getUserId();
-
-    $stmt = getDB()->prepare("
-      SELECT j.id, j.kelas_id, j.hari, j.jam_mulai, j.jam_selesai, k.guru_id
-      FROM jadwal j
-      INNER JOIN kelas k ON k.id = j.kelas_id
-      WHERE j.id = ? AND k.guru_id = ?
-      LIMIT 1
-    ");
-    $stmt->execute([$jadwalId, $guruId]);
-    return $stmt->fetch();
+    if (!$guruId) {
+      return false;
+    }
+    return $this->queryService->getJadwalWithValidation($jadwalId, $guruId);
   }
 }

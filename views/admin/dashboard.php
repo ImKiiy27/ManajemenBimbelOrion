@@ -1,4 +1,4 @@
-﻿<?php require __DIR__ . '/../layouts/header.php'; ?>
+<?php require __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="bg-shapes">
   <div class="shape shape-1"></div>
@@ -11,27 +11,7 @@
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
 
   <main class="main-content">
-    <?php
-      $rawTitle = $pageTitle ?? 'Dashboard';
-      $cleanTitle = preg_replace('/\s*-\\s*Bimbel Orion$/i', '', $rawTitle);
-      $pageHeading = trim($cleanTitle ?: 'Dashboard');
-    ?>
-    <div class="dashboard-navbar">
-      <div class="navbar-left">
-        <button class="burger-btn" id="sidebarToggle" aria-label="Tampilkan/sembunyikan sidebar" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="navbar-title">
-          <span class="navbar-label">Halaman</span>
-          <h2 title="<?= htmlspecialchars($pageHeading) ?>"><?= htmlspecialchars($pageHeading) ?></h2>
-        </div>
-      </div>
-      <div class="navbar-right">
-        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </div>
+    <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <div class="page-header animate-fade-in">
       <h1>Dashboard Admin</h1>
@@ -101,12 +81,12 @@
                   <td><?= htmlspecialchars($row['telepon']) ?></td>
                   <td><?= htmlspecialchars($kelasSekolah) ?></td>
                   <td><?= htmlspecialchars($mapelDiikuti) ?></td>
-                  <td><span class="badge-status badge-aktif" class="capitalize-text"><?= htmlspecialchars($row['status']) ?></span></td>
+                  <td><span class="badge-status badge-aktif capitalize-text"><?= htmlspecialchars($row['status']) ?></span></td>
                 </tr>
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="6" class="text-center" class="empty-state-md">
+                <td colspan="6" class="text-center empty-state-md">
                   Belum ada data pendaftaran
                 </td>
               </tr>
@@ -120,3 +100,4 @@
 </div>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
+

@@ -5,13 +5,16 @@
 // ============================================================
 
 require_once __DIR__ . '/../../../models/nilai/NilaiModel.php';
+require_once __DIR__ . '/../../../models/nilai/NilaiQueryService.php';
 
 class GuruNilaiActionHandler {
 
   private NilaiModel $nilaiModel;
+  private NilaiQueryService $nilaiQueryService;
 
-  public function __construct(NilaiModel $nilaiModel) {
+  public function __construct(NilaiModel $nilaiModel, ?NilaiQueryService $nilaiQueryService = null) {
     $this->nilaiModel = $nilaiModel;
+    $this->nilaiQueryService = $nilaiQueryService ?? new NilaiQueryService();
   }
 
   public function handleSave(): void {
@@ -27,14 +30,7 @@ class GuruNilaiActionHandler {
       return;
     }
 
-    $db = getDB();
-    $stmt = $db->prepare("
-      SELECT id FROM nilai
-      WHERE jadwal_id = ? AND pertemuan_ke = ? AND tipe_nilai = ?
-      LIMIT 1
-    ");
-    $stmt->execute([$jadwalId, $pertemuanKe, $tipeNilai]);
-    $existingNilai = $stmt->fetch();
+    $existingNilai = $this->nilaiQueryService->findExistingNilai($jadwalId, $pertemuanKe, $tipeNilai);
 
     if ($existingNilai) {
       $result = $this->nilaiModel->updateNilai($existingNilai['id'], [

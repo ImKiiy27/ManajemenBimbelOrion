@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../BaseAdminController.php';
 require_once __DIR__ . '/../../../models/nilai/NilaiModel.php';
+require_once __DIR__ . '/../../../models/nilai/NilaiQueryService.php';
 require_once __DIR__ . '/../../../models/admin/AdminGuruRepository.php';
 require_once __DIR__ . '/../../../models/admin/AdminSiswaRepository.php';
 require_once __DIR__ . '/AdminNilaiActionHandler.php';
@@ -13,6 +14,7 @@ require_once __DIR__ . '/AdminNilaiActionHandler.php';
 class AdminNilaiController extends BaseAdminController
 {
   private NilaiModel $nilaiModel;
+  private NilaiQueryService $nilaiQueryService;
   private AdminGuruRepository $guruRepository;
   private AdminSiswaRepository $siswaRepository;
   private AdminNilaiActionHandler $nilaiActionHandler;
@@ -20,6 +22,7 @@ class AdminNilaiController extends BaseAdminController
   public function __construct()
   {
     $this->nilaiModel = new NilaiModel();
+    $this->nilaiQueryService = new NilaiQueryService();
     $this->guruRepository = new AdminGuruRepository();
     $this->siswaRepository = new AdminSiswaRepository();
     $this->nilaiActionHandler = new AdminNilaiActionHandler($this->nilaiModel);
@@ -47,58 +50,10 @@ class AdminNilaiController extends BaseAdminController
       exit;
     }
 
-    $db = getDB();
     $filterGuru = isset($_GET['guru_id']) ? trim((string)$_GET['guru_id']) : '';
     $filterSiswa = isset($_GET['siswa_id']) ? trim((string)$_GET['siswa_id']) : '';
 
-    $sql = "
-      SELECT
-        n.id,
-        n.jadwal_id,
-        n.pertemuan_ke,
-        n.tipe_nilai,
-        n.predikat,
-        n.catatan_guru,
-        j.id AS jadwal_id,
-        j.hari,
-        j.jam_mulai,
-        j.jam_selesai,
-        s.id AS siswa_id,
-        s.nama AS siswa_nama,
-        s.kelas_sekolah AS siswa_kelas,
-        g.id AS guru_id,
-        g.nama AS guru_nama,
-        mg.nama AS guru_mapel,
-        m.nama AS mata_pelajaran
-      FROM nilai n
-      INNER JOIN jadwal j ON j.id = n.jadwal_id
-      INNER JOIN kelas k ON k.id = j.kelas_id
-      INNER JOIN siswa s ON s.id = k.siswa_id
-      INNER JOIN guru g ON g.id = k.guru_id
-      LEFT JOIN mapel mg ON mg.id = g.mapel_id
-      LEFT JOIN siswa_mapel sm
-        ON sm.siswa_id = s.id
-       AND sm.mapel_id = g.mapel_id
-       AND sm.status = 'aktif'
-      LEFT JOIN mapel m ON m.id = sm.mapel_id
-      WHERE 1=1
-    ";
-
-    $params = [];
-    if ($filterGuru !== '') {
-      $sql .= " AND g.id = ?";
-      $params[] = $filterGuru;
-    }
-    if ($filterSiswa !== '') {
-      $sql .= " AND s.id = ?";
-      $params[] = $filterSiswa;
-    }
-
-    $sql .= " ORDER BY FIELD(j.hari, 'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'), j.jam_mulai ASC, n.pertemuan_ke ASC";
-
-    $stmt = $db->prepare($sql);
-    $stmt->execute($params);
-    $nilaiList = $stmt->fetchAll();
+    $nilaiList = $this->nilaiQueryService->getNilaiByAdmin($filterGuru, $filterSiswa);
 
     $guruOptions = $this->guruRepository->getGuruOptions();
     $siswaOptions = $this->siswaRepository->getSiswaOptions();

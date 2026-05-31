@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * FILE: views/admin/wali_murid.php
  * TUGAS: Template HTML untuk halaman Data Wali Murid
@@ -30,27 +30,7 @@ require __DIR__ . '/../layouts/header.php';
     <!-- ===============================================
          BAGIAN 1: HEADER & NAVBAR
          ============================================== -->
-    <?php
-    $rawTitle = $pageTitle ?? 'Dashboard';
-    $cleanTitle = preg_replace('/\\s*-\\s*Bimbel Orion$/i', '', $rawTitle);
-    $pageHeading = trim($cleanTitle ?: 'Dashboard');
-    ?>
-    <div class="dashboard-navbar">
-      <div class="navbar-left">
-        <button class="burger-btn" id="sidebarToggle" aria-label="Tampilkan/sembunyikan sidebar" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="navbar-title">
-          <span class="navbar-label">Halaman</span>
-          <h2 title="<?= htmlspecialchars($pageHeading) ?>"><?= htmlspecialchars($pageHeading) ?></h2>
-        </div>
-      </div>
-      <div class="navbar-right">
-        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </div>
+    <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <div class="page-header animate-fade-in">
       <h1>Data Wali Murid</h1>

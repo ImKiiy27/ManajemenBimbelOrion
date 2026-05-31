@@ -1,4 +1,4 @@
-﻿<?php require __DIR__ . '/../layouts/header.php'; ?>
+<?php require __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="bg-shapes">
   <div class="shape shape-1"></div>
@@ -10,27 +10,7 @@
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
 
   <main class="main-content">
-    <?php
-      $rawTitle = $pageTitle ?? 'Dashboard';
-      $cleanTitle = preg_replace('/\\s*-\\s*Bimbel Orion$/i', '', $rawTitle);
-      $pageHeading = trim($cleanTitle ?: 'Dashboard');
-    ?>
-    <div class="dashboard-navbar">
-      <div class="navbar-left">
-        <button class="burger-btn" id="sidebarToggle" aria-label="Tampilkan/sembunyikan sidebar" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="navbar-title">
-          <span class="navbar-label">Halaman</span>
-          <h2 title="<?= htmlspecialchars($pageHeading) ?>"><?= htmlspecialchars($pageHeading) ?></h2>
-        </div>
-      </div>
-      <div class="navbar-right">
-        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </div>
+    <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <?php if (!empty($error)): ?>
       <div class="alert alert-danger alert-custom mt-3" role="alert">
@@ -184,8 +164,8 @@
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="10" class="text-center" class="empty-state">
-                  <i class="fas fa-inbox" class="title-xl-white"></i>
+                <td colspan="10" class="text-center empty-state">
+                  <i class="fas fa-inbox title-xl-white"></i>
                   <?php if ($filterGuru !== '' || $filterSiswa !== ''): ?>
                     Tidak ada nilai sesuai filter yang dipilih.
                   <?php else: ?>
@@ -375,3 +355,4 @@
 </style>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
+

@@ -1,4 +1,4 @@
-﻿<?php require __DIR__ . '/../layouts/header.php'; ?>
+<?php require __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="bg-shapes">
   <div class="shape shape-1"></div>
@@ -11,27 +11,7 @@
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
 
   <main class="main-content">
-    <?php
-      $rawTitle = $pageTitle ?? 'Jadwal';
-      $cleanTitle = preg_replace('/\\s*-\\s*Bimbel Orion$/i', '', $rawTitle);
-      $pageHeading = trim($cleanTitle ?: 'Jadwal');
-    ?>
-    <div class="dashboard-navbar">
-      <div class="navbar-left">
-        <button class="burger-btn" id="sidebarToggle" aria-label="Tampilkan/sembunyikan sidebar" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="navbar-title">
-          <span class="navbar-label">Halaman</span>
-          <h2 title="<?= htmlspecialchars($pageHeading) ?>"><?= htmlspecialchars($pageHeading) ?></h2>
-        </div>
-      </div>
-      <div class="navbar-right">
-        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </div>
+    <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <?php
       $totalAnak = count($anak ?? []);
@@ -83,7 +63,7 @@
               <div class="wali-panel-icon"><i class="fas fa-user-graduate"></i></div>
               <div>
                 <h2><?= htmlspecialchars($a['nama']) ?></h2>
-                <p><?= htmlspecialchars($a['kelas_sekolah']) ?> â€¢ <?= count($jadwalAnak) ?> jadwal terdaftar</p>
+                <p><?= htmlspecialchars($a['kelas_sekolah']) ?> • <?= count($jadwalAnak) ?> jadwal terdaftar</p>
               </div>
             </div>
             <span class="wali-chip"><i class="fas fa-book-open"></i> <?= htmlspecialchars($a['mapel_aktif'] ?? '-') ?></span>

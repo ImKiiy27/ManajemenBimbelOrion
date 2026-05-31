@@ -3,8 +3,9 @@
 // Dipanggil dari view dashboard dengan variabel $role & $activePage
 require_once __DIR__ . '/../../helpers/RoleHelper.php';
 
-$role       = normalizeRole((string)($_SESSION['role'] ?? ''));
-$_SESSION['role'] = $role;
+$roleFromView = (string)($current_user_role ?? '');
+$roleSession = (string)($_SESSION['role'] ?? '');
+$role = normalizeRole($roleFromView !== '' ? $roleFromView : $roleSession);
 $activePage = $activePage        ?? '';
 
 $menus = match ($role) {

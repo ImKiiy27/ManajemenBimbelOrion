@@ -377,4 +377,34 @@ class AbsensiQueryService
     $stmt->execute([$absensiId]);
     return $stmt->fetch();
   }
+
+  public function getGuruList(): array {
+    $stmt = $this->db->prepare("
+      SELECT DISTINCT g.id, g.nama
+      FROM guru g
+      ORDER BY g.nama ASC
+    ");
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+
+  public function getSiswaList(): array {
+    $stmt = $this->db->prepare("
+      SELECT id, nama FROM siswa ORDER BY nama ASC
+    ");
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
+
+  public function getJadwalWithValidation(string $jadwalId, string $guruId): array|false {
+    $stmt = $this->db->prepare("
+      SELECT j.id, j.kelas_id, j.hari, j.jam_mulai, j.jam_selesai, k.guru_id
+      FROM jadwal j
+      INNER JOIN kelas k ON k.id = j.kelas_id
+      WHERE j.id = ? AND k.guru_id = ?
+      LIMIT 1
+    ");
+    $stmt->execute([$jadwalId, $guruId]);
+    return $stmt->fetch();
+  }
 }

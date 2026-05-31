@@ -33,6 +33,10 @@ class AuthLoginActionHandler
 
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
+    $_SESSION['old_input'] = [
+      'email' => $email,
+      'remember' => isset($_POST['remember']) ? '1' : '',
+    ];
 
     if ($email === '' || $password === '') {
       $_SESSION['flash_error'] = 'Email dan password wajib diisi.';
@@ -58,6 +62,7 @@ class AuthLoginActionHandler
         $_SESSION['last_activity'] = time();
         $_SESSION['created_at'] = time();
         $_SESSION['regenerated_at'] = time();
+        unset($_SESSION['old_input']);
 
         $this->redirectByRole($role);
         break;

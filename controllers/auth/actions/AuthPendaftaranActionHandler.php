@@ -36,6 +36,7 @@ class AuthPendaftaranActionHandler
     $kelasSekolah = trim($_POST['kelas_sekolah'] ?? '');
     $mapelIdsRaw = $_POST['mapel_ids'] ?? [];
     $mapelIds = is_array($mapelIdsRaw) ? $mapelIdsRaw : [];
+    $_SESSION['old_input'] = $this->buildOldInput($_POST);
 
     if ($nama === '' || $email === '' || $telepon === '' || $kelasSekolah === '') {
       $_SESSION['flash_error'] = 'Semua field wajib diisi.';
@@ -93,6 +94,7 @@ class AuthPendaftaranActionHandler
     if ($berhasil) {
       $_SESSION['flash_success'] = 'Pendaftaran berhasil dikirim! '
         . 'Admin akan memverifikasi dan menghubungi Anda.';
+      unset($_SESSION['old_input']);
     } else {
       $_SESSION['flash_error'] = 'Email ini sudah terdaftar atau terjadi kesalahan. Jika sudah pernah jadi pengguna, silakan login.';
     }
@@ -104,5 +106,32 @@ class AuthPendaftaranActionHandler
   {
     header('Location: index.php?page=pendaftaran');
     exit;
+  }
+
+  private function buildOldInput(array $input): array
+  {
+    $old = [];
+    $keys = [
+      'nama',
+      'email',
+      'telepon',
+      'alamat',
+      'jenjang',
+      'kelas_sekolah',
+      'sekolah_asal',
+      'nama_wali',
+      'telepon_wali',
+    ];
+
+    foreach ($keys as $key) {
+      $old[$key] = trim((string)($input[$key] ?? ''));
+    }
+
+    $rawMapel = $input['mapel_ids'] ?? [];
+    $old['mapel_ids'] = is_array($rawMapel)
+      ? array_values(array_map(static fn($v) => trim((string)$v), $rawMapel))
+      : [];
+
+    return $old;
   }
 }

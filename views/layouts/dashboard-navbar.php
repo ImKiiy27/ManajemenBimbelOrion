@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Navbar khusus area dashboard (semua role)
 $rawTitle = $pageTitle ?? 'Dashboard';
 $cleanTitle = preg_replace('/\\s*-\\s*Bimbel Orion$/i', '', $rawTitle);

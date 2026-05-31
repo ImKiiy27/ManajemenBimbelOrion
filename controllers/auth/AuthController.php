@@ -38,9 +38,13 @@ class AuthController
 
     $error = $_SESSION['flash_error'] ?? null;
     $success = $_SESSION['flash_success'] ?? null;
-    unset($_SESSION['flash_error'], $_SESSION['flash_success']);
+    $oldInput = $_SESSION['old_input'] ?? [];
+    if (!is_array($oldInput)) {
+      $oldInput = [];
+    }
+    unset($_SESSION['flash_error'], $_SESSION['flash_success'], $_SESSION['old_input']);
 
-    $this->render('auth/login', compact('error', 'success'));
+    $this->render('auth/login', compact('error', 'success', 'oldInput'));
   }
 
   public function logout(): void
@@ -55,9 +59,13 @@ class AuthController
 
     $error = $_SESSION['flash_error'] ?? null;
     $success = $_SESSION['flash_success'] ?? null;
-    unset($_SESSION['flash_error'], $_SESSION['flash_success']);
+    $oldInput = $_SESSION['old_input'] ?? [];
+    if (!is_array($oldInput)) {
+      $oldInput = [];
+    }
+    unset($_SESSION['flash_error'], $_SESSION['flash_success'], $_SESSION['old_input']);
 
-    $this->render('auth/pendaftaran', compact('error', 'success', 'mapelOptions'));
+    $this->render('auth/pendaftaran', compact('error', 'success', 'mapelOptions', 'oldInput'));
   }
 
   private function redirectByRole(string $role): void

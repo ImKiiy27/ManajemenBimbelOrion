@@ -1,9 +1,10 @@
-﻿<?php
+<?php
 $pageTitle = 'Pendaftaran - Bimbel Orion';
 require __DIR__ . '/../layouts/header.php';
 $mapelOptions = $mapelOptions ?? [];
-$selectedMapelIds = isset($_POST['mapel_ids']) && is_array($_POST['mapel_ids'])
-  ? array_map('strval', $_POST['mapel_ids'])
+$oldInput = is_array($oldInput ?? null) ? $oldInput : [];
+$selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_ids'])
+  ? array_map('strval', $oldInput['mapel_ids'])
   : [];
 ?>
 
@@ -15,7 +16,7 @@ $selectedMapelIds = isset($_POST['mapel_ids']) && is_array($_POST['mapel_ids'])
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="navbar">
   <div class="container">
     <a class="navbar-brand" href="index.php">
-      <div class="logo-icon" class="small-icon-wrapper"><i class="fas fa-book-open"></i></div>
+      <div class="logo-icon small-icon-wrapper"><i class="fas fa-book-open"></i></div>
       <span class="brand-text">Bimbel Orion</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -73,19 +74,19 @@ $selectedMapelIds = isset($_POST['mapel_ids']) && is_array($_POST['mapel_ids'])
               <div class="registration-grid two">
                 <div class="form-group">
                   <label for="nama">Nama Lengkap</label>
-                  <input type="text" name="nama" id="nama" class="form-control-custom" placeholder="Masukkan nama lengkap" value="<?= htmlspecialchars($_POST['nama'] ?? '') ?>" required>
+                  <input type="text" name="nama" id="nama" class="form-control-custom" placeholder="Masukkan nama lengkap" value="<?= htmlspecialchars((string)($oldInput['nama'] ?? '')) ?>" required>
                 </div>
                 <div class="form-group">
                   <label for="email">Email</label>
-                  <input type="email" name="email" id="email" class="form-control-custom" placeholder="Masukkan email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                  <input type="email" name="email" id="email" class="form-control-custom" placeholder="Masukkan email" value="<?= htmlspecialchars((string)($oldInput['email'] ?? '')) ?>" required>
                 </div>
                 <div class="form-group">
                   <label for="telepon">No. HP</label>
-                  <input type="text" name="telepon" id="telepon" class="form-control-custom" placeholder="Masukkan nomor HP" value="<?= htmlspecialchars($_POST['telepon'] ?? '') ?>" required>
+                  <input type="text" name="telepon" id="telepon" class="form-control-custom" placeholder="Masukkan nomor HP" value="<?= htmlspecialchars((string)($oldInput['telepon'] ?? '')) ?>" required>
                 </div>
                 <div class="form-group">
                   <label for="alamat">Alamat</label>
-                  <textarea name="alamat" id="alamat" class="form-control-custom" rows="3" placeholder="Masukkan alamat lengkap"><?= htmlspecialchars($_POST['alamat'] ?? '') ?></textarea>
+                  <textarea name="alamat" id="alamat" class="form-control-custom" rows="3" placeholder="Masukkan alamat lengkap"><?= htmlspecialchars((string)($oldInput['alamat'] ?? '')) ?></textarea>
                 </div>
               </div>
             </section>
@@ -100,18 +101,18 @@ $selectedMapelIds = isset($_POST['mapel_ids']) && is_array($_POST['mapel_ids'])
                   <label for="jenjang">Jenjang</label>
                   <select name="jenjang" id="jenjang" class="form-control-custom">
                     <option value="">Pilih jenjang</option>
-                    <option value="SD" <?= ($_POST['jenjang'] ?? '') === 'SD' ? 'selected' : '' ?>>SD</option>
-                    <option value="SMP" <?= ($_POST['jenjang'] ?? '') === 'SMP' ? 'selected' : '' ?>>SMP</option>
-                    <option value="SMA" <?= ($_POST['jenjang'] ?? '') === 'SMA' ? 'selected' : '' ?>>SMA</option>
+                    <option value="SD" <?= (($oldInput['jenjang'] ?? '') === 'SD') ? 'selected' : '' ?>>SD</option>
+                    <option value="SMP" <?= (($oldInput['jenjang'] ?? '') === 'SMP') ? 'selected' : '' ?>>SMP</option>
+                    <option value="SMA" <?= (($oldInput['jenjang'] ?? '') === 'SMA') ? 'selected' : '' ?>>SMA</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="kelas_sekolah">Kelas</label>
-                  <input type="text" name="kelas_sekolah" id="kelas_sekolah" class="form-control-custom" placeholder="Contoh: 6 SD, 12 MIPA" maxlength="50" value="<?= htmlspecialchars($_POST['kelas_sekolah'] ?? '') ?>" required>
+                  <input type="text" name="kelas_sekolah" id="kelas_sekolah" class="form-control-custom" placeholder="Contoh: 6 SD, 12 MIPA" maxlength="50" value="<?= htmlspecialchars((string)($oldInput['kelas_sekolah'] ?? '')) ?>" required>
                 </div>
                 <div class="form-group full">
                   <label for="sekolah_asal">Sekolah Asal</label>
-                  <input type="text" name="sekolah_asal" id="sekolah_asal" class="form-control-custom" placeholder="Masukkan sekolah asal" value="<?= htmlspecialchars($_POST['sekolah_asal'] ?? '') ?>">
+                  <input type="text" name="sekolah_asal" id="sekolah_asal" class="form-control-custom" placeholder="Masukkan sekolah asal" value="<?= htmlspecialchars((string)($oldInput['sekolah_asal'] ?? '')) ?>">
                 </div>
               </div>
             </section>
@@ -158,11 +159,11 @@ $selectedMapelIds = isset($_POST['mapel_ids']) && is_array($_POST['mapel_ids'])
               <div class="registration-grid two">
                 <div class="form-group">
                   <label for="nama_wali">Nama Orang Tua / Wali</label>
-                  <input type="text" name="nama_wali" id="nama_wali" class="form-control-custom" placeholder="Masukkan nama wali" value="<?= htmlspecialchars($_POST['nama_wali'] ?? '') ?>">
+                  <input type="text" name="nama_wali" id="nama_wali" class="form-control-custom" placeholder="Masukkan nama wali" value="<?= htmlspecialchars((string)($oldInput['nama_wali'] ?? '')) ?>">
                 </div>
                 <div class="form-group">
                   <label for="telepon_wali">No. HP Orang Tua / Wali</label>
-                  <input type="text" name="telepon_wali" id="telepon_wali" class="form-control-custom" placeholder="Masukkan nomor HP wali" value="<?= htmlspecialchars($_POST['telepon_wali'] ?? '') ?>">
+                  <input type="text" name="telepon_wali" id="telepon_wali" class="form-control-custom" placeholder="Masukkan nomor HP wali" value="<?= htmlspecialchars((string)($oldInput['telepon_wali'] ?? '')) ?>">
                 </div>
               </div>
             </section>
@@ -209,7 +210,7 @@ $selectedMapelIds = isset($_POST['mapel_ids']) && is_array($_POST['mapel_ids'])
     <div class="row g-4">
       <div class="col-lg-4">
         <div class="footer-brand">
-          <div class="logo-icon" class="medium-icon-wrapper"><i class="fas fa-book-open"></i></div>
+          <div class="logo-icon medium-icon-wrapper"><i class="fas fa-book-open"></i></div>
           <span class="logo-text">Bimbel Orion</span>
         </div>
         <p class="opacity-light">Platform bimbel modern terbaik untuk masa depan cerah anak Anda.</p>
@@ -256,3 +257,4 @@ $selectedMapelIds = isset($_POST['mapel_ids']) && is_array($_POST['mapel_ids'])
 <script src="public/js/main.js"></script>
 </body>
 </html>
+

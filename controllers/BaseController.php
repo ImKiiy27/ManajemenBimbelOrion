@@ -13,6 +13,7 @@ abstract class BaseController
     $data['csrf_token'] = $data['csrf_token'] ?? SessionHelper::getCsrfToken();
     $data['current_user_id'] = $data['current_user_id'] ?? SessionHelper::getUserId();
     $data['current_user_role'] = $data['current_user_role'] ?? SessionHelper::getUserRole();
+    $data['current_user_name'] = $data['current_user_name'] ?? ($_SESSION['nama'] ?? null);
     $data['flash'] = $data['flash'] ?? SessionHelper::getFlash();
 
     extract($data);
