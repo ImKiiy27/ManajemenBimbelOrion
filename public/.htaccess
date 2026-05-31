@@ -1,0 +1,74 @@
+# .htaccess - Security & Performance untuk BimbelKu
+# ================================================
+
+# 1. BLOCK BAD BOTS & SCRAPERS
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Block suspicious user agents
+    RewriteCond %{HTTP_USER_AGENT} (libwww-perl|wget|curl|python|spider|bot|scan|nikto|acunetix) [NC]
+    RewriteRule ^ - [F,L]
+    
+    # Block common attack patterns
+    RewriteCond %{REQUEST_URI} (/\.|\\.\.|/\.\.|\\\\|\.\./|script|php://|data://|expect://) [NC]
+    RewriteRule ^ - [F,L]
+    
+    # Rate limiting via mod_evasive (install dulu)
+    # <IfModule mod_evasive20.c>
+    # DOSHashTableSize 3097
+    # DOSPageCount 2
+    # DOSSiteCount 50
+    # DOSPageInterval 1
+    # DOSSiteInterval 1
+    # DOSBlockingPeriod 10
+    # </IfModEvasive>
+</IfModule>
+
+# 2. SECURITY HEADERS
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+# 3. HSTS (HTTPS only)
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+# 4. CLEAN URL REWRITING
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Route semua ke index.php kecuali assets
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
+    
+    # Protect sensitive files
+    RewriteRule ^(config|database|scripts) - [F,L]
+</IfModule>
+
+# 5. PHP SECURITY HARDENING
+<Files "*.php">
+    # Disable dangerous PHP functions
+    php_flag expose_php Off
+    php_flag allow_url_fopen Off
+    php_flag allow_url_include Off
+    
+    # Disable error display di production
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value error_log /path/to/xampp/logs/php_error.log
+</Files>
+
+# 6. ASSET CACHE (Performance)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
+
+# 7. BLOCK HOTLINKING
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?yourdomain\.com [NC]
+RewriteRule \.(jpg|jpeg|png|gif|svg)$ - [NC,F,L]
