@@ -1220,13 +1220,20 @@ a.btn-hero-primary:active {
   box-sizing: border-box;
   transition: all 0.3s ease;
   box-shadow: 4px 0 20px var(--shadow);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 10px; }
 .sidebar-brand .logo-icon { width: 50px; height: 50px; font-size: 22px; }
 .sidebar-brand .logo-text { font-size: 1.4rem; font-weight: 700; color: #0d6efd; }
 
-.sidebar-menu { flex: 1; }
+.sidebar-menu {
+  flex: 1;
+  min-height: 0;
+}
 .sidebar-menu h6 { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; padding-left: 10px; }
 
 .sidebar a {
@@ -1409,6 +1416,60 @@ a.btn-hero-primary:active {
   color: var(--text-muted);
 }
 .dashboard-navbar .navbar-right { display: flex; align-items: center; gap: 12px; }
+.navbar-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  max-width: 280px;
+}
+.navbar-user-chip .avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.navbar-user-chip .user-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.navbar-user-chip .user-meta strong {
+  font-size: 0.86rem;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.navbar-user-chip .user-meta small {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.navbar-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(220, 53, 69, 0.28);
+  color: #dc3545;
+  text-decoration: none;
+  background: rgba(220, 53, 69, 0.06);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.navbar-logout-btn:hover {
+  color: #fff;
+  background: #dc3545;
+  border-color: #dc3545;
+}
 .dashboard-navbar .theme-toggle {
   width: 44px; height: 44px; font-size: 18px; margin: 0;
   box-shadow: 0 8px 20px var(--shadow);
@@ -2283,6 +2344,10 @@ a.btn-hero-primary:active {
   .login-form-section { padding: 40px 30px; }
   .login-card { margin: 20px; }
   .dashboard-navbar { padding: 12px 14px; }
+  .navbar-user-chip .user-meta { display: none; }
+  .navbar-user-chip { padding: 6px 8px; }
+  .navbar-logout-btn span { display: none; }
+  .navbar-logout-btn { width: 44px; justify-content: center; padding: 0; }
   .dashboard-navbar .navbar-title h2 { font-size: 1.15rem; }
   .dashboard-navbar .theme-toggle,
   .burger-btn { width: 42px; height: 42px; }

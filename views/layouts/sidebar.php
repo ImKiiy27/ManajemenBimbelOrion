@@ -5,9 +5,7 @@ require_once __DIR__ . '/../../helpers/RoleHelper.php';
 
 $role       = normalizeRole((string)($_SESSION['role'] ?? ''));
 $_SESSION['role'] = $role;
-$nama       = $_SESSION['nama']  ?? 'User';
 $activePage = $activePage        ?? '';
-$initial    = strtoupper(substr($nama, 0, 1));
 
 $menus = match ($role) {
   'admin' => [
@@ -53,13 +51,6 @@ $menus = match ($role) {
   default => [],
 };
 
-$roleLabel = match ($role) {
-  'admin' => 'Administrator',
-  'guru'  => 'Pengajar',
-  'siswa' => 'Siswa',
-  'wali_murid' => 'Wali Murid',
-  default => '',
-};
 ?>
 
 <div class="sidebar" id="sidebar">
@@ -106,17 +97,6 @@ $roleLabel = match ($role) {
     <?php endforeach; ?>
   </div>
 
-  <div class="sidebar-profile">
-
-    <div class="info">
-      <div class="name"><?= htmlspecialchars($nama) ?></div>
-      <div class="role"><?= $roleLabel ?></div>
-    </div>
-  </div>
-
-  <a href="index.php?page=logout" class="mt-3 logout-link">
-    <i class="fas fa-right-from-bracket"></i> Logout
-  </a>
 </div>
 
 <script>
