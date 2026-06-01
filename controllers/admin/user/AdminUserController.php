@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminUserController.php
 // Halaman kelola user admin + aksi user

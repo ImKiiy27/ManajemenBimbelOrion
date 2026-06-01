@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/siswa/SiswaNilaiController.php
 // Halaman nilai siswa

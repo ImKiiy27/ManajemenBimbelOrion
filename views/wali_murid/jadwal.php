@@ -66,7 +66,7 @@
                 <p><?= htmlspecialchars($a['kelas_sekolah']) ?> • <?= count($jadwalAnak) ?> jadwal terdaftar</p>
               </div>
             </div>
-            <span class="wali-chip"><i class="fas fa-book-open"></i> <?= htmlspecialchars($a['mapel_aktif'] ?? '-') ?></span>
+            <span class="wali-chip"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 16px; height: 16px; object-fit: contain;"> <?= htmlspecialchars($a['mapel_aktif'] ?? '-') ?></span>
           </div>
 
           <?php if (!empty($jadwalAnak)): ?>

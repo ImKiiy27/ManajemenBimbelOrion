@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/siswa/SiswaProfilController.php
 // Halaman profil siswa

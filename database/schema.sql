@@ -229,13 +229,21 @@ CREATE TABLE pendaftaran (
   id CHAR(6) NOT NULL,
   nama VARCHAR(150) NOT NULL,
   email VARCHAR(191) NOT NULL,
-  telepon VARCHAR(20) NOT NULL,
+  telepon VARCHAR(30) NOT NULL,
+  alamat TEXT DEFAULT NULL,
+  jenjang VARCHAR(30) DEFAULT NULL,
   kelas_sekolah VARCHAR(50) DEFAULT 'Privat',
+  asal_sekolah VARCHAR(150) DEFAULT NULL,
+  nama_wali VARCHAR(150) DEFAULT NULL,
+  no_hp_wali VARCHAR(30) DEFAULT NULL,
+  catatan TEXT DEFAULT NULL,
   program VARCHAR(50) DEFAULT NULL,
   status ENUM('pending','diproses','diterima','ditolak') NOT NULL DEFAULT 'pending',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_pendaftaran_email (email),
+  KEY idx_pendaftaran_telepon (telepon),
+  KEY idx_pendaftaran_no_hp_wali (no_hp_wali),
   KEY idx_pendaftaran_created (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

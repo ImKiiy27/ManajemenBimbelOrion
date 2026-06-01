@@ -9,7 +9,7 @@
 <div class="dashboard-container">
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
 
-  <main class="main-content">
+  <main class="main-content admin-siswa-page">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <?php if (!empty($error)): ?>
@@ -51,7 +51,7 @@
         </div>
       </div>
       <div class="stat-card animate-fade-in delay-4">
-        <div class="icon purple"><i class="fas fa-book-open"></i></div>
+        <div class="icon purple"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 20px; height: 20px; object-fit: contain;"></div>
         <div class="info">
           <h3><?= (int)($totalMapelSiswa ?? 0) ?></h3>
           <p>Total Mapel Diikuti</p>
@@ -90,7 +90,14 @@
                   $kelas = trim((string)($row['kelas'] ?? '')) !== '' ? $row['kelas'] : 'Privat';
                   $namaSiswa = trim((string)($row['nama'] ?? '')) !== '' ? $row['nama'] : 'Belum diisi';
                   $waliNama = trim((string)($row['wali_nama'] ?? '')) !== '' ? $row['wali_nama'] : '-';
+                  $waliNoTelp = trim((string)($row['wali_no_telp'] ?? '')) !== '' ? $row['wali_no_telp'] : '-';
+                  $waliHubungan = trim((string)($row['wali_hubungan'] ?? '')) !== '' ? $row['wali_hubungan'] : '-';
+                  $asalSekolah = trim((string)($row['asal_sekolah'] ?? '')) !== '' ? $row['asal_sekolah'] : '-';
+                  $alamat = trim((string)($row['alamat'] ?? '')) !== '' ? $row['alamat'] : '-';
+                  $noTelp = trim((string)($row['no_telp'] ?? '')) !== '' ? $row['no_telp'] : '-';
+                  $statusUser = !empty($row['email']) ? 'Ada' : 'Belum Ada';
                   $tanggal = !empty($row['created_at']) ? date('d M Y', strtotime($row['created_at'])) : '-';
+                  $tanggalLengkap = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : '-';
                   $mapelDiikuti = trim((string)($row['mapel_diikuti'] ?? '')) !== '' ? $row['mapel_diikuti'] : '-';
                 ?>
                 <tr>
@@ -115,7 +122,7 @@
                   <td class="text-nowrap">
                     <button
                       type="button"
-                      class="btn btn-sm btn-outline-primary edit-siswa-btn"
+                      class="btn btn-sm btn-outline-primary edit-siswa-btn admin-action-icon"
                       data-bs-toggle="modal"
                       data-bs-target="#editSiswaModal"
                       data-siswa-id="<?= htmlspecialchars($row['id']) ?>"
@@ -123,6 +130,18 @@
                       data-kelas="<?= htmlspecialchars($kelas) ?>"
                       data-wali-id="<?= htmlspecialchars((string)($row['wali_id'] ?? '')) ?>"
                       data-mapel-ids='<?= htmlspecialchars(json_encode($siswaMapelSelected[$row['id']] ?? []), ENT_QUOTES, 'UTF-8') ?>'
+                      data-email="<?= htmlspecialchars((string)($row['email'] ?? '-'), ENT_QUOTES) ?>"
+                      data-status-akun="<?= htmlspecialchars($statusText, ENT_QUOTES) ?>"
+                      data-status-user="<?= htmlspecialchars($statusUser, ENT_QUOTES) ?>"
+                      data-attempts="<?= htmlspecialchars((string)($row['attempts'] ?? 0), ENT_QUOTES) ?>"
+                      data-no-telp="<?= htmlspecialchars($noTelp, ENT_QUOTES) ?>"
+                      data-alamat="<?= htmlspecialchars($alamat, ENT_QUOTES) ?>"
+                      data-asal-sekolah="<?= htmlspecialchars($asalSekolah, ENT_QUOTES) ?>"
+                      data-wali-nama="<?= htmlspecialchars($waliNama, ENT_QUOTES) ?>"
+                      data-wali-no-telp="<?= htmlspecialchars($waliNoTelp, ENT_QUOTES) ?>"
+                      data-wali-hubungan="<?= htmlspecialchars($waliHubungan, ENT_QUOTES) ?>"
+                      data-mapel-diikuti="<?= htmlspecialchars($mapelDiikuti, ENT_QUOTES) ?>"
+                      data-created-at="<?= htmlspecialchars($tanggalLengkap, ENT_QUOTES) ?>"
                     >
                       <i class="fas fa-pen"></i>
                     </button>
@@ -155,7 +174,64 @@
         <input type="hidden" name="action" value="update-siswa">
         <input type="hidden" name="siswa_id" id="editSiswaId">
         <div class="modal-body">
-          <div class="row g-3">
+          <div class="border rounded p-3 bg-light mb-3 admin-detail-panel">
+            <h6 class="mb-3">Detail Siswa</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">ID Siswa</label>
+                <div id="detailSiswaId">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Email</label>
+                <div id="detailSiswaEmail">-</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1">Status Akun</label>
+                <div id="detailSiswaStatusAkun">-</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1">Status User</label>
+                <div id="detailSiswaStatusUser">-</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1">Login Attempt</label>
+                <div id="detailSiswaAttempts">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">No. Telp Siswa</label>
+                <div id="detailSiswaNoTelp">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Tanggal Buat</label>
+                <div id="detailSiswaCreatedAt">-</div>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-semibold mb-1">Mapel Diikuti</label>
+                <div id="detailSiswaMapel">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Asal Sekolah</label>
+                <div id="detailSiswaAsalSekolah">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Wali Murid</label>
+                <div id="detailSiswaWali">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Hubungan Wali</label>
+                <div id="detailSiswaWaliHubungan">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">No. Telp Wali</label>
+                <div id="detailSiswaWaliNoTelp">-</div>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-semibold mb-1">Alamat</label>
+                <div id="detailSiswaAlamat" class="text-break">-</div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 admin-edit-fields">
             <div class="col-md-6">
               <label class="form-label">Nama Siswa</label>
               <input type="text" class="form-control" name="nama" id="editSiswaNama" maxlength="100" required>
@@ -214,6 +290,13 @@
   const editSiswaModal = document.getElementById('editSiswaModal');
   if (!editSiswaModal) return;
 
+  const setDetailValue = (id, value) => {
+    const element = document.getElementById(id);
+    if (!element) return;
+    const normalized = (value || '').toString().trim();
+    element.textContent = normalized !== '' ? normalized : '-';
+  };
+
   editSiswaModal.addEventListener('show.bs.modal', (event) => {
     const button = event.relatedTarget;
     document.getElementById('editSiswaId').value = button.getAttribute('data-siswa-id') || '';
@@ -225,6 +308,20 @@
     document.querySelectorAll('.siswa-mapel-check').forEach((checkbox) => {
       checkbox.checked = selectedMapelIds.includes(checkbox.value);
     });
+
+    setDetailValue('detailSiswaId', button.getAttribute('data-siswa-id'));
+    setDetailValue('detailSiswaEmail', button.getAttribute('data-email'));
+    setDetailValue('detailSiswaStatusAkun', button.getAttribute('data-status-akun'));
+    setDetailValue('detailSiswaStatusUser', button.getAttribute('data-status-user'));
+    setDetailValue('detailSiswaAttempts', button.getAttribute('data-attempts'));
+    setDetailValue('detailSiswaNoTelp', button.getAttribute('data-no-telp'));
+    setDetailValue('detailSiswaCreatedAt', button.getAttribute('data-created-at'));
+    setDetailValue('detailSiswaMapel', button.getAttribute('data-mapel-diikuti'));
+    setDetailValue('detailSiswaAsalSekolah', button.getAttribute('data-asal-sekolah'));
+    setDetailValue('detailSiswaWali', button.getAttribute('data-wali-nama'));
+    setDetailValue('detailSiswaWaliHubungan', button.getAttribute('data-wali-hubungan'));
+    setDetailValue('detailSiswaWaliNoTelp', button.getAttribute('data-wali-no-telp'));
+    setDetailValue('detailSiswaAlamat', button.getAttribute('data-alamat'));
   });
 })();
 </script>

@@ -1,4 +1,9 @@
 <?php require __DIR__ . '/../layouts/header.php'; ?>
+<?php
+$hariOptions = (isset($hariList) && is_array($hariList) && count($hariList) > 0)
+  ? $hariList
+  : ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+?>
 
 <div class="bg-shapes">
   <div class="shape shape-1"></div>
@@ -94,7 +99,7 @@
         <div class="col-lg-2">
           <label class="form-label">Hari</label>
           <select class="form-select" name="hari" required <?= empty($relasiMapelAktif) ? 'disabled' : '' ?>>
-            <?php foreach ($hariList as $hari): ?>
+            <?php foreach ($hariOptions as $hari): ?>
               <option value="<?= htmlspecialchars($hari) ?>" <?= ($hari === ($hariIni ?? '')) ? 'selected' : '' ?>>
                 <?= htmlspecialchars($hari) ?>
               </option>
@@ -170,7 +175,7 @@
                       <i class="fas fa-pen"></i>
                     </button>
 
-                    <form method="POST" action="index.php?page=admin-jadwal" class="d-inline" onsubmit="return confirm('Hapus jadwal ini?');">
+                    <form method="POST" action="index.php?page=admin-jadwal" class="d-inline" onsubmit="return confirm('Hapus jadwal ini? Jika jadwal sudah memiliki data absensi atau nilai, penghapusan akan ditolak.');">
                       <input type="hidden" name="_csrf" value="<?= htmlspecialchars(getCsrfToken()) ?>">
                       <input type="hidden" name="action" value="delete-jadwal">
                       <input type="hidden" name="jadwal_id" value="<?= htmlspecialchars($row['id']) ?>">
@@ -228,7 +233,7 @@
             <div class="col-md-2">
               <label class="form-label">Hari</label>
               <select class="form-select" name="hari" id="editHari" required>
-                <?php foreach ($hariList as $hari): ?>
+                <?php foreach ($hariOptions as $hari): ?>
                   <option value="<?= htmlspecialchars($hari) ?>"><?= htmlspecialchars($hari) ?></option>
                 <?php endforeach; ?>
               </select>

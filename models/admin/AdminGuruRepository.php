@@ -26,6 +26,9 @@ class AdminGuruRepository {
         u.attempts,
         u.created_at,
         g.nama,
+        g.no_telp,
+        g.alamat,
+        g.bio,
         g.mapel_id,
         m.nama AS mapel
       FROM users u
@@ -92,7 +95,8 @@ class AdminGuruRepository {
       $stmt->execute([$nama, $mapelId, $guruId]);
       return ['status' => 'success'];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminGuruRepository::updateGuruProfile] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui data guru.'];
     }
   }
 

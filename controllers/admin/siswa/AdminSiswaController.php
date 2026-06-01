@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminSiswaController.php
 // Halaman data siswa admin + aksi relasi mapel

@@ -30,7 +30,7 @@
 
     <div class="stats-grid">
       <div class="stat-card animate-fade-in delay-1">
-        <div class="icon blue"><i class="fas fa-book-open"></i></div>
+        <div class="icon blue"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 20px; height: 20px; object-fit: contain;"></div>
         <div class="info">
           <h3><?= (int)($summary['total'] ?? 0) ?></h3>
           <p>Total Mapel</p>

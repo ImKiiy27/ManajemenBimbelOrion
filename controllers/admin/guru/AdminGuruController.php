@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminGuruController.php
 // Halaman data guru admin

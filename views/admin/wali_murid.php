@@ -26,7 +26,7 @@ require __DIR__ . '/../layouts/header.php';
 <div class="dashboard-container">
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
 
-  <main class="main-content">
+  <main class="main-content admin-wali-page">
     <!-- ===============================================
          BAGIAN 1: HEADER & NAVBAR
          ============================================== -->
@@ -149,18 +149,31 @@ require __DIR__ . '/../layouts/header.php';
                   <?php foreach ($waliMurid as $row): ?>
                     <?php
                     $totalSiswa = (int)($row['total_siswa'] ?? 0);
+                    $namaWali = trim((string)($row['nama'] ?? '')) !== '' ? $row['nama'] : '-';
+                    $noTelp = trim((string)($row['no_telp'] ?? '')) !== '' ? $row['no_telp'] : '-';
+                    $hubungan = trim((string)($row['hubungan'] ?? '')) !== '' ? $row['hubungan'] : '-';
+                    $pekerjaan = trim((string)($row['pekerjaan'] ?? '')) !== '' ? $row['pekerjaan'] : '-';
+                    $alamat = trim((string)($row['alamat'] ?? '')) !== '' ? $row['alamat'] : '-';
+                    $statusUser = !empty($row['user_email']) ? 'Ada' : 'Belum Ada';
+                    $statusAkun = '-';
+                    $attempts = '-';
+                    if (!empty($row['user_id'])) {
+                      $statusAkun = (int)($row['is_locked'] ?? 0) === 1 ? 'Terkunci' : 'Aktif';
+                      $attempts = (string)(int)($row['attempts'] ?? 0);
+                    }
+                    $tanggalBuat = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : '-';
                     ?>
                     <tr>
                       <td><?= htmlspecialchars($row['id']) ?></td>
-                      <td><?= htmlspecialchars($row['nama'] ?? '-') ?></td>
-                      <td><?= htmlspecialchars($row['no_telp'] ?? '-') ?></td>
-                      <td><?= htmlspecialchars($row['hubungan'] ?? '-') ?></td>
-                      <td><?= htmlspecialchars($row['pekerjaan'] ?? '-') ?></td>
+                      <td><?= htmlspecialchars($namaWali) ?></td>
+                      <td><?= htmlspecialchars($noTelp) ?></td>
+                      <td><?= htmlspecialchars($hubungan) ?></td>
+                      <td><?= htmlspecialchars($pekerjaan) ?></td>
                       <td>
                         <span class="badge bg-info"><?= $totalSiswa ?> Siswa</span>
                       </td>
                       <td>
-                        <?php if (!empty($row['email'])): ?>
+                        <?php if ($statusUser === 'Ada'): ?>
                           <span class="badge bg-success">Ada</span>
                         <?php else: ?>
                           <span class="badge bg-warning text-dark">Belum Ada</span>
@@ -170,22 +183,28 @@ require __DIR__ . '/../layouts/header.php';
                         <!-- ACTION: Edit button - Trigger modal edit -->
                         <button
                           type="button"
-                          class="btn btn-sm btn-outline-primary me-1 edit-wali-btn"
+                          class="btn btn-sm btn-outline-primary me-1 edit-wali-btn admin-action-icon"
                           data-bs-toggle="modal"
                           data-bs-target="#editWaliModal"
                           data-wali-id="<?= htmlspecialchars($row['id']) ?>"
-                          data-nama="<?= htmlspecialchars($row['nama'] ?? '') ?>"
-                          data-no-telp="<?= htmlspecialchars($row['no_telp'] ?? '') ?>"
-                          data-hubungan="<?= htmlspecialchars($row['hubungan'] ?? '') ?>"
-                          data-pekerjaan="<?= htmlspecialchars($row['pekerjaan'] ?? '') ?>"
-                          data-alamat="<?= htmlspecialchars($row['alamat'] ?? '') ?>">
+                          data-nama="<?= htmlspecialchars($namaWali, ENT_QUOTES) ?>"
+                          data-no-telp="<?= htmlspecialchars($noTelp, ENT_QUOTES) ?>"
+                          data-hubungan="<?= htmlspecialchars($hubungan, ENT_QUOTES) ?>"
+                          data-pekerjaan="<?= htmlspecialchars($pekerjaan, ENT_QUOTES) ?>"
+                          data-alamat="<?= htmlspecialchars($alamat, ENT_QUOTES) ?>"
+                          data-email="<?= htmlspecialchars((string)($row['user_email'] ?? '-'), ENT_QUOTES) ?>"
+                          data-status-user="<?= htmlspecialchars($statusUser, ENT_QUOTES) ?>"
+                          data-status-akun="<?= htmlspecialchars($statusAkun, ENT_QUOTES) ?>"
+                          data-attempts="<?= htmlspecialchars($attempts, ENT_QUOTES) ?>"
+                          data-total-siswa="<?= htmlspecialchars((string)$totalSiswa, ENT_QUOTES) ?>"
+                          data-created-at="<?= htmlspecialchars($tanggalBuat, ENT_QUOTES) ?>">
                           <i class="fas fa-pen"></i>
                         </button>
 
                         <!-- ACTION: View button - Trigger modal view siswa dengan AJAX -->
                         <button
                           type="button"
-                          class="btn btn-sm btn-outline-info me-1 view-siswa-btn"
+                          class="btn btn-sm btn-outline-info me-1 view-siswa-btn admin-action-icon"
                           data-bs-toggle="modal"
                           data-bs-target="#viewSiswaModal"
                           data-wali-id="<?= htmlspecialchars($row['id']) ?>"
@@ -196,12 +215,13 @@ require __DIR__ . '/../layouts/header.php';
                         <!-- ACTION: Delete button - Trigger modal konfirmasi delete -->
                         <button
                           type="button"
-                          class="btn btn-sm btn-outline-danger delete-wali-btn"
+                          class="btn btn-sm btn-outline-danger delete-wali-btn admin-action-icon"
                           data-bs-toggle="modal"
                           data-bs-target="#deleteWaliModal"
                           data-wali-id="<?= htmlspecialchars($row['id']) ?>"
                           data-nama="<?= htmlspecialchars($row['nama'] ?? '') ?>"
-                          data-siswa-count="<?= $totalSiswa ?>">
+                          data-siswa-count="<?= $totalSiswa ?>"
+                          data-has-user="<?= !empty($row['user_id']) ? '1' : '0' ?>">
                           <i class="fas fa-trash"></i>
                         </button>
                       </td>
@@ -245,7 +265,40 @@ require __DIR__ . '/../layouts/header.php';
         <input type="hidden" name="wali_id" id="editWaliId">
 
         <div class="modal-body">
-          <div class="row g-3">
+          <div class="border rounded p-3 bg-light mb-3 admin-detail-panel">
+            <h6 class="mb-3">Detail Wali Murid</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">ID Wali</label>
+                <div id="detailWaliId">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Email User</label>
+                <div id="detailWaliEmail">-</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1">Status User</label>
+                <div id="detailWaliStatusUser">-</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1">Status Akun</label>
+                <div id="detailWaliStatusAkun">-</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1">Login Attempt</label>
+                <div id="detailWaliAttempts">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Total Siswa</label>
+                <div id="detailWaliTotalSiswa">-</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">Tanggal Buat</label>
+                <div id="detailWaliCreatedAt">-</div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 admin-edit-fields">
             <div class="col-md-12">
               <label class="form-label">Nama <span class="text-danger">*</span></label>
               <input type="text" class="form-control" name="nama" id="editWaliNama" maxlength="100" required>
@@ -357,6 +410,10 @@ require __DIR__ . '/../layouts/header.php';
         <div id="safeDeleteInfo" class="hide-element alert alert-info mb-0">
           <i class="fas fa-check-circle me-2"></i>Wali murid ini tidak memiliki siswa yang terkait. Aman untuk dihapus.
         </div>
+
+        <div id="deleteHasUserInfo" class="hide-element alert alert-danger mt-3 mb-0">
+          <i class="fas fa-circle-exclamation me-2"></i>Wali ini memiliki akun user. Nonaktifkan atau hapus melalui menu User agar data tetap konsisten.
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -366,7 +423,7 @@ require __DIR__ . '/../layouts/header.php';
           <!-- ACTION: Akan diubah ke 'delete-wali' atau 'delete-wali-force' via JavaScript -->
           <input type="hidden" name="action" id="deleteAction" value="delete-wali">
           <input type="hidden" name="wali_id" id="deleteWaliId">
-          <button type="submit" class="btn btn-danger">
+          <button type="submit" class="btn btn-danger" id="deleteWaliSubmitBtn">
             <i class="fas fa-trash me-1"></i>Hapus Wali Murid
           </button>
         </form>
@@ -381,6 +438,13 @@ require __DIR__ . '/../layouts/header.php';
      ============================================== -->
 <script>
 (() => {
+  const setDetailValue = (id, value) => {
+    const element = document.getElementById(id);
+    if (!element) return;
+    const normalized = (value || '').toString().trim();
+    element.textContent = normalized !== '' ? normalized : '-';
+  };
+
   // ===============================================
   // MODAL EDIT: Populate form fields dengan data
   // Dipanggil saat user klik tombol edit
@@ -396,6 +460,14 @@ require __DIR__ . '/../layouts/header.php';
       document.getElementById('editWaliHubungan').value = button.getAttribute('data-hubungan') || '';
       document.getElementById('editWaliPekerjaan').value = button.getAttribute('data-pekerjaan') || '';
       document.getElementById('editWaliAlamat').value = button.getAttribute('data-alamat') || '';
+
+      setDetailValue('detailWaliId', button.getAttribute('data-wali-id'));
+      setDetailValue('detailWaliEmail', button.getAttribute('data-email'));
+      setDetailValue('detailWaliStatusUser', button.getAttribute('data-status-user'));
+      setDetailValue('detailWaliStatusAkun', button.getAttribute('data-status-akun'));
+      setDetailValue('detailWaliAttempts', button.getAttribute('data-attempts'));
+      setDetailValue('detailWaliTotalSiswa', button.getAttribute('data-total-siswa'));
+      setDetailValue('detailWaliCreatedAt', button.getAttribute('data-created-at'));
     });
   }
 
@@ -465,13 +537,23 @@ require __DIR__ . '/../layouts/header.php';
       const waliId = button.getAttribute('data-wali-id');
       const waliNama = button.getAttribute('data-nama');
       const siswaCount = parseInt(button.getAttribute('data-siswa-count')) || 0;
+      const hasUser = button.getAttribute('data-has-user') === '1';
+      const submitBtn = document.getElementById('deleteWaliSubmitBtn');
 
       // Set nilai di form
       document.getElementById('deleteWaliNama').textContent = waliNama;
       document.getElementById('deleteWaliId').value = waliId;
+      document.getElementById('deleteHasUserInfo').classList.add('hide-element');
+      if (submitBtn) submitBtn.disabled = false;
 
       // Cek apakah masih ada siswa
-      if (siswaCount > 0) {
+      if (hasUser) {
+        document.getElementById('deleteWarning').classList.add('hide-element');
+        document.getElementById('safeDeleteInfo').classList.add('hide-element');
+        document.getElementById('deleteHasUserInfo').classList.remove('hide-element');
+        document.getElementById('deleteAction').value = 'delete-wali';
+        if (submitBtn) submitBtn.disabled = true;
+      } else if (siswaCount > 0) {
         // Tampilkan warning jika masih ada siswa
         document.getElementById('deleteWarning').classList.remove('hide-element');
         document.getElementById('safeDeleteInfo').classList.add('hide-element');

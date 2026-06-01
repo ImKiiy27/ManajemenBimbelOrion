@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminNilaiController.php
 // Halaman nilai admin + aksi delete nilai

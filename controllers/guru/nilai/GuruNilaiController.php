@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/guru/GuruNilaiController.php
 // Halaman input nilai guru + aksi POST nilai

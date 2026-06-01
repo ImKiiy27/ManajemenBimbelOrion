@@ -11,6 +11,7 @@ class PendaftaranModel {
 
   private PDO $db;
   private IdCounterModel $idCounterModel;
+  private ?bool $pendaftaranHasAlamat = null;
 
   public function __construct(?PDO $db = null, ?IdCounterModel $idCounterModel = null) {
     $this->db = $db ?? getDB();
@@ -40,16 +41,42 @@ class PendaftaranModel {
     return $stmt->fetchAll();
   }
 
-  // Cek apakah email sudah mendaftar dalam 24 jam terakhir
+  // Cek apakah email/no hp sudah mendaftar dalam 24 jam terakhir
   // Mengembalikan sisa detik jika masih dalam cooldown, 0 jika bebas
-  public function cekCooldownPendaftaran(string $email): int {
+  public function cekCooldownPendaftaran(string $email, string $telepon = '', string $noHpWali = ''): int {
+    $email = trim($email);
+    $telepon = trim($telepon);
+    $noHpWali = trim($noHpWali);
+
+    $conditions = [];
+    $params = [];
+    if ($email !== '') {
+      $conditions[] = 'email = ?';
+      $params[] = $email;
+    }
+    if ($telepon !== '') {
+      $conditions[] = '(telepon = ? OR no_hp_wali = ?)';
+      $params[] = $telepon;
+      $params[] = $telepon;
+    }
+    if ($noHpWali !== '') {
+      $conditions[] = '(telepon = ? OR no_hp_wali = ?)';
+      $params[] = $noHpWali;
+      $params[] = $noHpWali;
+    }
+
+    if (empty($conditions)) {
+      return 0;
+    }
+
+    $where = implode(' OR ', $conditions);
     $stmt = $this->db->prepare("
       SELECT created_at FROM pendaftaran
-      WHERE email = ?
+      WHERE {$where}
       ORDER BY created_at DESC
       LIMIT 1
     ");
-    $stmt->execute([$email]);
+    $stmt->execute($params);
     $row = $stmt->fetch();
 
     if (!$row) {
@@ -67,22 +94,113 @@ class PendaftaranModel {
     return 0;
   }
 
+  public function hasActivePendaftaranByEmailOrTelepon(string $email, string $telepon, string $noHpWali = ''): bool {
+    $email = trim($email);
+    $telepon = trim($telepon);
+    $noHpWali = trim($noHpWali);
+
+    $conditions = [];
+    $params = [];
+    if ($email !== '') {
+      $conditions[] = 'email = ?';
+      $params[] = $email;
+    }
+    if ($telepon !== '') {
+      $conditions[] = '(telepon = ? OR no_hp_wali = ?)';
+      $params[] = $telepon;
+      $params[] = $telepon;
+    }
+    if ($noHpWali !== '') {
+      $conditions[] = '(telepon = ? OR no_hp_wali = ?)';
+      $params[] = $noHpWali;
+      $params[] = $noHpWali;
+    }
+
+    if (empty($conditions)) {
+      return false;
+    }
+
+    $where = implode(' OR ', $conditions);
+    $stmt = $this->db->prepare("
+      SELECT COUNT(*)
+      FROM pendaftaran
+      WHERE ({$where})
+        AND status IN ('pending', 'diproses', 'diterima')
+    ");
+    $stmt->execute($params);
+    return (int)$stmt->fetchColumn() > 0;
+  }
+
   // Simpan data pendaftaran baru
   public function daftar(
     string $nama,
     string $email,
     string $telepon,
+    string $alamat,
+    string $jenjang,
     string $kelasSekolah,
+    string $asalSekolah,
+    string $namaWali,
+    string $noHpWali,
+    string $catatan,
     array $mapelIds
   ): bool {
+    $nama = trim($nama);
+    $email = trim($email);
+    $telepon = trim($telepon);
+    $alamat = trim($alamat);
+    $jenjang = trim($jenjang);
+    $kelasSekolah = trim($kelasSekolah);
+    $asalSekolah = trim($asalSekolah);
+    $namaWali = trim($namaWali);
+    $noHpWali = trim($noHpWali);
+    $catatan = trim($catatan);
+
+    if ($nama === '' || $email === '' || $telepon === '' || $alamat === '' || $jenjang === '' || $kelasSekolah === '' || $asalSekolah === '' || $namaWali === '' || $noHpWali === '') {
+      return false;
+    }
+
+    if (!in_array($jenjang, ['SD', 'SMP', 'SMA', 'SMK', 'Lainnya'], true)) {
+      return false;
+    }
+
     // Tolak jika sudah jadi user aktif
     if ($this->emailExistsInUsers($email)) {
+      return false;
+    }
+
+    if ($this->phoneExistsInProfiles($telepon) || $this->phoneExistsInProfiles($noHpWali)) {
+      return false;
+    }
+
+    if ($this->hasActivePendaftaranByEmailOrTelepon($email, $telepon, $noHpWali)) {
       return false;
     }
 
     $kelasSekolah = trim($kelasSekolah) !== '' ? trim($kelasSekolah) : 'Privat';
     if (strlen($kelasSekolah) > 50) {
       $kelasSekolah = substr($kelasSekolah, 0, 50);
+    }
+    if (strlen($nama) > 150) {
+      $nama = substr($nama, 0, 150);
+    }
+    if (strlen($asalSekolah) > 150) {
+      $asalSekolah = substr($asalSekolah, 0, 150);
+    }
+    if (strlen($namaWali) > 150) {
+      $namaWali = substr($namaWali, 0, 150);
+    }
+    if (strlen($telepon) > 30) {
+      $telepon = substr($telepon, 0, 30);
+    }
+    if (strlen($noHpWali) > 30) {
+      $noHpWali = substr($noHpWali, 0, 30);
+    }
+    if (strlen($catatan) > 2000) {
+      $catatan = substr($catatan, 0, 2000);
+    }
+    if (strlen($alamat) > 2000) {
+      $alamat = substr($alamat, 0, 2000);
     }
 
     $mapelIds = array_values(array_unique(array_filter(
@@ -108,10 +226,25 @@ class PendaftaranModel {
       $id = $this->idCounterModel->generateId('pendaftaran', 'PDT');
 
       $stmt = $this->db->prepare("
-        INSERT INTO pendaftaran (id, nama, email, telepon, kelas_sekolah, program, status)
-        VALUES (?, ?, ?, ?, ?, ?, 'pending')
+        INSERT INTO pendaftaran (
+          id, nama, email, telepon, alamat, jenjang, kelas_sekolah, asal_sekolah, nama_wali, no_hp_wali, catatan, program, status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
       ");
-      $stmt->execute([$id, $nama, $email, $telepon, $kelasSekolah, $program]);
+      $stmt->execute([
+        $id,
+        $nama,
+        $email,
+        $telepon,
+        $alamat,
+        $jenjang,
+        $kelasSekolah,
+        $asalSekolah,
+        $namaWali,
+        $noHpWali,
+        $catatan !== '' ? $catatan : null,
+        $program
+      ]);
 
       $mapelStmt = $this->db->prepare("
         INSERT INTO pendaftaran_mapel (id, pendaftaran_id, mapel_id)
@@ -128,6 +261,7 @@ class PendaftaranModel {
       }
       return true;
     } catch (Throwable $e) {
+      error_log('[PendaftaranModel::daftar] ' . $e->getMessage());
       if ($manageTxn && $this->db->inTransaction()) {
         $this->db->rollBack();
       }
@@ -136,13 +270,22 @@ class PendaftaranModel {
   }
 
   public function getPendaftaranTerbaru(int $limit = 10): array {
+    $alamatSelect = $this->pendaftaranHasAlamatColumn() ? 'p.alamat' : "'' AS alamat";
+    $alamatGroupBy = $this->pendaftaranHasAlamatColumn() ? "p.alamat,\n        " : '';
+
     $stmt = $this->db->prepare("
       SELECT
         p.id,
         p.nama,
         p.email,
         p.telepon,
+        {$alamatSelect},
+        p.jenjang,
         p.kelas_sekolah,
+        p.asal_sekolah,
+        p.nama_wali,
+        p.no_hp_wali,
+        p.catatan,
         p.status,
         p.created_at,
         COALESCE(NULLIF(GROUP_CONCAT(DISTINCT m.nama ORDER BY m.nama SEPARATOR ', '), ''), '-') AS mapel_diikuti
@@ -154,7 +297,12 @@ class PendaftaranModel {
         p.nama,
         p.email,
         p.telepon,
+        {$alamatGroupBy}p.jenjang,
         p.kelas_sekolah,
+        p.asal_sekolah,
+        p.nama_wali,
+        p.no_hp_wali,
+        p.catatan,
         p.status,
         p.created_at
       ORDER BY p.created_at DESC
@@ -163,6 +311,42 @@ class PendaftaranModel {
     $stmt->bindValue(1, $limit, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll();
+  }
+
+  private function pendaftaranHasAlamatColumn(): bool {
+    if ($this->pendaftaranHasAlamat !== null) {
+      return $this->pendaftaranHasAlamat;
+    }
+
+    $stmt = $this->db->prepare("
+      SELECT COUNT(*)
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = 'pendaftaran'
+        AND COLUMN_NAME = 'alamat'
+    ");
+    $stmt->execute();
+    $this->pendaftaranHasAlamat = (int)$stmt->fetchColumn() > 0;
+    return $this->pendaftaranHasAlamat;
+  }
+
+  private function phoneExistsInProfiles(string $phone): bool {
+    $phone = trim($phone);
+    if ($phone === '') {
+      return false;
+    }
+
+    $stmt = $this->db->prepare("
+      SELECT COUNT(*) FROM (
+        SELECT no_telp FROM siswa WHERE no_telp = ?
+        UNION ALL
+        SELECT no_telp FROM guru WHERE no_telp = ?
+        UNION ALL
+        SELECT no_telp FROM wali_murid WHERE no_telp = ?
+      ) t
+    ");
+    $stmt->execute([$phone, $phone, $phone]);
+    return (int)$stmt->fetchColumn() > 0;
   }
 
   private function resolveValidMapelIds(array $mapelIds): array {

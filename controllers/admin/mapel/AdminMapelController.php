@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminMapelController.php
 // Halaman master mapel admin

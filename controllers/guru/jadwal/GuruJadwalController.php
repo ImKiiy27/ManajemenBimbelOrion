@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/guru/GuruJadwalController.php
 // Halaman jadwal guru

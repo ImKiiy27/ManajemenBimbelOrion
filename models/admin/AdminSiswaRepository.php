@@ -29,7 +29,10 @@ class AdminSiswaRepository {
         s.kelas_sekolah AS kelas,
         s.wali_id,
         wm.nama AS wali_nama,
+        wm.no_telp AS wali_no_telp,
+        wm.hubungan AS wali_hubungan,
         s.asal_sekolah,
+        s.alamat,
         s.no_telp,
         COALESCE(mp.mapel_diikuti, '-') AS mapel_diikuti
       FROM users u
@@ -202,7 +205,8 @@ class AdminSiswaRepository {
       return ['status' => 'success'];
     } catch (Throwable $e) {
       $this->db->rollBack();
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminSiswaRepository::updateSiswaProfileAndMapel] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui data siswa.'];
     }
   }
 

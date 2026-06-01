@@ -59,9 +59,11 @@ class JadwalCommandService {
       $stmt->execute([$jadwalId, $kelasId, $hari, $jamMulai, $jamSelesai]);
       return ['status' => 'success', 'id' => $jadwalId];
     } catch (PDOException $e) {
+      error_log('[JadwalCommandService::createJadwal] ' . $e->getMessage());
       return ['status' => 'error', 'message' => $this->friendlyError($e)];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[JadwalCommandService::createJadwal] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat membuat jadwal.'];
     }
   }
 
@@ -117,9 +119,11 @@ class JadwalCommandService {
       $stmt->execute([$kelasId, $hari, $jamMulai, $jamSelesai, $jadwalId]);
       return ['status' => 'success'];
     } catch (PDOException $e) {
+      error_log('[JadwalCommandService::updateJadwal] ' . $e->getMessage());
       return ['status' => 'error', 'message' => $this->friendlyError($e)];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[JadwalCommandService::updateJadwal] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui jadwal.'];
     }
   }
 
@@ -130,6 +134,14 @@ class JadwalCommandService {
     }
 
     try {
+      $usedBy = $this->getJadwalUsage($jadwalId);
+      if (($usedBy['nilai'] ?? 0) > 0 || ($usedBy['absensi'] ?? 0) > 0) {
+        return [
+          'status' => 'error',
+          'message' => 'Jadwal tidak dapat dihapus karena sudah memiliki data absensi atau nilai.'
+        ];
+      }
+
       $stmt = $this->db->prepare("DELETE FROM jadwal WHERE id = ?");
       $stmt->execute([$jadwalId]);
       if ($stmt->rowCount() === 0) {
@@ -137,8 +149,24 @@ class JadwalCommandService {
       }
       return ['status' => 'success'];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[JadwalCommandService::deleteJadwal] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat menghapus jadwal.'];
     }
+  }
+
+  private function getJadwalUsage(string $jadwalId): array {
+    $stmt = $this->db->prepare("
+      SELECT
+        (SELECT COUNT(*) FROM absensi WHERE jadwal_id = ?) AS total_absensi,
+        (SELECT COUNT(*) FROM nilai WHERE jadwal_id = ?) AS total_nilai
+    ");
+    $stmt->execute([$jadwalId, $jadwalId]);
+    $row = $stmt->fetch() ?: [];
+
+    return [
+      'absensi' => (int)($row['total_absensi'] ?? 0),
+      'nilai' => (int)($row['total_nilai'] ?? 0),
+    ];
   }
 
   private function getJadwalById(string $jadwalId): array|false {
@@ -278,6 +306,6 @@ class JadwalCommandService {
     if ($code === 1062) {
       return 'Jadwal dengan kombinasi kelas, hari, dan jam mulai tersebut sudah ada.';
     }
-    return $e->getMessage();
+    return 'Terjadi kesalahan database saat memproses jadwal.';
   }
 }

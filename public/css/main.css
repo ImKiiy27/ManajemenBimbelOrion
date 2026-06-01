@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Bimbel Orion - main.css
    Gabungan semua style dari: index, login, pendaftaran,
    dashboard-admin, dashboard-guru, dashboard-siswa
@@ -609,6 +609,10 @@ a.btn-hero-primary:active {
 
 /* Floating label input (login & pendaftaran) */
 .input-group { position: relative; margin-bottom: 25px; }
+/* Override Bootstrap input-group radius trimming for custom floating inputs */
+.login-page .input-group > input {
+  border-radius: 12px !important;
+}
 .input-group label {
   position: absolute;
   left: 50px; top: 50%;
@@ -1072,6 +1076,31 @@ a.btn-hero-primary:active {
   color: #0d6efd;
 }
 
+.login-form-section.full-width {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.legal-content h3 {
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  margin-bottom: 0.45rem;
+  color: var(--text-color);
+}
+
+.legal-content p {
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.85rem;
+  font-size: 12px;
+}
+
+.full-width .login-form-card {
+  max-width: 100%;
+  padding: 28px;
+}
+
 [data-theme="dark"] .login-wireframe-illustration,
 [data-theme="dark"] .login-scene,
 [data-theme="dark"] .login-form-card {
@@ -1394,7 +1423,7 @@ a.btn-hero-primary:active {
 /* --- Dashboard Navbar --- */
 .dashboard-navbar {
   position: sticky;
-  top: 16px;
+  top: 10px;
   display: flex; align-items: center; gap: 14px; justify-content: space-between;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -2326,7 +2355,7 @@ a.btn-hero-primary:active {
   .sidebar { transform: translateX(-100%); }
   .sidebar.active { transform: translateX(0); }
   .main-content { margin-left: 0; }
-  .dashboard-navbar { top: 12px; margin-bottom: 18px; }
+  .dashboard-navbar { top: 8px; margin-bottom: 18px; }
   body.sidebar-open { overflow: hidden; }
 }
 
@@ -3211,4 +3240,740 @@ a.btn-hero-primary:active {
     padding: 16px;
   }
 
+}
+
+/* Admin Nilai Page */
+.admin-nilai-page .filter-form {
+  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+}
+.admin-nilai-page .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+.admin-nilai-page .form-group { display: flex; flex-direction: column; }
+.admin-nilai-page .form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+.admin-nilai-page .form-control {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.admin-nilai-page .form-control:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+.admin-nilai-page .btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.admin-nilai-page .btn-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.admin-nilai-page .btn-secondary:hover { background-color: var(--bg-tertiary); }
+.admin-nilai-page .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.85rem; }
+.admin-nilai-page .btn-info { background-color: #0dcaf0; color: #000; }
+.admin-nilai-page .btn-info:hover { background-color: #0ba5d9; }
+.admin-nilai-page .btn-danger { background-color: #dc3545; color: white; }
+.admin-nilai-page .btn-danger:hover { background-color: #c82333; }
+.admin-nilai-page .action-buttons { display: flex; gap: 0.5rem; }
+.admin-nilai-page .table-responsive { overflow-x: auto; }
+.admin-nilai-page .table-custom {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-primary);
+}
+.admin-nilai-page .table-custom thead {
+  background-color: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+}
+.admin-nilai-page .table-custom th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  white-space: nowrap;
+}
+.admin-nilai-page .table-custom td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.admin-nilai-page .table-custom tbody tr:hover { background-color: var(--bg-secondary); }
+.admin-nilai-page .text-center { text-align: center; }
+.admin-nilai-page .badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.admin-nilai-page .bg-primary { background-color: #0d6efd; color: white; }
+.admin-nilai-page .bg-warning { background-color: #ffc107; color: #000; }
+.admin-nilai-page .bg-info { background-color: #0dcaf0; color: #000; }
+
+/* Admin Absensi Page */
+.admin-absensi-page .filter-form { display: grid; gap: 20px; }
+.admin-absensi-page .filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+.admin-absensi-page .filter-group { display: flex; flex-direction: column; }
+.admin-absensi-page .filter-group label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--text-primary);
+}
+.admin-absensi-page .filter-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.admin-absensi-page .filter-actions .btn {
+  min-width: 120px;
+  justify-content: center;
+}
+.admin-absensi-page .form-control,
+.admin-absensi-page select {
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+.admin-absensi-page .form-control:focus,
+.admin-absensi-page select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+.admin-absensi-page .btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.admin-absensi-page .btn-primary { background-color: var(--primary-color); color: white; }
+.admin-absensi-page .btn-primary:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+.admin-absensi-page .btn-secondary { background-color: var(--border-color); color: var(--text-primary); }
+.admin-absensi-page .btn-secondary:hover { background-color: #ccc; }
+.admin-absensi-page .btn-action {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  color: var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.admin-absensi-page .btn-action:hover { background-color: var(--primary-color); color: white; }
+.admin-absensi-page .btn-correction { border-color: #ffc107; color: #ffc107; }
+.admin-absensi-page .btn-correction:hover { background-color: #ffc107; color: white; }
+.admin-absensi-page .table-responsive { overflow-x: auto; margin: 20px 0; }
+.admin-absensi-page .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.admin-absensi-page .data-table thead {
+  background-color: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+}
+.admin-absensi-page .data-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.admin-absensi-page .data-table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+.admin-absensi-page .data-table tbody tr:hover { background-color: var(--bg-secondary); }
+.admin-absensi-page .status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 70px;
+}
+.admin-absensi-page .status-hadir { background-color: #d4edda; color: #155724; }
+.admin-absensi-page .status-izin { background-color: #cfe2ff; color: #084298; }
+.admin-absensi-page .status-sakit { background-color: #fff3cd; color: #664d03; }
+.admin-absensi-page .status-alpa { background-color: #f8d7da; color: #721c24; }
+.admin-absensi-page .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 20px 0;
+}
+.admin-absensi-page .page-link {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.admin-absensi-page .page-link:hover { background-color: var(--primary-color); color: white; }
+.admin-absensi-page .page-info { font-size: 14px; color: var(--text-muted); }
+.admin-absensi-page .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.admin-absensi-page .card-meta { font-size: 14px; color: var(--text-muted); }
+.admin-absensi-page .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: admin-absensi-fade-in 0.3s ease;
+}
+.admin-absensi-page .modal.show { display: flex; }
+.admin-absensi-page .modal-content {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: admin-absensi-slide-up 0.3s ease;
+}
+.admin-absensi-page .modal-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.admin-absensi-page .modal-header h3 { margin: 0; color: var(--text-primary); }
+.admin-absensi-page .modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0;
+}
+.admin-absensi-page .modal-close:hover { color: var(--text-primary); }
+.admin-absensi-page .modal-body { padding: 20px; }
+.admin-absensi-page .modal-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.admin-absensi-page .form-group { margin-bottom: 15px; }
+.admin-absensi-page .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.admin-absensi-page .form-group input,
+.admin-absensi-page .form-group select,
+.admin-absensi-page .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+}
+.admin-absensi-page .form-group textarea { resize: vertical; min-height: 80px; }
+.admin-absensi-page .form-group input:focus,
+.admin-absensi-page .form-group select:focus,
+.admin-absensi-page .form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+.admin-absensi-page .audit-trail {
+  background-color: var(--bg-secondary);
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 15px;
+  font-size: 13px;
+}
+.admin-absensi-page .audit-trail h4 { margin-top: 0; color: var(--text-primary); }
+.admin-absensi-page .audit-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+.admin-absensi-page .audit-item:last-child { border-bottom: none; }
+
+
+
+/* Fix modal koreksi absensi: modal berada di luar .admin-absensi-page dan tidak boleh bentrok dengan Bootstrap .modal */
+#correction-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 20px;
+}
+#correction-modal.show { display: flex; }
+#correction-modal .modal-content {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+#correction-modal .modal-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#correction-modal .modal-header h3 { margin: 0; color: var(--text-primary); }
+#correction-modal .modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0;
+}
+#correction-modal .modal-body { padding: 20px; }
+#correction-modal .modal-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Admin Relasi Page */
+.admin-relasi-page .form-container,
+.admin-relasi-page .modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: 10px;
+}
+.admin-relasi-page .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.admin-relasi-page .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.admin-relasi-page .form-group label { font-weight: 600; color: var(--text-primary); }
+.admin-relasi-page .form-control {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.admin-relasi-page .table-responsive { overflow-x: auto; }
+.admin-relasi-page .table-custom {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-primary);
+}
+.admin-relasi-page .table-custom th,
+.admin-relasi-page .table-custom td {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+.admin-relasi-page .table-custom th {
+  background: var(--bg-secondary);
+  text-align: left;
+  white-space: nowrap;
+}
+.admin-relasi-page .table-custom tbody tr:hover { background: var(--bg-secondary); }
+.admin-relasi-page .action-buttons { display: flex; gap: 0.5rem; }
+.admin-relasi-page .btn {
+  padding: 0.75rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+.admin-relasi-page .btn-sm { padding: 0.45rem 0.75rem; }
+.admin-relasi-page .btn-primary { background: #0d6efd; color: #fff; }
+.admin-relasi-page .btn-warning { background: #ffc107; color: #000; }
+.admin-relasi-page .btn-danger { background: #dc3545; color: #fff; }
+.admin-relasi-page .btn-secondary {
+  background: var(--bg-tertiary, #e9ecef);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.admin-relasi-page .badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.admin-relasi-page .bg-primary { background: #0d6efd; color: #fff; }
+.admin-relasi-page .bg-success { background: #198754; color: #fff; }
+.admin-relasi-page .bg-secondary { background: #6c757d; color: #fff; }
+.admin-relasi-page .empty-state { color: var(--text-muted); padding: 2rem; }
+#editRelasiModal.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+#editRelasiModal.modal-overlay.active { display: flex; }
+#editRelasiModal .custom-modal {
+  width: min(560px, 100%);
+  background: var(--bg-primary);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+#editRelasiModal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem 1.3rem;
+  border-bottom: 1px solid var(--border-color);
+}
+#editRelasiModal .close-modal {
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+#editRelasiModal .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+#editRelasiModal .modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+}
+#editRelasiModal .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+#editRelasiModal .form-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+#editRelasiModal .form-control {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Fallback visibility guard: prevent blank-looking text on relasi page */
+.admin-relasi-page .page-header h1,
+.admin-relasi-page .page-header p,
+.admin-relasi-page .card-header h3,
+.admin-relasi-page .card-header span,
+.admin-relasi-page .form-group label,
+.admin-relasi-page .form-control,
+.admin-relasi-page .table-custom th,
+.admin-relasi-page .table-custom td {
+  color: var(--text-primary) !important;
+}
+
+/* Admin master data layout (guru/siswa/wali) */
+.admin-guru-page .table-custom td,
+.admin-siswa-page .table-custom td,
+.admin-dashboard-page .table-custom td,
+.admin-wali-page .table-custom td {
+  vertical-align: middle;
+}
+.admin-action-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0 !important;
+  border-radius: 10px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.admin-action-icon i {
+  font-size: 0.9rem;
+}
+.admin-action-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.admin-guru-page .modal-content,
+.admin-siswa-page .modal-content,
+.admin-dashboard-page .modal-content,
+.admin-wali-page .modal-content {
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+}
+.admin-guru-page .modal-header,
+.admin-siswa-page .modal-header,
+.admin-dashboard-page .modal-header,
+.admin-wali-page .modal-header {
+  background: linear-gradient(135deg, rgba(13, 110, 253, 0.08), rgba(13, 110, 253, 0.03));
+}
+
+.admin-detail-panel {
+  border-color: rgba(13, 110, 253, 0.2) !important;
+  border-radius: 14px !important;
+  background: linear-gradient(145deg, rgba(13, 110, 253, 0.06), rgba(13, 110, 253, 0.02)) !important;
+}
+.admin-detail-panel h6 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px !important;
+  font-weight: 700;
+  color: #0d6efd;
+}
+.admin-detail-panel h6::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #0d6efd;
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
+}
+.admin-detail-panel .form-label {
+  margin-bottom: 6px !important;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.admin-detail-panel [id^="detail"] {
+  min-height: 44px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.admin-edit-fields {
+  margin: 0;
+  border: 1px dashed rgba(13, 110, 253, 0.25);
+  border-radius: 14px;
+  padding: 16px 12px;
+  background: rgba(13, 110, 253, 0.03);
+}
+
+[data-theme="dark"] .admin-action-icon:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+[data-theme="dark"] .admin-detail-panel {
+  border-color: rgba(61, 139, 254, 0.28) !important;
+  background: linear-gradient(145deg, rgba(61, 139, 254, 0.18), rgba(61, 139, 254, 0.08)) !important;
+}
+[data-theme="dark"] .admin-detail-panel h6 {
+  color: #7cb4ff;
+}
+[data-theme="dark"] .admin-detail-panel h6::before {
+  background: #7cb4ff;
+  box-shadow: 0 0 0 4px rgba(124, 180, 255, 0.22);
+}
+[data-theme="dark"] .admin-detail-panel [id^="detail"] {
+  background: #122040;
+  border-color: #2d4a82;
+}
+[data-theme="dark"] .admin-edit-fields {
+  border-color: rgba(61, 139, 254, 0.35);
+  background: rgba(61, 139, 254, 0.1);
+}
+
+@keyframes admin-absensi-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes admin-absensi-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 768px) {
+  .admin-nilai-page .form-row,
+  .admin-relasi-page .form-row,
+  .admin-absensi-page .filter-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-absensi-page .filter-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-absensi-page .filter-actions .btn {
+    width: 100%;
+  }
+  .admin-nilai-page .table-custom { font-size: 0.9rem; }
+  .admin-absensi-page .data-table { font-size: 12px; }
+  .admin-nilai-page .table-custom th,
+  .admin-nilai-page .table-custom td,
+  .admin-absensi-page .data-table th,
+  .admin-absensi-page .data-table td {
+    padding: 8px;
+  }
+  .admin-nilai-page .action-buttons,
+  .admin-relasi-page .action-buttons {
+    flex-direction: column;
+  }
+  .admin-edit-fields {
+    padding: 14px 10px;
+  }
+  .admin-action-icon {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* Dashboard Footer (shown after login) */
+.app-dashboard-footer {
+  margin: 20px 24px 24px 304px;
+  padding: 14px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  transition: margin-left 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+.app-dashboard-footer__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.app-dashboard-footer__left p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.app-version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+.app-dashboard-footer__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-dashboard-footer__right a {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  transition: all 0.2s ease;
+}
+.app-dashboard-footer__right a:hover {
+  color: #fff;
+  background: #0d6efd;
+  border-color: #0d6efd;
+  transform: translateY(-1px);
+}
+body.sidebar-collapsed .app-dashboard-footer {
+  margin-left: 24px;
+}
+@media (max-width: 992px) {
+  .app-dashboard-footer {
+    margin-left: 16px;
+  }
+}
+@media (max-width: 768px) {
+  .app-dashboard-footer {
+    margin: 16px;
+    padding: 12px 14px;
+  }
 }

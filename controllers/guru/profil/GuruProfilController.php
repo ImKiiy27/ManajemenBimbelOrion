@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/guru/GuruProfilController.php
 // Halaman profil guru

@@ -91,7 +91,7 @@ $statCards = match ($role) {
     ['icon' => 'fa-clipboard-check', 'label' => 'Kehadiran', 'value' => ((int)($stats['kehadiran_persen'] ?? 0)) . '%', 'tone' => 'purple'],
   ],
   'siswa' => [
-    ['icon' => 'fa-book-open', 'label' => 'Mapel Aktif', 'value' => (int)($stats['total_mapel'] ?? 0), 'tone' => 'blue'],
+    ['icon' => 'logo-bimbel-orion', 'label' => 'Mapel Aktif', 'value' => (int)($stats['total_mapel'] ?? 0), 'tone' => 'blue'],
     ['icon' => 'fa-calendar-days', 'label' => 'Jadwal', 'value' => (int)($stats['total_jadwal'] ?? 0), 'tone' => 'green'],
     ['icon' => 'fa-chart-line', 'label' => 'Rata Nilai', 'value' => (int)($stats['rata_nilai'] ?? 0), 'tone' => 'orange'],
     ['icon' => 'fa-clipboard-check', 'label' => 'Kehadiran', 'value' => ((int)($stats['kehadiran_persen'] ?? 0)) . '%', 'tone' => 'purple'],
@@ -283,7 +283,13 @@ $statCards = match ($role) {
         <section class="profile-stats-grid">
           <?php foreach ($statCards as $card): ?>
             <div class="profile-stat-card">
-              <div class="icon <?= htmlspecialchars($card['tone']) ?>"><i class="fas <?= htmlspecialchars($card['icon']) ?>"></i></div>
+              <div class="icon <?= htmlspecialchars($card['tone']) ?>">
+                <?php if (($card['icon'] ?? '') === 'logo-bimbel-orion'): ?>
+                  <img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 20px; height: 20px; object-fit: contain;">
+                <?php else: ?>
+                  <i class="fas <?= htmlspecialchars($card['icon']) ?>"></i>
+                <?php endif; ?>
+              </div>
               <div>
                 <strong><?= htmlspecialchars((string)$card['value']) ?></strong>
                 <span><?= htmlspecialchars($card['label']) ?></span>
@@ -353,7 +359,7 @@ $statCards = match ($role) {
       </section>
     <?php elseif ($role === 'siswa'): ?>
       <section class="profile-panel animate-fade-in delay-2">
-        <div class="profile-section-head"><h3><i class="fas fa-book-open-reader"></i> Mapel dan Progress Ringkas</h3></div>
+        <div class="profile-section-head"><h3><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 20px; height: 20px; object-fit: contain;"> Mapel dan Progress Ringkas</h3></div>
         <div class="profile-progress-list">
           <?php foreach (($subjects ?? []) as $index => $subject): ?>
             <?php $percent = min(95, 70 + (($index + 1) * 6)); ?>

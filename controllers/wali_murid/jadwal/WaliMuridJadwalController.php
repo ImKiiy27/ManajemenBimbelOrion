@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/wali_murid/WaliMuridJadwalController.php
 // Jadwal pembelajaran anak-anak wali murid

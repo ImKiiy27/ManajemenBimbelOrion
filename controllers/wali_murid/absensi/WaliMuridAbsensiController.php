@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/wali_murid/WaliMuridAbsensiController.php
 // Riwayat absensi anak-anak wali murid (read-only)

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminWaliMuridController.php
 // Halaman data wali murid admin
@@ -62,18 +62,24 @@ class AdminWaliMuridController extends BaseAdminController
 
   public function getSiswa(): void
   {
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
 
     $waliId = trim((string)($_GET['wali_id'] ?? ''));
     if ($waliId === '') {
       http_response_code(400);
-      echo json_encode(['status' => 'error', 'message' => 'ID wali tidak valid.', 'siswa' => []]);
+      echo json_encode([
+        'status' => 'error',
+        'message' => 'ID wali tidak valid.',
+        'siswa' => [],
+        'data' => new stdClass()
+      ], JSON_UNESCAPED_UNICODE);
       return;
     }
 
     echo json_encode([
       'status' => 'success',
       'siswa' => $this->waliRepository->getWaliMuridSiswa($waliId),
-    ]);
+      'data' => new stdClass()
+    ], JSON_UNESCAPED_UNICODE);
   }
 }

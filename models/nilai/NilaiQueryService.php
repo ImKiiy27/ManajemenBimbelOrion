@@ -241,4 +241,45 @@ class NilaiQueryService {
     $stmt->execute([$jadwalId, $pertemuanKe, $tipeNilai]);
     return $stmt->fetch();
   }
+
+  public function isJadwalOwnedByGuru(string $jadwalId, string $guruId): bool {
+    $stmt = $this->db->prepare("
+      SELECT 1
+      FROM jadwal j
+      INNER JOIN kelas k ON k.id = j.kelas_id
+      WHERE j.id = ? AND k.guru_id = ?
+      LIMIT 1
+    ");
+    $stmt->execute([$jadwalId, $guruId]);
+    return (bool)$stmt->fetchColumn();
+  }
+
+  public function findExistingNilaiByGuru(string $jadwalId, int $pertemuanKe, string $tipeNilai, string $guruId): array|false {
+    $stmt = $this->db->prepare("
+      SELECT n.id
+      FROM nilai n
+      INNER JOIN jadwal j ON j.id = n.jadwal_id
+      INNER JOIN kelas k ON k.id = j.kelas_id
+      WHERE n.jadwal_id = ?
+        AND n.pertemuan_ke = ?
+        AND n.tipe_nilai = ?
+        AND k.guru_id = ?
+      LIMIT 1
+    ");
+    $stmt->execute([$jadwalId, $pertemuanKe, $tipeNilai, $guruId]);
+    return $stmt->fetch();
+  }
+
+  public function findNilaiByIdAndGuru(string $nilaiId, string $guruId): array|false {
+    $stmt = $this->db->prepare("
+      SELECT n.id, n.jadwal_id
+      FROM nilai n
+      INNER JOIN jadwal j ON j.id = n.jadwal_id
+      INNER JOIN kelas k ON k.id = j.kelas_id
+      WHERE n.id = ? AND k.guru_id = ?
+      LIMIT 1
+    ");
+    $stmt->execute([$nilaiId, $guruId]);
+    return $stmt->fetch();
+  }
 }

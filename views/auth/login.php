@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = 'Login - Bimbel Orion';
 require __DIR__ . '/../layouts/header.php';
 $oldInput = is_array($oldInput ?? null) ? $oldInput : [];
@@ -21,7 +21,7 @@ $oldInput = is_array($oldInput ?? null) ? $oldInput : [];
 
         <div class="login-illustration login-wireframe-illustration">
           <div class="login-side-brand">
-            <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+            <div class="logo-icon"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
               <h3>Bimbel Orion</h3>
               <p>Sistem manajemen bimbel terintegrasi untuk semua pihak.</p>
@@ -57,7 +57,7 @@ $oldInput = is_array($oldInput ?? null) ? $oldInput : [];
         <div class="login-form-section login-wireframe-form-wrap">
           <div class="brand-logo">
             <div class="logo-wrapper">
-              <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+              <div class="logo-icon"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 100%; height: 100%; object-fit: contain;"></div>
               <span class="logo-text">Bimbel Orion</span>
             </div>
             <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
@@ -119,15 +119,10 @@ $oldInput = is_array($oldInput ?? null) ? $oldInput : [];
                 <p>Belum punya akun? <a href="index.php?page=pendaftaran">Daftar</a></p>
               </div>
 
-              <div class="divider"><span>atau masuk dengan</span></div>
-              <div class="social-login">
-                <button type="button" class="social-btn google"><i class="fab fa-google"></i> Google</button>
-                <button type="button" class="social-btn facebook"><i class="fab fa-facebook-f"></i> Facebook</button>
-              </div>
             </form>
           </div>
 
-          <p class="login-terms">Dengan masuk, Anda setuju dengan <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a>.</p>
+          <p class="login-terms">Dengan masuk, Anda setuju dengan <a href="index.php?page=syarat-ketentuan">Syarat & Ketentuan</a> dan <a href="index.php?page=kebijakan-privasi">Kebijakan Privasi</a>.</p>
         </div>
 
       </div>
@@ -139,3 +134,4 @@ $oldInput = is_array($oldInput ?? null) ? $oldInput : [];
 <script src="public/js/main.js"></script>
 </body>
 </html>
+

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/siswa/SiswaDashboardController.php
 // Halaman dashboard siswa

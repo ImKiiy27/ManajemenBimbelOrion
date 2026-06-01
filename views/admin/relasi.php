@@ -9,7 +9,7 @@
 <div class="dashboard-container">
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
 
-  <main class="main-content">
+  <main class="main-content admin-relasi-page">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <?php if (!empty($error)): ?>
@@ -63,7 +63,7 @@
           <div class="form-group">
             <label for="createSiswaSelect">Siswa</label>
             <select id="createSiswaSelect" name="siswa_id" class="form-control" required>
-              <option value="">-- Pilih Siswa --</option>
+              <option value="">Pilih Siswa</option>
               <?php foreach ($siswaOptions as $siswa): ?>
                 <option value="<?= htmlspecialchars($siswa['id']) ?>">
                   <?= htmlspecialchars($siswa['nama']) ?> (<?= htmlspecialchars($siswa['kelas'] ?: 'Privat') ?>)
@@ -75,14 +75,14 @@
           <div class="form-group">
             <label for="createMapelSelect">Mapel Siswa</label>
             <select id="createMapelSelect" name="mapel_id" class="form-control" required>
-              <option value="">-- Pilih siswa dulu --</option>
+              <option value="">Pilih siswa dulu</option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="createGuruSelect">Guru</label>
             <select id="createGuruSelect" name="guru_id" class="form-control" required>
-              <option value="">-- Pilih guru sesuai mapel siswa --</option>
+              <option value="">Pilih guru sesuai mapel siswa</option>
             </select>
           </div>
 
@@ -196,7 +196,7 @@
       <div class="form-group">
         <label for="editRelasiSiswa">Siswa</label>
         <select id="editRelasiSiswa" name="siswa_id" class="form-control" required>
-          <option value="">-- Pilih Siswa --</option>
+          <option value="">Pilih Siswa</option>
           <?php foreach ($siswaOptions as $siswa): ?>
             <option value="<?= htmlspecialchars($siswa['id']) ?>">
               <?= htmlspecialchars($siswa['nama']) ?> (<?= htmlspecialchars($siswa['kelas'] ?: 'Privat') ?>)
@@ -208,14 +208,14 @@
       <div class="form-group">
         <label for="editMapelSelect">Mapel Siswa</label>
         <select id="editMapelSelect" name="mapel_id" class="form-control" required>
-          <option value="">-- Pilih siswa dulu --</option>
+          <option value="">Pilih siswa dulu</option>
         </select>
       </div>
 
       <div class="form-group">
         <label for="editRelasiGuru">Guru</label>
         <select id="editRelasiGuru" name="guru_id" class="form-control" required>
-          <option value="">-- Pilih guru sesuai mapel siswa --</option>
+          <option value="">Pilih guru sesuai mapel siswa</option>
         </select>
       </div>
 
@@ -234,204 +234,29 @@
     </form>
   </div>
 </div>
-
-<style>
-  .form-container,
-  .modal-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding: 1.5rem;
-    background-color: var(--bg-secondary);
-    border-radius: 10px;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .form-group label {
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-
-  .form-control {
-    padding: 0.85rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-  }
-
-  .table-responsive {
-    overflow-x: auto;
-  }
-
-  .table-custom {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--bg-primary);
-  }
-
-  .table-custom th,
-  .table-custom td {
-    padding: 0.95rem 1rem;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-primary);
-    vertical-align: middle;
-  }
-
-  .table-custom th {
-    background: var(--bg-secondary);
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  .table-custom tbody tr:hover {
-    background: var(--bg-secondary);
-  }
-
-  .action-buttons {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .btn {
-    padding: 0.75rem 1.1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-  }
-
-  .btn-sm {
-    padding: 0.45rem 0.75rem;
-  }
-
-  .btn-primary {
-    background: #0d6efd;
-    color: #fff;
-  }
-
-  .btn-warning {
-    background: #ffc107;
-    color: #000;
-  }
-
-  .btn-danger {
-    background: #dc3545;
-    color: #fff;
-  }
-
-  .btn-secondary {
-    background: var(--bg-tertiary, #e9ecef);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    font-weight: 600;
-  }
-
-  .bg-primary { background: #0d6efd; color: #fff; }
-  .bg-success { background: #198754; color: #fff; }
-  .bg-secondary { background: #6c757d; color: #fff; }
-
-  .empty-state {
-    color: var(--text-muted);
-    padding: 2rem;
-  }
-
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.45);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1rem;
-  }
-
-  .modal-overlay.active {
-    display: flex;
-  }
-
-  .custom-modal {
-    width: min(560px, 100%);
-    background: var(--bg-primary);
-    border-radius: 18px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
-    overflow: hidden;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.1rem 1.3rem;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .close-modal {
-    border: none;
-    background: transparent;
-    font-size: 1.6rem;
-    cursor: pointer;
-    color: var(--text-primary);
-  }
-
-  .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-  }
-
-  @media (max-width: 768px) {
-    .form-row {
-      grid-template-columns: 1fr;
-    }
-
-    .action-buttons {
-      flex-direction: column;
-    }
-  }
-</style>
-
 <script>
-  const siswaMapelMatrix = <?= $siswaMapelJson ?: '{}' ?>;
-  const guruOptions = <?= $guruOptionsJson ?: '[]' ?>;
+document.addEventListener('DOMContentLoaded', function () {
+  var siswaMapelMatrix = <?= json_encode($siswaMapelMatrix ?? new stdClass(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+  var guruOptions = <?= json_encode($guruOptions ?? [], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
   function getMapelBySiswa(siswaId) {
     return Array.isArray(siswaMapelMatrix[siswaId]) ? siswaMapelMatrix[siswaId] : [];
   }
 
   function filterGuruByMapel(mapelId) {
-    return guruOptions.filter(guru => guru.mapel_id === mapelId);
+    var targetMapelId = String(mapelId || '');
+    return guruOptions.filter(function (guru) {
+      return String(guru.mapel_id || '') === targetMapelId;
+    });
   }
 
-  function fillMapelOptions(selectEl, siswaId, selectedMapelId = '') {
-    const mapelList = getMapelBySiswa(siswaId);
+  function fillMapelOptions(selectEl, siswaId, selectedMapelId) {
+    selectedMapelId = selectedMapelId || '';
+    var mapelList = getMapelBySiswa(siswaId);
     selectEl.innerHTML = '';
 
     if (!siswaId) {
-      selectEl.innerHTML = '<option value="">-- Pilih siswa dulu --</option>';
+      selectEl.innerHTML = '<option value="">Pilih siswa dulu</option>';
       return;
     }
 
@@ -440,94 +265,117 @@
       return;
     }
 
-    mapelList.forEach((mapel) => {
-      const option = document.createElement('option');
+    mapelList.forEach(function (mapel) {
+      var option = document.createElement('option');
       option.value = mapel.id;
       option.textContent = mapel.nama;
-      if (selectedMapelId && selectedMapelId === mapel.id) {
+      if (selectedMapelId && String(selectedMapelId) === String(mapel.id)) {
         option.selected = true;
       }
       selectEl.appendChild(option);
     });
   }
 
-  function fillGuruOptions(selectEl, mapelId, selectedGuruId = '') {
-    const filtered = filterGuruByMapel(mapelId);
+  function fillGuruOptions(selectEl, mapelId, selectedGuruId) {
+    selectedGuruId = selectedGuruId || '';
+    var filtered = filterGuruByMapel(mapelId);
     selectEl.innerHTML = '';
 
-    const placeholder = document.createElement('option');
+    var placeholder = document.createElement('option');
     placeholder.value = '';
     placeholder.textContent = filtered.length > 0
-      ? '-- Pilih guru sesuai mapel siswa --'
-      : '-- Tidak ada guru yang cocok --';
+      ? 'Pilih guru sesuai mapel siswa'
+      : 'Tidak ada guru yang cocok';
     selectEl.appendChild(placeholder);
 
-    filtered.forEach((guru) => {
-      const option = document.createElement('option');
+    filtered.forEach(function (guru) {
+      var option = document.createElement('option');
       option.value = guru.id;
-      option.textContent = `${guru.nama} - ${guru.mata_pelajaran ?? '-'}`;
-      if (selectedGuruId && selectedGuruId === guru.id) {
+      option.textContent = (guru.nama || '-') + ' - ' + (guru.mata_pelajaran ? guru.mata_pelajaran : '-');
+      if (selectedGuruId && String(selectedGuruId) === String(guru.id)) {
         option.selected = true;
       }
       selectEl.appendChild(option);
     });
   }
 
-  const createSiswaSelect = document.getElementById('createSiswaSelect');
-  const createMapelSelect = document.getElementById('createMapelSelect');
-  const createGuruSelect = document.getElementById('createGuruSelect');
-
-  createSiswaSelect?.addEventListener('change', function () {
-    fillMapelOptions(createMapelSelect, this.value);
-    fillGuruOptions(createGuruSelect, '');
-  });
-
-  createMapelSelect?.addEventListener('change', function () {
-    fillGuruOptions(createGuruSelect, this.value);
-  });
-
-  const editModal = document.getElementById('editRelasiModal');
-  const editRelasiId = document.getElementById('editRelasiId');
-  const editRelasiSiswa = document.getElementById('editRelasiSiswa');
-  const editMapelSelect = document.getElementById('editMapelSelect');
-  const editRelasiGuru = document.getElementById('editRelasiGuru');
-  const editRelasiStatus = document.getElementById('editRelasiStatus');
-
-  editRelasiSiswa?.addEventListener('change', function () {
-    fillMapelOptions(editMapelSelect, this.value);
-    fillGuruOptions(editRelasiGuru, '');
-  });
-
-  editMapelSelect?.addEventListener('change', function () {
-    fillGuruOptions(editRelasiGuru, this.value);
-  });
-
-  document.querySelectorAll('.js-edit-relasi').forEach((button) => {
-    button.addEventListener('click', function () {
-      const siswaId = this.dataset.siswaId || '';
-      const mapelId = this.dataset.mapelId || '';
-      const guruId = this.dataset.guruId || '';
-
-      editRelasiId.value = this.dataset.id || '';
-      editRelasiSiswa.value = siswaId;
-      editRelasiStatus.value = this.dataset.status || 'aktif';
-      fillMapelOptions(editMapelSelect, siswaId, mapelId);
-      fillGuruOptions(editRelasiGuru, mapelId, guruId);
-      editModal.classList.add('active');
-    });
-  });
-
-  document.querySelectorAll('[data-close-relasi]').forEach((button) => {
-    button.addEventListener('click', function () {
-      editModal.classList.remove('active');
-    });
-  });
-
-  editModal?.addEventListener('click', function (event) {
-    if (event.target === editModal) {
-      editModal.classList.remove('active');
+  function findClosestByClass(el, className) {
+    while (el && el !== document) {
+      if (el.classList && el.classList.contains(className)) return el;
+      el = el.parentNode;
     }
+    return null;
+  }
+
+  var createSiswaSelect = document.getElementById('createSiswaSelect');
+  var createMapelSelect = document.getElementById('createMapelSelect');
+  var createGuruSelect = document.getElementById('createGuruSelect');
+
+  if (createSiswaSelect && createMapelSelect && createGuruSelect) {
+    createSiswaSelect.addEventListener('change', function () {
+      fillMapelOptions(createMapelSelect, this.value);
+      fillGuruOptions(createGuruSelect, '');
+    });
+
+    createMapelSelect.addEventListener('change', function () {
+      fillGuruOptions(createGuruSelect, this.value);
+    });
+  }
+
+  var editModal = document.getElementById('editRelasiModal');
+  var editRelasiId = document.getElementById('editRelasiId');
+  var editRelasiSiswa = document.getElementById('editRelasiSiswa');
+  var editMapelSelect = document.getElementById('editMapelSelect');
+  var editRelasiGuru = document.getElementById('editRelasiGuru');
+  var editRelasiStatus = document.getElementById('editRelasiStatus');
+
+  if (editRelasiSiswa && editMapelSelect && editRelasiGuru) {
+    editRelasiSiswa.addEventListener('change', function () {
+      fillMapelOptions(editMapelSelect, this.value);
+      fillGuruOptions(editRelasiGuru, '');
+    });
+
+    editMapelSelect.addEventListener('change', function () {
+      fillGuruOptions(editRelasiGuru, this.value);
+    });
+  }
+
+  document.addEventListener('click', function (event) {
+    var button = findClosestByClass(event.target, 'js-edit-relasi');
+    if (!button) return;
+    if (!editModal || !editRelasiId || !editRelasiSiswa || !editRelasiStatus || !editMapelSelect || !editRelasiGuru) {
+      return;
+    }
+
+    var siswaId = button.getAttribute('data-siswa-id') || '';
+    var mapelId = button.getAttribute('data-mapel-id') || '';
+    var guruId = button.getAttribute('data-guru-id') || '';
+
+    editRelasiId.value = button.getAttribute('data-id') || '';
+    editRelasiSiswa.value = siswaId;
+    editRelasiStatus.value = button.getAttribute('data-status') || 'aktif';
+    fillMapelOptions(editMapelSelect, siswaId, mapelId);
+    fillGuruOptions(editRelasiGuru, mapelId, guruId);
+    editModal.classList.add('active');
   });
+
+  document.querySelectorAll('[data-close-relasi]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      if (editModal) editModal.classList.remove('active');
+    });
+  });
+
+  if (editModal) {
+    editModal.addEventListener('click', function (event) {
+      if (event.target === editModal) {
+        editModal.classList.remove('active');
+      }
+    });
+  }
+});
 </script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
+
+

@@ -160,10 +160,12 @@ class AdminUserRepository
       return ['status' => 'success', 'id' => $userId];
     } catch (PDOException $e) {
       $this->db->rollBack();
+      error_log('[AdminUserRepository::createUser] ' . $e->getMessage());
       return ['status' => 'error', 'message' => $this->friendlyDuplicateMessage($e)];
     } catch (Throwable $e) {
       $this->db->rollBack();
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminUserRepository::createUser] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal membuat user. Silakan coba lagi.'];
     }
   }
 
@@ -230,10 +232,12 @@ class AdminUserRepository
       return ['status' => 'success'];
     } catch (PDOException $e) {
       $this->db->rollBack();
+      error_log('[AdminUserRepository::updateUser] ' . $e->getMessage());
       return ['status' => 'error', 'message' => $this->friendlyDuplicateMessage($e)];
     } catch (Throwable $e) {
       $this->db->rollBack();
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminUserRepository::updateUser] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal memperbarui user. Silakan coba lagi.'];
     }
   }
 
@@ -270,7 +274,8 @@ class AdminUserRepository
       return ['status' => 'success'];
     } catch (Throwable $e) {
       $this->db->rollBack();
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminUserRepository::deleteUser] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal menghapus user. Silakan coba lagi.'];
     }
   }
 
@@ -398,7 +403,8 @@ class AdminUserRepository
       return ['status' => 'success'];
     } catch (Throwable $e) {
       $this->db->rollBack();
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminUserRepository::deleteUserForce] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal menghapus user beserta relasinya. Silakan coba lagi.'];
     }
   }
 
@@ -560,6 +566,6 @@ class AdminUserRepository
     if ($code === 1062) {
       return 'Data duplikat. Cek kembali email atau relasi yang sudah ada.';
     }
-    return $e->getMessage();
+    return 'Terjadi kesalahan database saat memproses data user.';
   }
 }

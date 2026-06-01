@@ -27,10 +27,28 @@ class AdminWaliMuridRepository {
         wm.pekerjaan,
         wm.alamat,
         wm.foto_path,
+        u.id AS user_id,
+        u.email AS user_email,
+        u.is_locked,
+        u.attempts,
+        u.created_at,
         COUNT(s.id) AS total_siswa
       FROM wali_murid wm
+      LEFT JOIN users u ON u.id = wm.id
       LEFT JOIN siswa s ON s.wali_id = wm.id
-      GROUP BY wm.id
+      GROUP BY
+        wm.id,
+        wm.nama,
+        wm.no_telp,
+        wm.hubungan,
+        wm.pekerjaan,
+        wm.alamat,
+        wm.foto_path,
+        u.id,
+        u.email,
+        u.is_locked,
+        u.attempts,
+        u.created_at
       ORDER BY wm.nama ASC
     ");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -91,7 +109,8 @@ class AdminWaliMuridRepository {
 
       return ['status' => 'success', 'message' => 'Wali murid berhasil ditambahkan.'];
     } catch (Exception $e) {
-      return ['status' => 'error', 'message' => 'Gagal menambahkan wali murid: ' . $e->getMessage()];
+      error_log('[AdminWaliMuridRepository::createWaliMurid] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal menambahkan wali murid. Silakan coba lagi.'];
     }
   }
 
@@ -127,12 +146,17 @@ class AdminWaliMuridRepository {
 
       return ['status' => 'success', 'message' => 'Wali murid berhasil diperbarui'];
     } catch (Exception $e) {
-      return ['status' => 'error', 'message' => 'Gagal memperbarui wali murid: ' . $e->getMessage()];
+      error_log('[AdminWaliMuridRepository::updateWaliMurid] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal memperbarui wali murid. Silakan coba lagi.'];
     }
   }
 
   public function deleteWaliMurid(string $id): array {
     try {
+      if ($this->hasLinkedUserAccount($id)) {
+        return ['status' => 'error', 'message' => 'Wali ini memiliki akun user. Nonaktifkan atau hapus melalui menu User agar data tetap konsisten.'];
+      }
+
       // Check if has siswa
       $stmt = $this->db->prepare("SELECT COUNT(*) FROM siswa WHERE wali_id = ?");
       $stmt->execute([$id]);
@@ -147,7 +171,8 @@ class AdminWaliMuridRepository {
 
       return ['status' => 'success', 'message' => 'Wali murid berhasil dihapus'];
     } catch (Exception $e) {
-      return ['status' => 'error', 'message' => 'Gagal menghapus wali murid: ' . $e->getMessage()];
+      error_log('[AdminWaliMuridRepository::deleteWaliMurid] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal menghapus wali murid. Silakan coba lagi.'];
     }
   }
 
@@ -158,6 +183,10 @@ class AdminWaliMuridRepository {
     }
 
     try {
+      if ($this->hasLinkedUserAccount($id)) {
+        return ['status' => 'error', 'message' => 'Wali ini memiliki akun user. Nonaktifkan atau hapus melalui menu User agar data tetap konsisten.'];
+      }
+
       $this->db->beginTransaction();
       $stmt = $this->db->prepare("UPDATE siswa SET wali_id = NULL WHERE wali_id = ?");
       $stmt->execute([$id]);
@@ -171,7 +200,18 @@ class AdminWaliMuridRepository {
       if ($this->db->inTransaction()) {
         $this->db->rollBack();
       }
-      return ['status' => 'error', 'message' => 'Gagal menghapus wali murid: ' . $e->getMessage()];
+      error_log('[AdminWaliMuridRepository::forceDeleteWaliMurid] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal menghapus wali murid. Silakan coba lagi.'];
     }
+  }
+
+  private function hasLinkedUserAccount(string $waliId): bool {
+    $stmt = $this->db->prepare("
+      SELECT COUNT(*)
+      FROM users
+      WHERE id = ? AND role = 'wali_murid'
+    ");
+    $stmt->execute([$waliId]);
+    return (int)$stmt->fetchColumn() > 0;
   }
 }

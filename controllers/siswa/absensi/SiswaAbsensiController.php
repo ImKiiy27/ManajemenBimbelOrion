@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/siswa/SiswaAbsensiController.php
 // Riwayat absensi siswa (read-only)

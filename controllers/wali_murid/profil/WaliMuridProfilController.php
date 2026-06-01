@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/wali_murid/WaliMuridProfilController.php
 // Halaman profil wali murid

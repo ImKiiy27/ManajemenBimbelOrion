@@ -33,27 +33,35 @@ class NilaiCommandService {
       return ['success' => false, 'message' => 'Jadwal tidak valid karena siswa tidak terdaftar pada mapel tersebut atau relasinya sudah nonaktif.'];
     }
 
-    $nilaiId = $this->idCounterModel->generateId('nilai', 'NLI');
+    try {
+      $nilaiId = $this->idCounterModel->generateId('nilai', 'NLI');
 
-    $stmt = $this->db->prepare("
-      INSERT INTO nilai (id, jadwal_id, pertemuan_ke, tipe_nilai, predikat, catatan_guru)
-      VALUES (?, ?, ?, ?, ?, ?)
-    ");
+      $stmt = $this->db->prepare("
+        INSERT INTO nilai (id, jadwal_id, pertemuan_ke, tipe_nilai, predikat, catatan_guru)
+        VALUES (?, ?, ?, ?, ?, ?)
+      ");
 
-    $stmt->execute([
-      $nilaiId,
-      $jadwalId,
-      $pertemuanKe,
-      $tipeNilai,
-      $predikat,
-      $catatanGuru !== '' ? $catatanGuru : null
-    ]);
+      $stmt->execute([
+        $nilaiId,
+        $jadwalId,
+        $pertemuanKe,
+        $tipeNilai,
+        $predikat,
+        $catatanGuru !== '' ? $catatanGuru : null
+      ]);
 
-    return [
-      'success' => true,
-      'id' => $nilaiId,
-      'message' => 'Nilai berhasil ditambahkan'
-    ];
+      return [
+        'success' => true,
+        'id' => $nilaiId,
+        'message' => 'Nilai berhasil ditambahkan'
+      ];
+    } catch (PDOException $e) {
+      error_log('[NilaiCommandService::createNilai] ' . $e->getMessage());
+      return ['success' => false, 'message' => $this->friendlyError($e)];
+    } catch (Throwable $e) {
+      error_log('[NilaiCommandService::createNilai] ' . $e->getMessage());
+      return ['success' => false, 'message' => 'Terjadi kesalahan saat menambahkan nilai.'];
+    }
   }
 
   public function updateNilai(string $nilaiId, array $data): array {
@@ -115,23 +123,39 @@ class NilaiCommandService {
     $values[] = $nilaiId;
     $sql = "UPDATE nilai SET " . implode(', ', $setClauses) . " WHERE id = ?";
 
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute($values);
+    try {
+      $stmt = $this->db->prepare($sql);
+      $stmt->execute($values);
 
-    return [
-      'success' => true,
-      'message' => 'Nilai berhasil diupdate'
-    ];
+      return [
+        'success' => true,
+        'message' => 'Nilai berhasil diupdate'
+      ];
+    } catch (PDOException $e) {
+      error_log('[NilaiCommandService::updateNilai] ' . $e->getMessage());
+      return ['success' => false, 'message' => $this->friendlyError($e)];
+    } catch (Throwable $e) {
+      error_log('[NilaiCommandService::updateNilai] ' . $e->getMessage());
+      return ['success' => false, 'message' => 'Terjadi kesalahan saat memperbarui nilai.'];
+    }
   }
 
   public function deleteNilai(string $nilaiId): array {
-    $stmt = $this->db->prepare("DELETE FROM nilai WHERE id = ?");
-    $stmt->execute([$nilaiId]);
+    try {
+      $stmt = $this->db->prepare("DELETE FROM nilai WHERE id = ?");
+      $stmt->execute([$nilaiId]);
 
-    return [
-      'success' => true,
-      'message' => 'Nilai berhasil dihapus'
-    ];
+      return [
+        'success' => true,
+        'message' => 'Nilai berhasil dihapus'
+      ];
+    } catch (Throwable $e) {
+      error_log('[NilaiCommandService::deleteNilai] ' . $e->getMessage());
+      return [
+        'success' => false,
+        'message' => 'Terjadi kesalahan saat menghapus nilai.'
+      ];
+    }
   }
 
   private function validateNilaiPayload(string $jadwalId, int $pertemuanKe, string $tipeNilai, string $predikat): ?string {
@@ -184,5 +208,13 @@ class NilaiCommandService {
     ");
     $stmt->execute([$nilaiId]);
     return $stmt->fetch();
+  }
+
+  private function friendlyError(PDOException $e): string {
+    $code = $e->errorInfo[1] ?? null;
+    if ($code === 1062) {
+      return 'Nilai dengan kombinasi jadwal, pertemuan, dan tipe tersebut sudah ada.';
+    }
+    return 'Terjadi kesalahan database saat memproses nilai.';
   }
 }

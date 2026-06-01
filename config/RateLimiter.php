@@ -10,8 +10,8 @@ class RateLimiter {
     public static function check(string $key = 'global'): bool {
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         $identifier = $ip . '_' . $key;
-        $window = $_ENV['RATE_LIMIT_WINDOW'] ?? self::DEFAULT_WINDOW;
-        $limit = $_ENV['RATE_LIMIT_REQUESTS'] ?? self::DEFAULT_LIMIT;
+        $window = (int)($_ENV['RATE_LIMIT_WINDOW'] ?? self::DEFAULT_WINDOW);
+        $limit = (int)($_ENV['RATE_LIMIT_REQUESTS'] ?? self::DEFAULT_LIMIT);
 
         $data = self::loadData();
         
@@ -22,10 +22,8 @@ class RateLimiter {
         $requests = array_filter($requests, fn($timestamp) => $now - $timestamp < $window);
         
         if (count($requests) >= $limit) {
-            http_response_code(429);
-            header('Content-Type: application/json');
-            echo json_encode(['error' => 'Rate limit exceeded. Coba lagi nanti.']);
-            exit;
+            self::respondRateLimited($window, $key);
+            return false;
         }
         
         $requests[] = $now;
@@ -33,6 +31,39 @@ class RateLimiter {
         self::saveData($data);
         
         return true;
+    }
+
+    private static function respondRateLimited(int $window, string $key): void {
+        if (self::wantsJson()) {
+            http_response_code(429);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Terlalu banyak permintaan. Coba lagi beberapa saat lagi.',
+                'data' => (object)[
+                    'retry_after_seconds' => $window,
+                    'scope' => $key
+                ]
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        http_response_code(429);
+        header('Content-Type: text/html; charset=utf-8');
+        echo '<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Terlalu Banyak Permintaan</title></head><body style="font-family: Arial, sans-serif; padding:24px;">'
+            . '<h2>Terlalu banyak permintaan</h2>'
+            . '<p>Mohon tunggu beberapa saat sebelum mencoba lagi.</p>'
+            . '<p><a href="javascript:history.back()">Kembali</a></p>'
+            . '</body></html>';
+        exit;
+    }
+
+    private static function wantsJson(): bool {
+        $accept = strtolower((string)($_SERVER['HTTP_ACCEPT'] ?? ''));
+        $requestedWith = strtolower((string)($_SERVER['HTTP_X_REQUESTED_WITH'] ?? ''));
+        return isset($_GET['action'])
+            || str_contains($accept, 'application/json')
+            || $requestedWith === 'xmlhttprequest';
     }
 
     private static function loadData(): array {

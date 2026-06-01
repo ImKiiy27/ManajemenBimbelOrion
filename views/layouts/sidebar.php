@@ -56,9 +56,7 @@ $menus = match ($role) {
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <div class="logo-icon">
-      <i class="fas fa-book-open"></i>
-    </div>
+    <div class="logo-icon"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 100%; height: 100%; object-fit: contain;"></div>
     <span class="logo-text">Bimbel Orion</span>
   </div>
 
@@ -91,7 +89,11 @@ $menus = match ($role) {
       <?php else: ?>
         <a href="index.php?page=<?= htmlspecialchars($menu['page']) ?>"
           class="<?= $activePage === $menu['page'] ? 'active' : '' ?>">
-          <i class="fas <?= htmlspecialchars($menu['icon']) ?>"></i>
+          <?php if (($menu['icon'] ?? '') === 'fa-book-open'): ?>
+            <img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 16px; height: 16px; object-fit: contain;">
+          <?php else: ?>
+            <i class="fas <?= htmlspecialchars($menu['icon']) ?>"></i>
+          <?php endif; ?>
           <?= htmlspecialchars($menu['label']) ?>
         </a>
       <?php endif; ?>
@@ -147,3 +149,4 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+

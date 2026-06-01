@@ -268,7 +268,8 @@ class ProfileRepository
       if ($this->db->inTransaction()) {
         $this->db->rollBack();
       }
-      return ['status' => 'error', 'message' => 'Gagal memperbarui profil: ' . $e->getMessage()];
+      error_log('[ProfileRepository::updateProfile] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui profil.'];
     }
   }
 

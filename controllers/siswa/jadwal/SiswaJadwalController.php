@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/siswa/SiswaJadwalController.php
 // Halaman jadwal siswa

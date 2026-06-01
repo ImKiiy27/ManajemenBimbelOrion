@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/guru/GuruAbsensiController.php
 // Input absensi untuk guru

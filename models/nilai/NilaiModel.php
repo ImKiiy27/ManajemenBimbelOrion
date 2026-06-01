@@ -49,5 +49,17 @@ class NilaiModel {
   public function deleteNilai(string $nilaiId): array {
     return $this->commandService->deleteNilai($nilaiId);
   }
+
+  public function isJadwalOwnedByGuru(string $jadwalId, string $guruId): bool {
+    return $this->queryService->isJadwalOwnedByGuru($jadwalId, $guruId);
+  }
+
+  public function findExistingNilaiByGuru(string $jadwalId, int $pertemuanKe, string $tipeNilai, string $guruId): array|false {
+    return $this->queryService->findExistingNilaiByGuru($jadwalId, $pertemuanKe, $tipeNilai, $guruId);
+  }
+
+  public function findNilaiByIdAndGuru(string $nilaiId, string $guruId): array|false {
+    return $this->queryService->findNilaiByIdAndGuru($nilaiId, $guruId);
+  }
 }
 

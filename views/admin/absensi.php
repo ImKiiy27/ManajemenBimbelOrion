@@ -2,7 +2,7 @@
 <div class="bg-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
 <div class="dashboard-container">
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
-  <main class="main-content">
+  <main class="main-content admin-absensi-page">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <!-- Flash Message -->
@@ -28,7 +28,7 @@
           <div class="filter-group">
             <label for="guru_id">Guru:</label>
             <select id="guru_id" name="guru_id" class="form-control">
-              <option value="">-- Semua Guru --</option>
+              <option value="">Semua Guru</option>
               <?php foreach ($guruList as $guru): ?>
                 <option value="<?= htmlspecialchars($guru['id']) ?>" <?= $guruId === $guru['id'] ? 'selected' : '' ?>>
                   <?= htmlspecialchars($guru['nama']) ?>
@@ -40,7 +40,7 @@
           <div class="filter-group">
             <label for="siswa_id">Siswa:</label>
             <select id="siswa_id" name="siswa_id" class="form-control">
-              <option value="">-- Semua Siswa --</option>
+              <option value="">Semua Siswa</option>
               <?php foreach ($siswaList as $siswa): ?>
                 <option value="<?= htmlspecialchars($siswa['id']) ?>" <?= $siswaId === $siswa['id'] ? 'selected' : '' ?>>
                   <?= htmlspecialchars($siswa['nama']) ?>
@@ -52,7 +52,7 @@
           <div class="filter-group">
             <label for="status">Status:</label>
             <select id="status" name="status" class="form-control">
-              <option value="">-- Semua Status --</option>
+              <option value="">Semua Status</option>
               <option value="Hadir" <?= $status === 'Hadir' ? 'selected' : '' ?>>Hadir</option>
               <option value="Izin" <?= $status === 'Izin' ? 'selected' : '' ?>>Izin</option>
               <option value="Sakit" <?= $status === 'Sakit' ? 'selected' : '' ?>>Sakit</option>
@@ -70,7 +70,7 @@
             <input type="date" id="tgl_sampai" name="tgl_sampai" class="form-control" value="<?= htmlspecialchars($tanggalEnd) ?>">
           </div>
 
-          <div class="filter-group flex-gap-sm">
+          <div class="filter-actions">
             <button type="submit" class="btn btn-primary">
               <i class="fas fa-filter"></i> Filter
             </button>
@@ -134,7 +134,7 @@
                   </td>
                   <td><small><?= htmlspecialchars($absensi['updated_at']) ?></small></td>
                   <td>
-                    <button class="btn-action btn-correction" data-id="<?= htmlspecialchars($absensi['id']) ?>">
+                    <button type="button" class="btn-action btn-correction" data-id="<?= htmlspecialchars($absensi['id']) ?>">
                       <i class="fas fa-edit"></i> Koreksi
                     </button>
                   </td>
@@ -174,7 +174,7 @@
 </div>
 
 <!-- Modal Correction -->
-<div id="correction-modal" class="modal">
+<div id="correction-modal" class="correction-modal">
   <div class="modal-content">
     <div class="modal-header">
       <h3>Koreksi Absensi</h3>
@@ -193,404 +193,169 @@
     </div>
   </div>
 </div>
-
-<style>
-.filter-form {
-  display: grid;
-  gap: 20px;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.filter-group label {
-  font-weight: 500;
-  margin-bottom: 5px;
-  color: var(--text-primary);
-}
-
-.form-control,
-select {
-  padding: 10px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-.form-control:focus,
-select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-}
-
-.btn {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #0b5ed7;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
-}
-
-.btn-secondary {
-  background-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-.btn-secondary:hover {
-  background-color: #ccc;
-}
-
-.btn-action {
-  padding: 6px 12px;
-  border: 1px solid var(--border-color);
-  background-color: transparent;
-  color: var(--primary-color);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-
-.btn-action:hover {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.btn-correction {
-  border-color: #ffc107;
-  color: #ffc107;
-}
-
-.btn-correction:hover {
-  background-color: #ffc107;
-  color: white;
-}
-
-.table-responsive {
-  overflow-x: auto;
-  margin: 20px 0;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.data-table thead {
-  background-color: var(--bg-secondary);
-  border-bottom: 2px solid var(--border-color);
-}
-
-.data-table th {
-  padding: 12px;
-  text-align: left;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.data-table td {
-  padding: 12px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.data-table tbody tr:hover {
-  background-color: var(--bg-secondary);
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-  min-width: 70px;
-}
-
-.status-hadir {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.status-izin {
-  background-color: #cfe2ff;
-  color: #084298;
-}
-
-.status-sakit {
-  background-color: #fff3cd;
-  color: #664d03;
-}
-
-.status-alpa {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 20px 0;
-}
-
-.page-link {
-  padding: 8px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.page-link:hover {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.page-info {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.card-meta {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modal-content {
-  background-color: var(--card-bg);
-  border-radius: 8px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease;
-}
-
-.modal-header {
-  padding: 20px;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h3 {
-  margin: 0;
-  color: var(--text-primary);
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 20px;
-  padding: 0;
-}
-
-.modal-close:hover {
-  color: var(--text-primary);
-}
-
-.modal-body {
-  padding: 20px;
-}
-
-.modal-footer {
-  padding: 20px;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  font-size: 14px;
-  font-family: inherit;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-}
-
-.audit-trail {
-  background-color: var(--bg-secondary);
-  border-radius: 6px;
-  padding: 15px;
-  margin-top: 15px;
-  font-size: 13px;
-}
-
-.audit-trail h4 {
-  margin-top: 0;
-  color: var(--text-primary);
-}
-
-.audit-item {
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-muted);
-}
-
-.audit-item:last-child {
-  border-bottom: none;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .filter-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .data-table {
-    font-size: 12px;
-  }
-
-  .data-table th,
-  .data-table td {
-    padding: 8px;
-  }
-}
-</style>
-
 <script>
-const apiBase = 'index.php?page=admin-absensi&action=';
-const csrfToken = '<?= htmlspecialchars($csrf_token) ?>';
+const apiBase = <?= json_encode(basename($_SERVER['SCRIPT_NAME']) . '?page=admin-absensi&action=') ?>;
+const csrfToken = <?= json_encode($csrf_token) ?>;
 let currentAbsensiId = null;
 
-// Correction button handler
-document.querySelectorAll('.btn-correction').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentAbsensiId = btn.dataset.id;
-    loadAbsensiDetail(currentAbsensiId);
-  });
-});
-
-// Modal close handlers
-document.getElementById('modal-close').addEventListener('click', closeModal);
-document.getElementById('modal-cancel').addEventListener('click', closeModal);
-
-function closeModal() {
-  document.getElementById('correction-modal').classList.remove('show');
+function parseJsonResponse(raw) {
+  const text = String(raw !== undefined && raw !== null ? raw : '').trim();
+  try {
+    return JSON.parse(text);
+  } catch (_) {
+    const start = text.indexOf('{');
+    const end = text.lastIndexOf('}');
+    if (start !== -1 && end > start) {
+      try {
+        return JSON.parse(text.slice(start, end + 1));
+      } catch (__){
+        console.error('Invalid JSON payload (trimmed) from API:', text);
+      }
+    }
+    throw new Error('Response server tidak valid. Silakan login ulang atau cek console/network.');
+  }
 }
 
-// Modal outside click to close
-document.getElementById('correction-modal').addEventListener('click', (e) => {
-  if (e.target.id === 'correction-modal') {
-    closeModal();
+async function fetchJson(url, options = {}) {
+  const headers = {
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+    ...(options.headers || {})
+  };
+
+  const response = await fetch(url, {
+    ...options,
+    credentials: 'same-origin',
+    headers
+  });
+
+  const raw = await response.text();
+  const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+
+  if (!contentType.includes('application/json')) {
+    console.error('Non-JSON response from API:', raw);
+    if (response.status === 401 || raw.includes('<title>Login')) {
+      throw new Error('Sesi login habis. Silakan login ulang.');
+    }
+    throw new Error('Response server tidak valid. Silakan login ulang atau cek console/network.');
+  }
+
+  const data = parseJsonResponse(raw);
+  if (response.status === 401) {
+    throw new Error(data.message || 'Sesi login habis. Silakan login ulang.');
+  }
+  if (!response.ok) {
+    throw new Error(data.message || ('Permintaan gagal dengan status ' + response.status + '.'));
+  }
+  return data;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Correction button handler (delegation biar tetap jalan meskipun DOM berubah)
+  document.addEventListener('click', function (e) {
+    const button = e.target.closest('.btn-correction');
+    if (!button) return;
+    currentAbsensiId = button.getAttribute('data-id') || '';
+    if (!currentAbsensiId) {
+      alert('ID absensi tidak ditemukan.');
+      return;
+    }
+    loadAbsensiDetail(currentAbsensiId);
+  });
+
+  // Modal close handlers
+  const modalCloseBtn = document.getElementById('modal-close');
+  const modalCancelBtn = document.getElementById('modal-cancel');
+  const modalSaveBtn = document.getElementById('modal-save');
+  const correctionModal = document.getElementById('correction-modal');
+
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+  if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
+
+  // Modal outside click to close
+  if (correctionModal) {
+    correctionModal.addEventListener('click', function (e) {
+      if (e.target.id === 'correction-modal') {
+        closeModal();
+      }
+    });
+  }
+
+  // Save correction
+  if (modalSaveBtn) {
+    modalSaveBtn.addEventListener('click', async function () {
+      const statusEl = document.getElementById('correction-status');
+      const alasanEl = document.getElementById('correction-alasan');
+      const reasonEl = document.getElementById('correction-reason');
+
+      if (!statusEl || !alasanEl || !reasonEl) {
+        alert('Form koreksi belum siap. Klik tombol Koreksi lagi.');
+        return;
+      }
+
+      const newStatus = statusEl.value;
+      const alasan = alasanEl.value.trim();
+      const reason = reasonEl.value.trim();
+
+      if (!newStatus) {
+        alert('Status baru wajib dipilih');
+        return;
+      }
+
+      if (['Izin', 'Sakit', 'Alpa'].includes(newStatus) && !alasan) {
+        alert('Alasan wajib diisi untuk status ' + newStatus);
+        return;
+      }
+
+      if (!reason) {
+        alert('Alasan koreksi wajib diisi');
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('csrf_token', csrfToken);
+        formData.append('absensi_id', currentAbsensiId);
+        formData.append('status', newStatus);
+        formData.append('alasan', alasan);
+        formData.append('reason', reason);
+
+        const result = await fetchJson(apiBase + 'save-correction', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (result.status === 'success') {
+          alert('Koreksi berhasil disimpan!');
+          location.reload();
+        } else {
+          alert('Error: ' + result.message);
+        }
+
+      } catch (error) {
+        if ((error.message || '').toLowerCase().includes('sesi login habis')) {
+          alert(error.message);
+          window.location.href = 'index.php?page=login';
+          return;
+        }
+        alert('Error: ' + error.message);
+      }
+    });
   }
 });
+
+function closeModal() {
+  const modal = document.getElementById('correction-modal');
+  if (!modal) return;
+  modal.classList.remove('show');
+  modal.style.display = 'none';
+  modal.setAttribute('aria-hidden', 'true');
+}
 
 // Load absensi detail
 async function loadAbsensiDetail(absensiId) {
   try {
-    const response = await fetch(apiBase + 'get-detail&id=' + encodeURIComponent(absensiId));
-    const data = await response.json();
+    const data = await fetchJson(apiBase + 'get-detail&id=' + encodeURIComponent(absensiId));
 
     if (data.status !== 'success') {
       alert('Error: ' + data.message);
@@ -650,7 +415,7 @@ async function loadAbsensiDetail(absensiId) {
               <strong>${htmlEscape(item.action_type)}</strong> - ${htmlEscape(item.changed_at)}
               <br>
               <small>Diubah oleh: ${htmlEscape(item.changed_by)}</small>
-              ${item.old_status ? `<br><small>Status: ${htmlEscape(item.old_status)} â†’ ${htmlEscape(item.new_status)}</small>` : ''}
+              ${item.old_status ? `<br><small>Status: ${htmlEscape(item.old_status)} -> ${htmlEscape(item.new_status)}</small>` : ''}
               ${item.reason ? `<br><small>Alasan: ${htmlEscape(item.reason)}</small>` : ''}
             </div>
           `).join('')}
@@ -659,60 +424,22 @@ async function loadAbsensiDetail(absensiId) {
     `;
 
     document.getElementById('modal-body').innerHTML = html;
-    document.getElementById('correction-modal').classList.add('show');
-
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
-}
-
-// Save correction
-document.getElementById('modal-save').addEventListener('click', async () => {
-  const newStatus = document.getElementById('correction-status').value;
-  const alasan = document.getElementById('correction-alasan').value.trim();
-  const reason = document.getElementById('correction-reason').value.trim();
-
-  if (!newStatus) {
-    alert('Status baru wajib dipilih');
-    return;
-  }
-
-  if (['Izin', 'Sakit', 'Alpa'].includes(newStatus) && !alasan) {
-    alert('Alasan wajib diisi untuk status ' + newStatus);
-    return;
-  }
-
-  if (!reason) {
-    alert('Alasan koreksi wajib diisi');
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append('csrf_token', csrfToken);
-    formData.append('absensi_id', currentAbsensiId);
-    formData.append('status', newStatus);
-    formData.append('alasan', alasan);
-    formData.append('reason', reason);
-
-    const response = await fetch(apiBase + 'save-correction', {
-      method: 'POST',
-      body: formData
-    });
-
-    const result = await response.json();
-
-    if (result.status === 'success') {
-      alert('Koreksi berhasil disimpan!');
-      location.reload();
-    } else {
-      alert('Error: ' + result.message);
+    const modal = document.getElementById('correction-modal');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
     }
 
   } catch (error) {
+    if ((error.message || '').toLowerCase().includes('sesi login habis')) {
+      alert(error.message);
+      window.location.href = 'index.php?page=login';
+      return;
+    }
     alert('Error: ' + error.message);
   }
-});
+}
 
 function htmlEscape(text) {
   const div = document.createElement('div');
@@ -722,4 +449,5 @@ function htmlEscape(text) {
 </script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
 

@@ -16,13 +16,24 @@ define('CSRF_BYTES', 32);
 function initSession(): void
 {
   // Konfigurasi cookie sesi agar lebih aman
+  // Catatan: jangan set domain cookie ke "localhost", karena beberapa browser menolak cookie Domain=localhost.
+  $cookieDomain = '';
+  if (!empty($_ENV['APP_URL'])) {
+    $appHost = parse_url((string)$_ENV['APP_URL'], PHP_URL_HOST);
+    if ($appHost && !in_array($appHost, ['localhost', '127.0.0.1', '::1'], true)) {
+      $cookieDomain = $appHost;
+    }
+  }
+
+  $isHttps = !empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off';
+
   session_set_cookie_params([
-    'lifetime' => $_ENV['SESSION_LIFETIME'] ?? 3600,
+    'lifetime' => (int)($_ENV['SESSION_LIFETIME'] ?? 3600),
     'path' => '/',
-    'domain' => !empty($_ENV['APP_URL']) ? parse_url($_ENV['APP_URL'], PHP_URL_HOST) : '',
-    'secure' => isset($_SERVER['HTTPS']),
+    'domain' => $cookieDomain,
+    'secure' => $isHttps,
     'httponly' => true,
-    'samesite' => 'Strict',
+    'samesite' => 'Lax',
   ]);
 
   session_start();

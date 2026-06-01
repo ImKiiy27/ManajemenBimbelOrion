@@ -16,7 +16,7 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="navbar">
   <div class="container">
     <a class="navbar-brand" href="index.php">
-      <div class="logo-icon small-icon-wrapper"><i class="fas fa-book-open"></i></div>
+      <div class="logo-icon small-icon-wrapper"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 100%; height: 100%; object-fit: contain;"></div>
       <span class="brand-text">Bimbel Orion</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -65,6 +65,10 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
       <div class="card-body-custom registration-body">
         <form method="POST" action="index.php?page=pendaftaran" id="pendaftaranForm">
           <input type="hidden" name="_csrf" value="<?= htmlspecialchars(getCsrfToken()) ?>">
+          <div class="hidden-form-fields" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+          </div>
           <div class="registration-section-layout">
             <section class="registration-section">
               <div class="registration-section-title">
@@ -86,7 +90,7 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
                 </div>
                 <div class="form-group">
                   <label for="alamat">Alamat</label>
-                  <textarea name="alamat" id="alamat" class="form-control-custom" rows="3" placeholder="Masukkan alamat lengkap"><?= htmlspecialchars((string)($oldInput['alamat'] ?? '')) ?></textarea>
+                  <textarea name="alamat" id="alamat" class="form-control-custom" rows="3" placeholder="Masukkan alamat lengkap" required><?= htmlspecialchars((string)($oldInput['alamat'] ?? '')) ?></textarea>
                 </div>
               </div>
             </section>
@@ -99,27 +103,46 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
               <div class="registration-grid two">
                 <div class="form-group">
                   <label for="jenjang">Jenjang</label>
-                  <select name="jenjang" id="jenjang" class="form-control-custom">
+                  <select name="jenjang" id="jenjang" class="form-control-custom" required>
                     <option value="">Pilih jenjang</option>
                     <option value="SD" <?= (($oldInput['jenjang'] ?? '') === 'SD') ? 'selected' : '' ?>>SD</option>
                     <option value="SMP" <?= (($oldInput['jenjang'] ?? '') === 'SMP') ? 'selected' : '' ?>>SMP</option>
                     <option value="SMA" <?= (($oldInput['jenjang'] ?? '') === 'SMA') ? 'selected' : '' ?>>SMA</option>
+                    <option value="SMK" <?= (($oldInput['jenjang'] ?? '') === 'SMK') ? 'selected' : '' ?>>SMK</option>
+                    <option value="Lainnya" <?= (($oldInput['jenjang'] ?? '') === 'Lainnya') ? 'selected' : '' ?>>Lainnya</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="kelas_sekolah">Kelas</label>
                   <input type="text" name="kelas_sekolah" id="kelas_sekolah" class="form-control-custom" placeholder="Contoh: 6 SD, 12 MIPA" maxlength="50" value="<?= htmlspecialchars((string)($oldInput['kelas_sekolah'] ?? '')) ?>" required>
                 </div>
-                <div class="form-group full">
-                  <label for="sekolah_asal">Sekolah Asal</label>
-                  <input type="text" name="sekolah_asal" id="sekolah_asal" class="form-control-custom" placeholder="Masukkan sekolah asal" value="<?= htmlspecialchars((string)($oldInput['sekolah_asal'] ?? '')) ?>">
+                <div class="form-group">
+                  <label for="asal_sekolah">Asal Sekolah</label>
+                  <input type="text" name="asal_sekolah" id="asal_sekolah" class="form-control-custom" placeholder="Contoh: SMPN 1 Jember" maxlength="150" value="<?= htmlspecialchars((string)($oldInput['asal_sekolah'] ?? '')) ?>" required>
                 </div>
               </div>
             </section>
 
             <section class="registration-section">
               <div class="registration-section-title">
-                <i class="fas fa-book-open"></i>
+                <i class="fas fa-user-shield"></i>
+                <h2>Data Wali</h2>
+              </div>
+              <div class="registration-grid two">
+                <div class="form-group">
+                  <label for="nama_wali">Nama Wali</label>
+                  <input type="text" name="nama_wali" id="nama_wali" class="form-control-custom" placeholder="Masukkan nama wali" maxlength="150" value="<?= htmlspecialchars((string)($oldInput['nama_wali'] ?? '')) ?>" required>
+                </div>
+                <div class="form-group">
+                  <label for="no_hp_wali">No. HP Wali</label>
+                  <input type="text" name="no_hp_wali" id="no_hp_wali" class="form-control-custom" placeholder="Masukkan nomor HP wali" maxlength="30" value="<?= htmlspecialchars((string)($oldInput['no_hp_wali'] ?? '')) ?>" required>
+                </div>
+              </div>
+            </section>
+
+            <section class="registration-section">
+              <div class="registration-section-title">
+                <img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 20px; height: 20px; object-fit: contain;">
                 <h2>Pilihan Program / Mapel</h2>
               </div>
               <div class="form-group">
@@ -151,20 +174,14 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
               </div>
             </section>
 
-            <section class="registration-section">
+            <section class="registration-section registration-section-full">
               <div class="registration-section-title">
-                <i class="fas fa-people-roof"></i>
-                <h2>Data Orang Tua / Wali</h2>
+                <i class="fas fa-note-sticky"></i>
+                <h2>Catatan Tambahan</h2>
               </div>
-              <div class="registration-grid two">
-                <div class="form-group">
-                  <label for="nama_wali">Nama Orang Tua / Wali</label>
-                  <input type="text" name="nama_wali" id="nama_wali" class="form-control-custom" placeholder="Masukkan nama wali" value="<?= htmlspecialchars((string)($oldInput['nama_wali'] ?? '')) ?>">
-                </div>
-                <div class="form-group">
-                  <label for="telepon_wali">No. HP Orang Tua / Wali</label>
-                  <input type="text" name="telepon_wali" id="telepon_wali" class="form-control-custom" placeholder="Masukkan nomor HP wali" value="<?= htmlspecialchars((string)($oldInput['telepon_wali'] ?? '')) ?>">
-                </div>
+              <div class="form-group">
+                <label for="catatan">Catatan</label>
+                <textarea name="catatan" id="catatan" class="form-control-custom" rows="3" placeholder="Opsional: tulis kebutuhan belajar khusus, preferensi jadwal, atau info penting lainnya"><?= htmlspecialchars((string)($oldInput['catatan'] ?? '')) ?></textarea>
               </div>
             </section>
 
@@ -210,7 +227,7 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
     <div class="row g-4">
       <div class="col-lg-4">
         <div class="footer-brand">
-          <div class="logo-icon medium-icon-wrapper"><i class="fas fa-book-open"></i></div>
+          <div class="logo-icon medium-icon-wrapper"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 100%; height: 100%; object-fit: contain;"></div>
           <span class="logo-text">Bimbel Orion</span>
         </div>
         <p class="opacity-light">Platform bimbel modern terbaik untuk masa depan cerah anak Anda.</p>
@@ -257,4 +274,5 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
 <script src="public/js/main.js"></script>
 </body>
 </html>
+
 

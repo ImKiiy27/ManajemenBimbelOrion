@@ -1,11 +1,17 @@
-﻿<?php
+<?php
 // config/app.php - App configuration
 // ================================================
+
+$appEnv = (string)($_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'production');
+$debugRaw = $_ENV['DEBUG'] ?? $_SERVER['DEBUG'] ?? null;
+$isDebug = $debugRaw !== null
+    ? filter_var($debugRaw, FILTER_VALIDATE_BOOLEAN)
+    : ($appEnv === 'development');
 
 return [
     'name' => 'Bimbel Orion',
     'version' => '1.0.0',
-    'debug' => $_ENV['DEBUG'] ?? $_SERVER['APP_ENV'] === 'development',
+    'debug' => $isDebug,
     
     'security' => [
         'max_login_attempts' => 5,

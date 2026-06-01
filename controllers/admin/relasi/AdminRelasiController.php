@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminRelasiController.php
 // Halaman atur pengajar / relasi siswa-guru admin

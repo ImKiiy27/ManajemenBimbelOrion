@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // index.php â€” Entry point utama Bimbel Orion
 // Semua request masuk lewat sini
@@ -18,7 +18,7 @@ require_once __DIR__ . '/core/Router.php';
 
 // Rate limiting untuk semua requests (kecuali assets public)
 $requestPath = (string)(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/');
-$isPublicAssetRequest = preg_match('#^/public/(css|js|svg|images)(/|$)#i', $requestPath) === 1;
+$isPublicAssetRequest = preg_match('#/public/(css|js|svg|images)(/|$)#i', $requestPath) === 1;
 
 if (!$isPublicAssetRequest) {
     require_once __DIR__ . '/config/RateLimiter.php';

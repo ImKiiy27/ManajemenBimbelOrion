@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/wali_murid/WaliMuridNilaiController.php
 // Halaman nilai (perkembangan) anak-anak wali murid

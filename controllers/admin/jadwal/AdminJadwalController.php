@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminJadwalController.php
 // Halaman jadwal admin + aksi CRUD jadwal
@@ -45,6 +45,7 @@ class AdminJadwalController extends BaseAdminController
 
     $jadwal = $this->jadwalModel->getAllJadwal();
     $relasiMapelAktif = $this->jadwalModel->getRelasiMapelAktif();
+    $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
     $hariIni = $this->jadwalActionHandler->hariIndonesia((int)date('N'));
     $totalJadwal = count($jadwal);
@@ -73,7 +74,8 @@ class AdminJadwalController extends BaseAdminController
       'totalSiswaTerjadwal',
       'error',
       'success',
-      'hariIni'
+      'hariIni',
+      'hariList'
     ));
   }
 }

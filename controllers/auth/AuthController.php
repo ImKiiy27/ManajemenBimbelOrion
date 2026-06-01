@@ -68,6 +68,16 @@ class AuthController
     $this->render('auth/pendaftaran', compact('error', 'success', 'mapelOptions', 'oldInput'));
   }
 
+  public function syaratKetentuan(): void
+  {
+    $this->render('auth/syarat-ketentuan');
+  }
+
+  public function kebijakanPrivasi(): void
+  {
+    $this->render('auth/kebijakan-privasi');
+  }
+
   private function redirectByRole(string $role): void
   {
     $role = normalizeRole($role);

@@ -39,18 +39,18 @@ require __DIR__ . '/../layouts/header.php';
   <div class="container hero-content">
     <div class="row align-items-center g-5">
       <div class="col-lg-6">
-        <span class="hero-badge"><i class="fas fa-graduation-cap me-2"></i>Platform Manajemen Bimbel Modern</span>
-        <h1 class="fade-in">Kelola Bimbel Lebih Mudah, Cepat, dan Terorganisir</h1>
+        <span class="hero-badge"><i class="fas fa-graduation-cap me-2"></i>Platform Bimbingan Belajar Privat Terbaik</span>
+        <h1 class="fade-in">Tingkatkan Nilai dan Kepercayaan Diri Belajar Anak</h1>
         <p class="fade-in">
-          Bimbel Orion membantu admin, guru, siswa, dan wali murid dalam satu sistem yang rapi,
-          mulai dari data akademik, jadwal, absensi, hingga laporan nilai.
+          Bimbel Orion membantu siswa belajar lebih terarah dengan tutor berpengalaman, jadwal fleksibel,
+          dan pendampingan rutin agar hasil belajar lebih konsisten.
         </p>
         <div class="d-flex gap-3 flex-wrap fade-in hero-buttons">
           <a href="index.php?page=pendaftaran" class="btn btn-hero btn-hero-primary">
             <i class="fas fa-user-plus me-2"></i>Daftar Sekarang
           </a>
           <a href="#fitur" class="btn btn-hero btn-hero-outline">
-            <i class="fas fa-list-check me-2"></i>Lihat Fitur
+            <i class="fas fa-list-check me-2"></i>Lihat Program Belajar
           </a>
         </div>
       </div>

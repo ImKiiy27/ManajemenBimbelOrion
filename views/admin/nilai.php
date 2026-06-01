@@ -9,7 +9,7 @@
 <div class="dashboard-container">
   <?php require __DIR__ . '/../layouts/sidebar.php'; ?>
 
-  <main class="main-content">
+  <main class="main-content admin-nilai-page">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
     <?php if (!empty($error)): ?>
@@ -63,7 +63,7 @@
           <div class="form-group">
             <label for="guruFilter">Filter Guru</label>
             <select id="guruFilter" name="guru_id" class="form-control" onchange="this.form.submit()">
-              <option value="">-- Semua Guru --</option>
+              <option value="">Semua Guru</option>
               <?php foreach ($guruOptions as $guru): ?>
                 <?php $guruId = (string)($guru['id'] ?? $guru['user_id'] ?? ''); ?>
                 <option value="<?= htmlspecialchars($guruId) ?>" <?= ($filterGuru === $guruId ? 'selected' : '') ?>>
@@ -76,7 +76,7 @@
           <div class="form-group">
             <label for="siswaFilter">Filter Siswa</label>
             <select id="siswaFilter" name="siswa_id" class="form-control" onchange="this.form.submit()">
-              <option value="">-- Semua Siswa --</option>
+              <option value="">Semua Siswa</option>
               <?php foreach ($siswaOptions as $siswa): ?>
                 <?php $siswaId = (string)($siswa['id'] ?? $siswa['user_id'] ?? ''); ?>
                 <option value="<?= htmlspecialchars($siswaId) ?>" <?= ($filterSiswa === $siswaId ? 'selected' : '') ?>>
@@ -181,178 +181,6 @@
   </main>
 </div>
 
-<style>
-  .filter-form {
-    padding: 1.5rem;
-    background-color: var(--bg-secondary);
-    border-radius: 8px;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .form-group label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text-primary);
-    font-size: 0.95rem;
-  }
-
-  .form-control {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-size: 0.95rem;
-    cursor: pointer;
-  }
-
-  .form-control:focus {
-    outline: none;
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-  }
-
-  .btn {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    text-decoration: none;
-  }
-
-  .btn-secondary {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-  }
-
-  .btn-secondary:hover {
-    background-color: var(--bg-tertiary);
-  }
-
-  .btn-sm {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-  }
-
-  .btn-info {
-    background-color: #0dcaf0;
-    color: #000;
-  }
-
-  .btn-info:hover {
-    background-color: #0ba5d9;
-  }
-
-  .btn-danger {
-    background-color: #dc3545;
-    color: white;
-  }
-
-  .btn-danger:hover {
-    background-color: #c82333;
-  }
-
-  .action-buttons {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .table-responsive {
-    overflow-x: auto;
-  }
-
-  .table-custom {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: var(--bg-primary);
-  }
-
-  .table-custom thead {
-    background-color: var(--bg-secondary);
-    border-bottom: 2px solid var(--border-color);
-  }
-
-  .table-custom th {
-    padding: 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: var(--text-primary);
-    white-space: nowrap;
-  }
-
-  .table-custom td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-primary);
-  }
-
-  .table-custom tbody tr:hover {
-    background-color: var(--bg-secondary);
-  }
-
-  .text-center {
-    text-align: center;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  .bg-primary {
-    background-color: #0d6efd;
-    color: white;
-  }
-
-  .bg-warning {
-    background-color: #ffc107;
-    color: #000;
-  }
-
-  .bg-info {
-    background-color: #0dcaf0;
-    color: #000;
-  }
-
-  @media (max-width: 768px) {
-    .form-row {
-      grid-template-columns: 1fr;
-    }
-
-    .table-custom {
-      font-size: 0.9rem;
-    }
-
-    .table-custom th,
-    .table-custom td {
-      padding: 0.5rem;
-    }
-
-    .action-buttons {
-      flex-direction: column;
-    }
-  }
-</style>
-
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
 

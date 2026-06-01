@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/admin/AdminAbsensiController.php
 // Admin dashboard, filter, koreksi absensi
@@ -62,6 +62,7 @@ class AdminAbsensiController extends BaseAdminController
 
     $pageTitle = 'Absensi - Bimbel Orion';
     $activePage = 'admin-absensi';
+    $csrf_token = SessionHelper::getCsrfToken();
 
     $this->render('admin/absensi', compact(
       'pageTitle',
@@ -76,7 +77,8 @@ class AdminAbsensiController extends BaseAdminController
       'tanggalEnd',
       'page',
       'totalPages',
-      'totalCount'
+      'totalCount',
+      'csrf_token'
     ));
   }
 
@@ -85,13 +87,10 @@ class AdminAbsensiController extends BaseAdminController
    */
   public function saveCorrection(): void
   {
-    header('Content-Type: application/json');
-
     try {
       // Validate CSRF
       if (!SessionHelper::validateCsrfToken($_POST['csrf_token'] ?? '')) {
-        echo json_encode(['status' => 'error', 'message' => 'CSRF token invalid']);
-        exit;
+        $this->jsonResponse(['status' => 'error', 'message' => 'CSRF token invalid'], 400);
       }
 
       $absensiId = trim($_POST['absensi_id'] ?? '');
@@ -100,32 +99,31 @@ class AdminAbsensiController extends BaseAdminController
       $correctionReason = trim($_POST['reason'] ?? '');
       $adminId = SessionHelper::getUserId();
       if (!$adminId) {
-        echo json_encode(['status' => 'error', 'message' => 'Session admin tidak valid']);
-        exit;
+        $this->jsonResponse(['status' => 'error', 'message' => 'Session admin tidak valid'], 401);
       }
 
       if (!$absensiId || !$newStatus) {
-        echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap']);
-        exit;
+        $this->jsonResponse(['status' => 'error', 'message' => 'Data tidak lengkap'], 422);
       }
 
       // Get existing absensi
       $existing = $this->queryService->getAbsensiById($absensiId);
       if (!$existing) {
-        echo json_encode(['status' => 'error', 'message' => 'Absensi tidak ditemukan']);
-        exit;
+        $this->jsonResponse(['status' => 'error', 'message' => 'Absensi tidak ditemukan'], 404);
       }
 
       // Validate new status
       if (!in_array($newStatus, ['Hadir', 'Izin', 'Sakit', 'Alpa'], true)) {
-        echo json_encode(['status' => 'error', 'message' => 'Status tidak valid']);
-        exit;
+        $this->jsonResponse(['status' => 'error', 'message' => 'Status tidak valid'], 422);
       }
 
       // Validate mandatory alasan
       if (in_array($newStatus, ['Izin', 'Sakit', 'Alpa'], true) && empty($newAlasan)) {
-        echo json_encode(['status' => 'error', 'message' => 'Alasan wajib diisi untuk status ini']);
-        exit;
+        $this->jsonResponse(['status' => 'error', 'message' => 'Alasan wajib diisi untuk status ini'], 422);
+      }
+
+      if ($correctionReason === '') {
+        $this->jsonResponse(['status' => 'error', 'message' => 'Alasan koreksi wajib diisi'], 422);
       }
 
       // Save correction dengan audit trail
@@ -144,10 +142,11 @@ class AdminAbsensiController extends BaseAdminController
         $this->commandService->logCorrectionReason($absensiId, $adminId, $correctionReason);
       }
 
-      echo json_encode($result);
+      $this->jsonResponse($result, ($result['status'] ?? 'error') === 'success' ? 200 : 422);
 
     } catch (Throwable $e) {
-      echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+      error_log('[AdminAbsensiController::saveCorrection] ' . $e->getMessage());
+      $this->jsonResponse(['status' => 'error', 'message' => 'Terjadi kesalahan server. Silakan coba lagi.'], 500);
     }
   }
 
@@ -156,28 +155,44 @@ class AdminAbsensiController extends BaseAdminController
    */
   public function getAbsensiDetail(): void
   {
-    header('Content-Type: application/json');
-
     $absensiId = trim($_GET['id'] ?? '');
     if (!$absensiId) {
-      echo json_encode(['status' => 'error', 'message' => 'ID tidak valid']);
-      exit;
+      $this->jsonResponse(['status' => 'error', 'message' => 'ID tidak valid'], 422);
     }
 
     $detail = $this->queryService->getAbsensiById($absensiId);
     if (!$detail) {
-      echo json_encode(['status' => 'error', 'message' => 'Absensi tidak ditemukan']);
-      exit;
+      $this->jsonResponse(['status' => 'error', 'message' => 'Absensi tidak ditemukan'], 404);
     }
 
     // Get audit trail
     $trail = $this->queryService->getAbsensiAuditTrail($absensiId);
 
-    echo json_encode([
+    $this->jsonResponse([
       'status' => 'success',
       'data' => $detail,
       'trail' => $trail
     ]);
+  }
+
+  private function jsonResponse(array $payload, int $statusCode = 200): void
+  {
+    while (ob_get_level() > 0) {
+      ob_end_clean();
+    }
+    http_response_code($statusCode);
+    header('Content-Type: application/json; charset=utf-8');
+    if (!array_key_exists('data', $payload)) {
+      $payload['data'] = new stdClass();
+    }
+    $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+    if ($json === false) {
+      http_response_code(500);
+      echo '{"status":"error","message":"Gagal memproses data JSON"}';
+      exit;
+    }
+    echo $json;
+    exit;
   }
 
 }

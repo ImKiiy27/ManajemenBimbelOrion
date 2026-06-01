@@ -91,9 +91,11 @@ class AdminMapelRepository
 
       return ['status' => 'success', 'id' => $mapelId];
     } catch (PDOException $e) {
+      error_log('[AdminMapelRepository::createMapel] ' . $e->getMessage());
       return ['status' => 'error', 'message' => $this->friendlyDuplicateMessage($e)];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminMapelRepository::createMapel] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat menambahkan mapel.'];
     }
   }
 
@@ -125,9 +127,11 @@ class AdminMapelRepository
       $stmt->execute([$nama, $deskripsi, $status, $mapelId]);
       return ['status' => 'success'];
     } catch (PDOException $e) {
+      error_log('[AdminMapelRepository::updateMapel] ' . $e->getMessage());
       return ['status' => 'error', 'message' => $this->friendlyDuplicateMessage($e)];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminMapelRepository::updateMapel] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui mapel.'];
     }
   }
 
@@ -145,7 +149,8 @@ class AdminMapelRepository
       $stmt->execute([$status, $mapelId]);
       return ['status' => 'success'];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminMapelRepository::updateStatus] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat mengubah status mapel.'];
     }
   }
 
@@ -221,6 +226,6 @@ class AdminMapelRepository
     if ($code === 1062) {
       return 'Nama mapel sudah ada. Gunakan nama lain.';
     }
-    return $e->getMessage();
+    return 'Terjadi kesalahan database saat memproses mapel.';
   }
 }

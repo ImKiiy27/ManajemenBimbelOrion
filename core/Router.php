@@ -36,7 +36,7 @@ require_once __DIR__ . '/../helpers/RoleHelper.php';
 class Router
 {
   // Halaman yang bisa diakses tanpa login
-  private array $publicPages = ['index', 'login', 'pendaftaran', 'logout'];
+  private array $publicPages = ['index', 'login', 'pendaftaran', 'logout', 'syarat-ketentuan', 'kebijakan-privasi'];
 
   public function dispatch(string $page): void
   {
@@ -57,6 +57,8 @@ class Router
       'login'       => (new AuthController())->login(),
       'logout'      => (new AuthController())->logout(),
       'pendaftaran' => (new AuthController())->pendaftaran(),
+      'syarat-ketentuan' => (new AuthController())->syaratKetentuan(),
+      'kebijakan-privasi' => (new AuthController())->kebijakanPrivasi(),
 
       // --- Admin ---
       'admin-dashboard' => $this->requireRole('admin', fn() => (new AdminDashboardController())->dashboard()),
@@ -126,14 +128,40 @@ class Router
 
   private function jsonError(string $message): void
   {
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
     http_response_code(404);
-    echo json_encode(['status' => 'error', 'message' => $message]);
+    echo json_encode([
+      'status' => 'error',
+      'message' => $message,
+      'data' => new stdClass()
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+  }
+
+  private function wantsJson(): bool
+  {
+    $accept = strtolower((string)($_SERVER['HTTP_ACCEPT'] ?? ''));
+    $requestedWith = strtolower((string)($_SERVER['HTTP_X_REQUESTED_WITH'] ?? ''));
+
+    return isset($_GET['action'])
+      || str_contains($accept, 'application/json')
+      || $requestedWith === 'xmlhttprequest';
   }
 
   private function requireLogin(): void
   {
     if (!isset($_SESSION['user_id'])) {
+      if ($this->wantsJson()) {
+        header('Content-Type: application/json; charset=utf-8');
+        http_response_code(401);
+        echo json_encode([
+          'status' => 'error',
+          'message' => 'Sesi login habis. Silakan login ulang lalu coba lagi.',
+          'data' => new stdClass()
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+      }
+
       header('Location: index.php?page=login');
       exit;
     }
@@ -146,6 +174,17 @@ class Router
     $_SESSION['role'] = $sessionRole;
 
     if ($sessionRole !== $role) {
+      if ($this->wantsJson()) {
+        header('Content-Type: application/json; charset=utf-8');
+        http_response_code(403);
+        echo json_encode([
+          'status' => 'error',
+          'message' => 'Akses ditolak. Fitur ini hanya untuk role ' . $role . '.',
+          'data' => new stdClass()
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+      }
+
       $redirect = match ($sessionRole) {
         'admin' => 'admin-dashboard',
         'guru'  => 'guru-dashboard',

@@ -295,6 +295,42 @@ function ensureAbsensiSchema(PDO $db): void {
   }
 }
 
+function ensurePendaftaranSchema(PDO $db): void {
+  if (!tableExists($db, 'pendaftaran')) {
+    return;
+  }
+
+  if (columnExists($db, 'pendaftaran', 'telepon')) {
+    execSql($db, "ALTER TABLE `pendaftaran` MODIFY COLUMN `telepon` VARCHAR(30) NOT NULL");
+  }
+
+  if (!columnExists($db, 'pendaftaran', 'alamat')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD COLUMN `alamat` TEXT NULL AFTER `telepon`");
+  }
+  if (!columnExists($db, 'pendaftaran', 'jenjang')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD COLUMN `jenjang` VARCHAR(30) NULL AFTER `alamat`");
+  }
+  if (!columnExists($db, 'pendaftaran', 'asal_sekolah')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD COLUMN `asal_sekolah` VARCHAR(150) NULL AFTER `kelas_sekolah`");
+  }
+  if (!columnExists($db, 'pendaftaran', 'nama_wali')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD COLUMN `nama_wali` VARCHAR(150) NULL AFTER `asal_sekolah`");
+  }
+  if (!columnExists($db, 'pendaftaran', 'no_hp_wali')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD COLUMN `no_hp_wali` VARCHAR(30) NULL AFTER `nama_wali`");
+  }
+  if (!columnExists($db, 'pendaftaran', 'catatan')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD COLUMN `catatan` TEXT NULL AFTER `no_hp_wali`");
+  }
+
+  if (!indexExists($db, 'pendaftaran', 'idx_pendaftaran_telepon')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD KEY `idx_pendaftaran_telepon` (`telepon`)");
+  }
+  if (!indexExists($db, 'pendaftaran', 'idx_pendaftaran_no_hp_wali')) {
+    execSql($db, "ALTER TABLE `pendaftaran` ADD KEY `idx_pendaftaran_no_hp_wali` (`no_hp_wali`)");
+  }
+}
+
 try {
   $migrationsDir = __DIR__ . '/migrations';
   $db = getDB();
@@ -322,6 +358,7 @@ try {
   ensureAbsensiSchema($db);
   ensureAbsensiAuditTable($db);
   ensureCounterAbsensi($db);
+  ensurePendaftaranSchema($db);
 
   out('Migration completed successfully.');
 } catch (Throwable $e) {

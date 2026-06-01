@@ -119,7 +119,8 @@ class AdminRelasiRepository {
       $stmt->execute([$relasiId, $siswaId, $guruId, $status]);
       return ['status' => 'success'];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminRelasiRepository::createRelasi] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat menambahkan relasi belajar.'];
     }
   }
 
@@ -149,7 +150,8 @@ class AdminRelasiRepository {
       $stmt->execute([$siswaId, $guruId, $status, $relasiId]);
       return ['status' => 'success'];
     } catch (Throwable $e) {
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AdminRelasiRepository::updateRelasi] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui relasi belajar.'];
     }
   }
 

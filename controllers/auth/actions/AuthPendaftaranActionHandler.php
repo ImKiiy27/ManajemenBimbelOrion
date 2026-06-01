@@ -30,15 +30,32 @@ class AuthPendaftaranActionHandler
       $this->redirectToPendaftaran();
     }
 
+    $honeypot = trim((string)($_POST['website'] ?? ''));
+    if ($honeypot !== '') {
+      // Silent reject for bot traffic
+      $_SESSION['flash_error'] = 'Permintaan tidak valid.';
+      $this->redirectToPendaftaran();
+    }
+
     $nama = trim($_POST['nama'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $telepon = trim($_POST['telepon'] ?? '');
+    $alamat = trim($_POST['alamat'] ?? '');
+    $jenjang = trim($_POST['jenjang'] ?? '');
     $kelasSekolah = trim($_POST['kelas_sekolah'] ?? '');
+    $asalSekolah = trim($_POST['asal_sekolah'] ?? '');
+    $namaWali = trim($_POST['nama_wali'] ?? '');
+    $noHpWali = trim($_POST['no_hp_wali'] ?? '');
+    $catatan = trim($_POST['catatan'] ?? '');
     $mapelIdsRaw = $_POST['mapel_ids'] ?? [];
     $mapelIds = is_array($mapelIdsRaw) ? $mapelIdsRaw : [];
     $_SESSION['old_input'] = $this->buildOldInput($_POST);
 
-    if ($nama === '' || $email === '' || $telepon === '' || $kelasSekolah === '') {
+    if (
+      $nama === '' || $email === '' || $telepon === ''
+      || $alamat === '' || $jenjang === '' || $kelasSekolah === '' || $asalSekolah === ''
+      || $namaWali === '' || $noHpWali === ''
+    ) {
       $_SESSION['flash_error'] = 'Semua field wajib diisi.';
       $this->redirectToPendaftaran();
     }
@@ -48,13 +65,43 @@ class AuthPendaftaranActionHandler
       $this->redirectToPendaftaran();
     }
 
-    if (!preg_match('/^[0-9+\-\s]{8,15}$/', $telepon)) {
+    if (!$this->isValidPhone($telepon)) {
       $_SESSION['flash_error'] = 'Format nomor telepon tidak valid.';
+      $this->redirectToPendaftaran();
+    }
+
+    if (!$this->isValidPhone($noHpWali)) {
+      $_SESSION['flash_error'] = 'Format nomor HP wali tidak valid.';
+      $this->redirectToPendaftaran();
+    }
+
+    if (strlen($nama) > 150 || strlen($namaWali) > 150) {
+      $_SESSION['flash_error'] = 'Nama maksimal 150 karakter.';
+      $this->redirectToPendaftaran();
+    }
+
+    if (strlen($alamat) > 2000) {
+      $_SESSION['flash_error'] = 'Alamat terlalu panjang.';
       $this->redirectToPendaftaran();
     }
 
     if (strlen($kelasSekolah) > 50) {
       $_SESSION['flash_error'] = 'Kolom kelas maksimal 50 karakter.';
+      $this->redirectToPendaftaran();
+    }
+
+    if (!in_array($jenjang, ['SD', 'SMP', 'SMA', 'SMK', 'Lainnya'], true)) {
+      $_SESSION['flash_error'] = 'Pilihan jenjang tidak valid.';
+      $this->redirectToPendaftaran();
+    }
+
+    if (strlen($asalSekolah) > 150) {
+      $_SESSION['flash_error'] = 'Asal sekolah maksimal 150 karakter.';
+      $this->redirectToPendaftaran();
+    }
+
+    if (strlen($catatan) > 2000) {
+      $_SESSION['flash_error'] = 'Catatan terlalu panjang.';
       $this->redirectToPendaftaran();
     }
 
@@ -75,10 +122,15 @@ class AuthPendaftaranActionHandler
       $this->redirectToPendaftaran();
     }
 
-    $sisaDetik = $this->pendaftaranModel->cekCooldownPendaftaran($email);
+    if ($this->pendaftaranModel->hasActivePendaftaranByEmailOrTelepon($email, $telepon, $noHpWali)) {
+      $_SESSION['flash_error'] = 'Email atau nomor telepon sudah memiliki pendaftaran aktif. Mohon tunggu proses verifikasi admin.';
+      $this->redirectToPendaftaran();
+    }
+
+    $sisaDetik = $this->pendaftaranModel->cekCooldownPendaftaran($email, $telepon, $noHpWali);
     if ($sisaDetik > 0) {
       $sisaJam = ceil($sisaDetik / 3600);
-      $_SESSION['flash_error'] = "Email ini sudah pernah mendaftar. "
+      $_SESSION['flash_error'] = "Data email/nomor telepon ini sudah pernah mendaftar. "
         . "Silakan tunggu sekitar {$sisaJam} jam lagi sebelum mendaftar ulang.";
       $this->redirectToPendaftaran();
     }
@@ -87,7 +139,13 @@ class AuthPendaftaranActionHandler
       $nama,
       $email,
       $telepon,
+      $alamat,
+      $jenjang,
       $kelasSekolah,
+      $asalSekolah,
+      $namaWali,
+      $noHpWali,
+      $catatan,
       $mapelIds
     );
 
@@ -96,7 +154,7 @@ class AuthPendaftaranActionHandler
         . 'Admin akan memverifikasi dan menghubungi Anda.';
       unset($_SESSION['old_input']);
     } else {
-      $_SESSION['flash_error'] = 'Email ini sudah terdaftar atau terjadi kesalahan. Jika sudah pernah jadi pengguna, silakan login.';
+      $_SESSION['flash_error'] = 'Email/nomor telepon sudah terdaftar atau terjadi kesalahan. Jika sudah punya akun, silakan login.';
     }
 
     $this->redirectToPendaftaran();
@@ -118,9 +176,10 @@ class AuthPendaftaranActionHandler
       'alamat',
       'jenjang',
       'kelas_sekolah',
-      'sekolah_asal',
+      'asal_sekolah',
       'nama_wali',
-      'telepon_wali',
+      'no_hp_wali',
+      'catatan',
     ];
 
     foreach ($keys as $key) {
@@ -133,5 +192,10 @@ class AuthPendaftaranActionHandler
       : [];
 
     return $old;
+  }
+
+  private function isValidPhone(string $phone): bool
+  {
+    return preg_match('/^[0-9+\-\s]{8,30}$/', $phone) === 1;
   }
 }

@@ -104,12 +104,14 @@ class AbsensiCommandService
       if ($this->db->inTransaction()) {
         $this->db->rollBack();
       }
+      error_log('[AbsensiCommandService::createOrUpdateAbsensi] ' . $e->getMessage());
       return ['status' => 'error', 'message' => $this->friendlyError($e)];
     } catch (Throwable $e) {
       if ($this->db->inTransaction()) {
         $this->db->rollBack();
       }
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AbsensiCommandService::createOrUpdateAbsensi] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memproses absensi.'];
     }
   }
 
@@ -151,7 +153,8 @@ class AbsensiCommandService
       if ($this->db->inTransaction()) {
         $this->db->rollBack();
       }
-      return ['status' => 'error', 'message' => $e->getMessage()];
+      error_log('[AbsensiCommandService::deleteAbsensi] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Terjadi kesalahan saat menghapus absensi.'];
     }
   }
 
@@ -404,7 +407,7 @@ class AbsensiCommandService
     if ($code === 1452) {
       return 'Relasi data tidak valid (jadwal/siswa/user).';
     }
-    return 'Database error: ' . ($e->getMessage() ?? 'Unknown');
+    return 'Terjadi kesalahan database saat memproses absensi.';
   }
 
   public function logCorrectionReason(string $absensiId, string $adminId, ?string $reason): void {

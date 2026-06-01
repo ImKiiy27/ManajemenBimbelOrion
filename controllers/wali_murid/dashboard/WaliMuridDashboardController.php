@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/wali_murid/WaliMuridDashboardController.php
 // Dashboard wali murid: ringkasan anak, jadwal, nilai, absensi

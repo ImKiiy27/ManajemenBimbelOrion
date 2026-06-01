@@ -37,7 +37,7 @@ require __DIR__ . '/../layouts/header.php';
             </div>
             <i class="fas fa-user-plus text-primary fs-4"></i>
           </div>
-          <form method="POST" action="index.php?page=admin-user" autocomplete="off" id="createUserForm" onsubmit="return debugCreateForm()">
+          <form method="POST" action="index.php?page=admin-user" autocomplete="off" id="createUserForm">
             <input type="hidden" name="_csrf" value="<?= htmlspecialchars(getCsrfToken()) ?>">
             <input type="hidden" name="action" value="create">
             <div class="position-absolute opacity-0 pe-none hidden-form-fields" aria-hidden="true">
@@ -315,25 +315,6 @@ require __DIR__ . '/../layouts/header.php';
 </div>
 
 <script>
-  function debugCreateForm() {
-    const form = document.getElementById('createUserForm');
-    const role = form.querySelector('select[name="role"]').value;
-    const email = form.querySelector('input[name="email"]').value;
-    const nama = form.querySelector('input[name="nama"]').value;
-    const kelas = form.querySelector('input[name="kelas"]').value;
-    console.log('Form CREATE submit:', {
-      email,
-      role,
-      nama,
-      kelas
-    });
-    if (!role) {
-      alert('ERROR: Role tidak terisi! Pilih role terlebih dahulu.');
-      return false;
-    }
-    return true;
-  }
-
   (() => {
     const editModal = document.getElementById('editUserModal');
     const deleteModal = document.getElementById('deleteUserModal');
@@ -476,6 +457,12 @@ require __DIR__ . '/../layouts/header.php';
     const relasiContainer = document.getElementById('relasiContainer');
     const noRelasiInfo = document.getElementById('noRelasiInfo');
 
+    const appendRelasiListItem = (listEl, text) => {
+      const li = document.createElement('li');
+      li.textContent = text;
+      listEl.appendChild(li);
+    };
+
     deleteUserButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const userId = btn.getAttribute('data-id');
@@ -486,33 +473,50 @@ require __DIR__ . '/../layouts/header.php';
         deleteUserId.value = userId;
 
         if (Object.keys(relasi).length === 0) {
-          relasiContainer.innerHTML = '';
+          relasiContainer.textContent = '';
           noRelasiInfo.classList.remove('hide-element');
           document.getElementById('deleteAction').value = 'delete';
         } else {
           noRelasiInfo.classList.add('hide-element');
-          let html = '<div class="alert alert-warning mb-3">';
-          html += '<p class="mb-2"><strong>Relasi yang akan dihapus:</strong></p>';
-          html += '<ul class="mb-0">';
+          relasiContainer.textContent = '';
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'alert alert-warning mb-3';
+
+          const title = document.createElement('p');
+          title.className = 'mb-2';
+          const strong = document.createElement('strong');
+          strong.textContent = 'Relasi yang akan dihapus:';
+          title.appendChild(strong);
+          wrapper.appendChild(title);
+
+          const list = document.createElement('ul');
+          list.className = 'mb-0';
 
           if (relasi.kelas) {
-            html += `<li>${relasi.kelas.length} Kelas`;
+            let text = `${relasi.kelas.length} Kelas`;
             if (relasi.kelas.length > 0 && relasi.kelas[0].guru_nama) {
-              html += ': ' + relasi.kelas.map(k => k.guru_nama || k.siswa_nama).join(', ');
+              text += ': ' + relasi.kelas.map(k => k.guru_nama || k.siswa_nama).join(', ');
             }
-            html += '</li>';
+            appendRelasiListItem(list, text);
           }
 
           if (relasi.siswa_mapel) {
-            html += `<li>${relasi.siswa_mapel.length} Mapel: ` + relasi.siswa_mapel.map(m => m.mapel_nama).join(', ') + '</li>';
+            appendRelasiListItem(
+              list,
+              `${relasi.siswa_mapel.length} Mapel: ` + relasi.siswa_mapel.map(m => m.mapel_nama).join(', ')
+            );
           }
 
           if (relasi.anak) {
-            html += `<li>${relasi.anak.length} Anak: ` + relasi.anak.map(a => a.siswa_nama).join(', ') + '</li>';
+            appendRelasiListItem(
+              list,
+              `${relasi.anak.length} Anak: ` + relasi.anak.map(a => a.siswa_nama).join(', ')
+            );
           }
 
-          html += '</ul></div>';
-          relasiContainer.innerHTML = html;
+          wrapper.appendChild(list);
+          relasiContainer.appendChild(wrapper);
           document.getElementById('deleteAction').value = 'delete-force';
         }
 
@@ -525,8 +529,6 @@ require __DIR__ . '/../layouts/header.php';
       editModal.addEventListener('show.bs.modal', (event) => {
         const button = event.relatedTarget;
         const role = button.getAttribute('data-role') || '';
-
-        console.log('Edit modal opened with role:', role);
 
         document.getElementById('editUserId').value = button.getAttribute('data-id') || '';
         document.getElementById('editEmail').value = button.getAttribute('data-email') || '';
@@ -551,7 +553,6 @@ require __DIR__ . '/../layouts/header.php';
       if (editForm) {
         editForm.addEventListener('submit', (e) => {
           const roleValue = editRoleHidden.value;
-          console.log('Form submitted with role:', roleValue);
           if (!roleValue) {
             e.preventDefault();
             alert('Role tidak terisi. Muat ulang halaman dan coba lagi.');

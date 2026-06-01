@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ============================================================
 // controllers/guru/GuruDashboardController.php
 // Halaman dashboard guru
