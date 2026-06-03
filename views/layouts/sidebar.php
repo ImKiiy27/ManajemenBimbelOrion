@@ -89,11 +89,7 @@ $menus = match ($role) {
       <?php else: ?>
         <a href="index.php?page=<?= htmlspecialchars($menu['page']) ?>"
           class="<?= $activePage === $menu['page'] ? 'active' : '' ?>">
-          <?php if (($menu['icon'] ?? '') === 'fa-book-open'): ?>
-            <img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 16px; height: 16px; object-fit: contain;">
-          <?php else: ?>
-            <i class="fas <?= htmlspecialchars($menu['icon']) ?>"></i>
-          <?php endif; ?>
+          <i class="fas <?= htmlspecialchars($menu['icon']) ?>"></i>
           <?= htmlspecialchars($menu['label']) ?>
         </a>
       <?php endif; ?>

@@ -151,6 +151,54 @@ class AdminWaliMuridRepository {
     }
   }
 
+  public function createUserAccount(string $waliId, array $data): array {
+    $waliId = trim($waliId);
+    $email = trim((string)($data['email'] ?? ''));
+    $password = (string)($data['password'] ?? '');
+
+    if ($waliId === '') {
+      return ['status' => 'error', 'message' => 'ID wali murid tidak valid.'];
+    }
+
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      return ['status' => 'error', 'message' => 'Email tidak valid.'];
+    }
+
+    $passwordError = $this->validatePassword($password);
+    if ($passwordError !== null) {
+      return ['status' => 'error', 'message' => $passwordError];
+    }
+
+    $wali = $this->getWaliMuridById($waliId);
+    if ($wali === null) {
+      return ['status' => 'error', 'message' => 'Data wali murid tidak ditemukan.'];
+    }
+
+    if ($this->hasLinkedUserAccount($waliId)) {
+      return ['status' => 'error', 'message' => 'Wali murid ini sudah memiliki akun user.'];
+    }
+
+    try {
+      $stmt = $this->db->prepare("
+        INSERT INTO users (id, email, password, role, is_locked, attempts)
+        VALUES (?, ?, ?, 'wali_murid', 0, 0)
+      ");
+      $stmt->execute([
+        $waliId,
+        $email,
+        password_hash($password, PASSWORD_DEFAULT),
+      ]);
+
+      return ['status' => 'success', 'message' => 'Akun wali murid berhasil dibuat.'];
+    } catch (PDOException $e) {
+      error_log('[AdminWaliMuridRepository::createUserAccount] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => $this->friendlyUserAccountError($e)];
+    } catch (Exception $e) {
+      error_log('[AdminWaliMuridRepository::createUserAccount] ' . $e->getMessage());
+      return ['status' => 'error', 'message' => 'Gagal membuat akun wali murid. Silakan coba lagi.'];
+    }
+  }
+
   public function deleteWaliMurid(string $id): array {
     try {
       if ($this->hasLinkedUserAccount($id)) {
@@ -213,5 +261,33 @@ class AdminWaliMuridRepository {
     ");
     $stmt->execute([$waliId]);
     return (int)$stmt->fetchColumn() > 0;
+  }
+
+  private function validatePassword(string $password): ?string {
+    if (strlen($password) < 8) {
+      return 'Password minimal 8 karakter.';
+    }
+
+    if (!preg_match('/[A-Z]/', $password)) {
+      return 'Password harus mengandung minimal 1 huruf besar (A-Z).';
+    }
+
+    if (!preg_match('/[a-z]/', $password)) {
+      return 'Password harus mengandung minimal 1 huruf kecil (a-z).';
+    }
+
+    if (!preg_match('/[0-9]/', $password)) {
+      return 'Password harus mengandung minimal 1 angka (0-9).';
+    }
+
+    return null;
+  }
+
+  private function friendlyUserAccountError(PDOException $e): string {
+    $code = $e->errorInfo[1] ?? null;
+    if ($code === 1062) {
+      return 'Email sudah digunakan atau wali murid ini sudah memiliki akun.';
+    }
+    return 'Terjadi kesalahan database saat membuat akun wali murid.';
   }
 }

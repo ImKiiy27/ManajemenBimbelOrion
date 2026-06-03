@@ -31,6 +31,7 @@ class AdminWaliMuridController extends BaseAdminController
       $action = trim($_POST['action'] ?? '');
       $result = match ($action) {
         'create-wali' => $this->waliRepository->createWaliMurid($_POST),
+        'create-wali-account' => $this->waliRepository->createUserAccount(trim((string)($_POST['wali_id'] ?? '')), $_POST),
         'update-wali' => $this->waliRepository->updateWaliMurid(trim((string)($_POST['wali_id'] ?? '')), $_POST),
         'delete-wali' => $this->waliRepository->deleteWaliMurid(trim((string)($_POST['wali_id'] ?? ''))),
         'delete-wali-force' => $this->waliRepository->forceDeleteWaliMurid(trim((string)($_POST['wali_id'] ?? ''))),

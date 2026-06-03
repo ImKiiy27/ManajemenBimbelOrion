@@ -38,7 +38,9 @@
               <option value="<?= htmlspecialchars($jadwal['id']) ?>">
                 <?= htmlspecialchars($jadwal['hari']) ?>
                 <?= htmlspecialchars(substr($jadwal['jam_mulai'], 0, 5)) ?>-<?= htmlspecialchars(substr($jadwal['jam_selesai'], 0, 5)) ?>
-                (<?= (int)$jadwal['jumlah_siswa'] ?> siswa)
+                <?php if (!empty($jadwal['siswa_names'])): ?>
+                  - <?= htmlspecialchars($jadwal['siswa_names']) ?>
+                <?php endif; ?>
               </option>
             <?php endforeach; ?>
           </select>
@@ -53,7 +55,7 @@
 
         <!-- Siswa List (Dynamic) -->
         <div class="form-group">
-          <label>Daftar Siswa:</label>
+          <label>Absensi Siswa</label>
           <div id="siswa_list" class="siswa-grid hide-element">
             <!-- Loaded dynamically -->
           </div>
@@ -66,8 +68,8 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="form-actions padding-center-sm">
-          <button type="button" class="btn btn-primary" id="btn_save_all" class="hide-element">
+        <div class="form-actions absensi-actions">
+          <button type="button" class="btn btn-primary hide-element" id="btn_save_all">
             <i class="fas fa-save"></i> Simpan Semua
           </button>
         </div>
@@ -120,18 +122,19 @@
 }
 
 .siswa-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 12px 0;
 }
 
 .siswa-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 15px;
+  padding: 16px;
   transition: all 0.3s ease;
+  max-width: 920px;
 }
 
 .siswa-card:hover {
@@ -141,8 +144,9 @@
 
 .siswa-name {
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: var(--text-primary);
+  text-transform: capitalize;
 }
 
 .form-group {
@@ -175,15 +179,14 @@ select:focus {
 }
 
 .status-group {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 8px 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(96px, 1fr));
+  gap: 8px;
+  margin: 8px 0 14px;
 }
 
 .status-radio {
-  flex: 1;
-  min-width: 100px;
+  min-width: 0;
 }
 
 .status-radio input[type="radio"] {
@@ -192,9 +195,9 @@ select:focus {
 
 .status-radio label {
   display: block;
-  padding: 8px 12px;
+  padding: 9px 12px;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   text-align: center;
   font-weight: 500;
@@ -223,6 +226,38 @@ select:focus {
   background-color: var(--card-bg);
   color: var(--text-primary);
   min-height: 60px;
+}
+
+.absensi-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.absensi-actions {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 920px;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .status-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .absensi-notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .absensi-actions {
+    justify-content: stretch;
+  }
+
+  .absensi-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .textarea-field:focus {
@@ -310,7 +345,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
     // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {
-      tab.style.display = 'none';
+      tab.classList.add('hide-element');
       tab.classList.remove('active');
     });
 
@@ -318,7 +353,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
     // Show selected tab
-    document.getElementById(tabName).style.display = 'block';
+    document.getElementById(tabName).classList.remove('hide-element');
     document.getElementById(tabName).classList.add('active');
     btn.classList.add('active');
   });
@@ -333,9 +368,9 @@ async function loadSiswaList() {
   const tanggal = document.getElementById('tanggal_select').value;
 
   if (!jadwalId || !tanggal) {
-    document.getElementById('siswa_list').style.display = 'none';
+    document.getElementById('siswa_list').classList.add('hide-element');
     document.getElementById('siswa_empty').style.display = 'block';
-    document.getElementById('btn_save_all').style.display = 'none';
+    document.getElementById('btn_save_all').classList.add('hide-element');
     return;
   }
 
@@ -369,9 +404,9 @@ async function loadSiswaList() {
 
     // Render siswa cards
     renderSiswaCards(siswaData.data, existingAbsensi);
-    document.getElementById('siswa_list').style.display = 'grid';
+    document.getElementById('siswa_list').classList.remove('hide-element');
     document.getElementById('siswa_empty').style.display = 'none';
-    document.getElementById('btn_save_all').style.display = 'inline-flex';
+    document.getElementById('btn_save_all').classList.remove('hide-element');
 
   } catch (error) {
     showError('Error loading data: ' + error.message);
@@ -386,7 +421,7 @@ function renderSiswaCards(siswaList, existingAbsensi) {
 
   siswaList.forEach(siswa => {
     const existing = existingAbsensi[siswa.id];
-    const status = existing?.status || '';
+    const status = existing?.status || 'Hadir';
     const alasan = existing?.alasan || '';
     const catatan = existing?.catatan_guru || '';
 
@@ -414,14 +449,16 @@ function renderSiswaCards(siswaList, existingAbsensi) {
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="alasan_${siswa.id}" class="margin-bottom-xs">Alasan (wajib jika tidak Hadir):</label>
-        <textarea class="textarea-field alasan-field" id="alasan_${siswa.id}" data-siswa="${siswa.id}" placeholder="Isi alasan jika diperlukan">${htmlEscape(alasan)}</textarea>
-      </div>
+      <div class="absensi-notes-grid">
+        <div class="form-group">
+          <label for="alasan_${siswa.id}" class="margin-bottom-xs">Alasan</label>
+          <textarea class="textarea-field alasan-field" id="alasan_${siswa.id}" data-siswa="${siswa.id}" placeholder="Wajib jika Izin, Sakit, atau Alpa">${htmlEscape(alasan)}</textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="catatan_${siswa.id}" class="margin-bottom-xs">Catatan Guru:</label>
-        <textarea class="textarea-field" id="catatan_${siswa.id}" data-siswa="${siswa.id}" placeholder="Catatan tambahan (opsional)">${htmlEscape(catatan)}</textarea>
+        <div class="form-group">
+          <label for="catatan_${siswa.id}" class="margin-bottom-xs">Catatan Guru</label>
+          <textarea class="textarea-field" id="catatan_${siswa.id}" data-siswa="${siswa.id}" placeholder="Opsional">${htmlEscape(catatan)}</textarea>
+        </div>
       </div>
     `;
     container.appendChild(card);
@@ -448,6 +485,12 @@ async function saveAllAbsensi() {
     const statusInput = card.querySelector('input[type="radio"]:checked');
     const status = statusInput?.value || '';
     const alasan = card.querySelector('.alasan-field').value.trim();
+
+    if (!status) {
+      showError(`${siswaName}: Pilih status absensi terlebih dahulu`);
+      hasError = true;
+      continue;
+    }
 
     // Validate mandatory alasan
     if (['Izin', 'Sakit', 'Alpa'].includes(status) && !alasan) {
@@ -489,7 +532,7 @@ async function saveAllAbsensi() {
 }
 
 function showLoading(show) {
-  document.getElementById('siswa_loading').style.display = show ? 'block' : 'none';
+  document.getElementById('siswa_loading').classList.toggle('hide-element', !show);
 }
 
 function showError(message) {

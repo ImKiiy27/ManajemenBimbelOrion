@@ -2620,9 +2620,10 @@ a.btn-hero-primary:active {
   font-size: 1.15rem;
 }
 
+.stats-section,
 .landing-about-section,
 .dashboard-preview-section {
-  background: transparent;
+  background: linear-gradient(180deg, #f7faff 0%, #f2f7ff 100%);
 }
 
 .landing-visual-card {
@@ -2826,9 +2827,12 @@ a.btn-hero-primary:active {
 }
 
 .stats-section {
-  background: transparent;
   box-shadow: none;
-  padding: 30px 0 10px;
+  padding: 10px 0 28px;
+}
+
+.stats-section .row {
+  transform: translateY(-14px);
 }
 
 .stats-section .stat-item {
@@ -2851,7 +2855,7 @@ a.btn-hero-primary:active {
 
 .landing-section,
 .role-section {
-  background: transparent;
+  background: #ffffff;
 }
 
 .feature-card {
@@ -2909,7 +2913,7 @@ a.btn-hero-primary:active {
 }
 
 .testimonial-section {
-  background: transparent;
+  background: linear-gradient(180deg, #f7faff 0%, #f2f7ff 100%);
   padding-top: 20px;
 }
 
@@ -2925,7 +2929,7 @@ a.btn-hero-primary:active {
 }
 
 .cta-section {
-  background: transparent;
+  background: #ffffff;
 }
 
 .cta-section .container {
@@ -2944,6 +2948,19 @@ a.btn-hero-primary:active {
 }
 
 [data-theme="dark"] .landing-hero {
+  background: linear-gradient(180deg, #131f3b 0%, #101a32 100%);
+}
+
+[data-theme="dark"] .landing-section,
+[data-theme="dark"] .role-section,
+[data-theme="dark"] .cta-section {
+  background: #0f172a;
+}
+
+[data-theme="dark"] .stats-section,
+[data-theme="dark"] .landing-about-section,
+[data-theme="dark"] .dashboard-preview-section,
+[data-theme="dark"] .testimonial-section {
   background: linear-gradient(180deg, #131f3b 0%, #101a32 100%);
 }
 

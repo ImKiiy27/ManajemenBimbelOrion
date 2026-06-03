@@ -142,7 +142,7 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
 
             <section class="registration-section">
               <div class="registration-section-title">
-                <img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 20px; height: 20px; object-fit: contain;">
+                 <i class="fas fa-book-open"></i>
                 <h2>Pilihan Program / Mapel</h2>
               </div>
               <div class="form-group">
@@ -227,23 +227,20 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
     <div class="row g-4">
       <div class="col-lg-4">
         <div class="footer-brand">
-          <div class="logo-icon medium-icon-wrapper"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 100%; height: 100%; object-fit: contain;"></div>
-          <span class="logo-text">Bimbel Orion</span>
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div><span class="logo-text">Bimbel Orion</span>
         </div>
-        <p class="opacity-light">Platform bimbel modern terbaik untuk masa depan cerah anak Anda.</p>
+        <p class="opacity-light">Belajar privat atau kelompok kecil bersama tutor berpengalaman, ramah, dan sabar di Jember.</p>
         <div class="social-links">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="https://www.instagram.com/bimbel_orion/" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
         </div>
       </div>
       <div class="col-lg-2">
-        <h5>Menu</h5>
+        <h5>Navigasi</h5>
         <ul class="footer-links">
-          <li><a href="index.php">Beranda</a></li>
-          <li><a href="index.php#fitur">Fitur</a></li>
-          <li><a href="index.php#testimoni">Testimoni</a></li>
+          <li><a href="#fitur">Program</a></li>
+          <li><a href="#keunggulan">Keunggulan</a></li>
+          <li><a href="#testimoni">Kenapa Orion</a></li>
           <li><a href="index.php?page=login">Login</a></li>
         </ul>
       </div>
@@ -251,21 +248,20 @@ $selectedMapelIds = isset($oldInput['mapel_ids']) && is_array($oldInput['mapel_i
         <h5>Kontak</h5>
         <ul class="footer-links">
           <li><a href="#"><i class="fas fa-map-marker-alt me-2"></i>Jember, Indonesia</a></li>
-          <li><a href="#"><i class="fas fa-phone me-2"></i>+62 812-3456-7890</a></li>
-          <li><a href="#"><i class="fas fa-envelope me-2"></i>info@Bimbel Orion.com</a></li>
+          <li><a href="#"><i class="fab fa-whatsapp me-2"></i>+62 819-7535-0033 (Kak Ferdi)</a></li>
+          <li><a href="https://www.instagram.com/bimbel_orion/" target="_blank"><i class="fab fa-instagram me-2"></i>@bimbel_orion</a></li>
+          <li><a href="#"><i class="fas fa-user-circle me-2"></i>Bimbel Privat Orion Jember</a></li>
         </ul>
       </div>
       <div class="col-lg-3">
         <h5>Jam Operasional</h5>
         <ul class="footer-links">
-          <li><a href="#">Senin - Jumat: 08.00 - 21.00</a></li>
-          <li><a href="#">Sabtu: 09.00 - 17.00</a></li>
-          <li><a href="#">Minggu: 10.00 - 15.00</a></li>
+          <li><a href="#">Dapat di atur sesuai kesepakan guru dan siswa</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 Bimbel Orion, Tugas Semester Kelompok 4 Prodi MIF 25 GOL E dengan sepenuh <i class="fas fa-heart text-danger"></i> Indonesia</p>
+      <p>&copy; 2026 Bimbel Orion. Semua hak cipta dilindungi.</p>
     </div>
   </div>
 </footer>

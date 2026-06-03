@@ -50,6 +50,7 @@ class AdminUserRepository
         u.created_at,
         g.id AS guru_id,
         g.nama AS guru_nama,
+        g.mapel_id AS guru_mapel_id,
         mg.nama AS mapel,
         s.id AS siswa_id,
         s.nama AS siswa_nama,
@@ -78,6 +79,7 @@ class AdminUserRepository
         u.*,
         g.id AS guru_id,
         g.nama AS guru_nama,
+        g.mapel_id AS guru_mapel_id,
         mg.nama AS mapel,
         s.id AS siswa_id,
         s.nama AS siswa_nama,
@@ -209,23 +211,40 @@ class AdminUserRepository
           ? trim((string)$data['nama'])
           : (trim((string)($current['guru_nama'] ?? '')) !== '' ? (string)$current['guru_nama'] : $namaProfil);
 
-        $stmt = $this->db->prepare("UPDATE guru SET nama = ? WHERE id = ?");
-        $stmt->execute([$namaGuru, $userId]);
+        $mapelId = trim((string)($current['guru_mapel_id'] ?? ''));
+        if ($mapelId === '') {
+          $mapelId = $this->getDefaultMapelId();
+        }
+
+        $stmt = $this->db->prepare("
+          INSERT INTO guru (id, mapel_id, nama)
+          VALUES (?, ?, ?)
+          ON DUPLICATE KEY UPDATE nama = VALUES(nama)
+        ");
+        $stmt->execute([$userId, $mapelId, $namaGuru]);
       } elseif ($role === 'siswa') {
         $namaSiswa = trim((string)($data['nama'] ?? '')) !== ''
           ? trim((string)$data['nama'])
           : (trim((string)($current['siswa_nama'] ?? '')) !== '' ? (string)$current['siswa_nama'] : $namaProfil);
 
         $kelas = ($data['kelas'] ?? '') !== '' ? trim((string)$data['kelas']) : ($current['kelas'] ?? 'Privat');
-        $stmt = $this->db->prepare("UPDATE siswa SET nama = ?, kelas_sekolah = ? WHERE id = ?");
-        $stmt->execute([$namaSiswa, $kelas, $userId]);
+        $stmt = $this->db->prepare("
+          INSERT INTO siswa (id, nama, kelas_sekolah)
+          VALUES (?, ?, ?)
+          ON DUPLICATE KEY UPDATE nama = VALUES(nama), kelas_sekolah = VALUES(kelas_sekolah)
+        ");
+        $stmt->execute([$userId, $namaSiswa, $kelas]);
       } elseif ($role === 'wali_murid') {
         $namaWali = trim((string)($data['nama'] ?? '')) !== ''
           ? trim((string)$data['nama'])
           : (trim((string)($current['wali_nama'] ?? '')) !== '' ? (string)$current['wali_nama'] : $namaProfil);
 
-        $stmt = $this->db->prepare("UPDATE wali_murid SET nama = ? WHERE id = ?");
-        $stmt->execute([$namaWali, $userId]);
+        $stmt = $this->db->prepare("
+          INSERT INTO wali_murid (id, nama)
+          VALUES (?, ?)
+          ON DUPLICATE KEY UPDATE nama = VALUES(nama)
+        ");
+        $stmt->execute([$userId, $namaWali]);
       }
 
       $this->db->commit();

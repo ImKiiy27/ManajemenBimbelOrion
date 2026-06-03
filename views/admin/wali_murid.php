@@ -212,6 +212,18 @@ require __DIR__ . '/../layouts/header.php';
                           <i class="fas fa-eye"></i>
                         </button>
 
+                        <?php if ($statusUser !== 'Ada'): ?>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-success me-1 create-account-btn admin-action-icon"
+                            data-bs-toggle="modal"
+                            data-bs-target="#createWaliAccountModal"
+                            data-wali-id="<?= htmlspecialchars($row['id']) ?>"
+                            data-nama="<?= htmlspecialchars($row['nama'] ?? '', ENT_QUOTES) ?>">
+                            <i class="fas fa-user-lock"></i>
+                          </button>
+                        <?php endif; ?>
+
                         <!-- ACTION: Delete button - Trigger modal konfirmasi delete -->
                         <button
                           type="button"
@@ -241,6 +253,52 @@ require __DIR__ . '/../layouts/header.php';
       </div>
     </div>
   </main>
+</div>
+
+<!-- ===============================================
+     MODAL BUAT AKUN WALI MURID
+     Membuat akun login untuk data wali yang sudah ada
+     ============================================== -->
+<div class="modal fade" id="createWaliAccountModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-success">
+        <h5 class="modal-title">
+          <i class="fas fa-user-lock me-2"></i>Buat Akun Wali Murid
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="index.php?page=admin-wali-murid" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<?= htmlspecialchars(getCsrfToken()) ?>">
+        <input type="hidden" name="action" value="create-wali-account">
+        <input type="hidden" name="wali_id" id="accountWaliId">
+
+        <div class="modal-body">
+          <div class="alert alert-light border">
+            Akun akan dibuat untuk: <strong id="accountWaliNama">-</strong>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email <span class="text-danger">*</span></label>
+            <input type="email" name="email" class="form-control" autocomplete="off" required>
+          </div>
+
+          <div class="mb-0">
+            <label class="form-label">Password <span class="text-danger">*</span></label>
+            <input type="password" name="password" class="form-control" minlength="8" autocomplete="new-password" required>
+            <small class="text-muted">Minimal 8 karakter dengan huruf besar, huruf kecil, dan angka.</small>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i>Buat Akun
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 <!-- ===============================================
@@ -444,6 +502,18 @@ require __DIR__ . '/../layouts/header.php';
     const normalized = (value || '').toString().trim();
     element.textContent = normalized !== '' ? normalized : '-';
   };
+
+  // ===============================================
+  // MODAL BUAT AKUN: Populate data wali
+  // ===============================================
+  const createAccountModal = document.getElementById('createWaliAccountModal');
+  if (createAccountModal) {
+    createAccountModal.addEventListener('show.bs.modal', (event) => {
+      const button = event.relatedTarget;
+      document.getElementById('accountWaliId').value = button.getAttribute('data-wali-id') || '';
+      document.getElementById('accountWaliNama').textContent = button.getAttribute('data-nama') || '-';
+    });
+  }
 
   // ===============================================
   // MODAL EDIT: Populate form fields dengan data

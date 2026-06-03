@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../helpers/RoleHelper.php';
+require_once __DIR__ . '/IdCounterModel.php';
 
 class ProfileRepository
 {
@@ -396,8 +397,17 @@ class ProfileRepository
     if ($nama === '') {
       return ['status' => 'error', 'message' => 'Nama guru wajib diisi.'];
     }
-    $stmt = $this->db->prepare("UPDATE guru SET nama = ?, no_telp = ?, alamat = ?, bio = ? WHERE id = ?");
-    $stmt->execute([$nama, $noTelp, $alamat, $bio, $userId]);
+    $mapelId = $this->getGuruMapelId($userId) ?? $this->getDefaultMapelId();
+    $stmt = $this->db->prepare("
+      INSERT INTO guru (id, mapel_id, nama, no_telp, alamat, bio)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        nama = VALUES(nama),
+        no_telp = VALUES(no_telp),
+        alamat = VALUES(alamat),
+        bio = VALUES(bio)
+    ");
+    $stmt->execute([$userId, $mapelId, $nama, $noTelp, $alamat, $bio]);
     return ['status' => 'success', 'message' => 'Profil guru berhasil diperbarui.'];
   }
 
@@ -408,8 +418,16 @@ class ProfileRepository
     if ($nama === '') {
       return ['status' => 'error', 'message' => 'Nama siswa wajib diisi.'];
     }
-    $stmt = $this->db->prepare("UPDATE siswa SET nama = ?, no_telp = ?, alamat = ?, asal_sekolah = ? WHERE id = ?");
-    $stmt->execute([$nama, $noTelp, $alamat, $asalSekolah, $userId]);
+    $stmt = $this->db->prepare("
+      INSERT INTO siswa (id, nama, kelas_sekolah, no_telp, alamat, asal_sekolah)
+      VALUES (?, ?, 'Privat', ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        nama = VALUES(nama),
+        no_telp = VALUES(no_telp),
+        alamat = VALUES(alamat),
+        asal_sekolah = VALUES(asal_sekolah)
+    ");
+    $stmt->execute([$userId, $nama, $noTelp, $alamat, $asalSekolah]);
     return ['status' => 'success', 'message' => 'Profil siswa berhasil diperbarui.'];
   }
 
@@ -421,9 +439,43 @@ class ProfileRepository
     if ($nama === '') {
       return ['status' => 'error', 'message' => 'Nama wali murid wajib diisi.'];
     }
-    $stmt = $this->db->prepare("UPDATE wali_murid SET nama = ?, no_telp = ?, alamat = ?, hubungan = ?, pekerjaan = ? WHERE id = ?");
-    $stmt->execute([$nama, $noTelp, $alamat, $hubungan, $pekerjaan, $userId]);
+    $stmt = $this->db->prepare("
+      INSERT INTO wali_murid (id, nama, no_telp, alamat, hubungan, pekerjaan)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        nama = VALUES(nama),
+        no_telp = VALUES(no_telp),
+        alamat = VALUES(alamat),
+        hubungan = VALUES(hubungan),
+        pekerjaan = VALUES(pekerjaan)
+    ");
+    $stmt->execute([$userId, $nama, $noTelp, $alamat, $hubungan, $pekerjaan]);
     return ['status' => 'success', 'message' => 'Profil wali murid berhasil diperbarui.'];
+  }
+
+  private function getGuruMapelId(string $guruId): ?string
+  {
+    $stmt = $this->db->prepare("SELECT mapel_id FROM guru WHERE id = ? LIMIT 1");
+    $stmt->execute([$guruId]);
+    $mapelId = trim((string)($stmt->fetchColumn() ?: ''));
+    return $mapelId !== '' ? $mapelId : null;
+  }
+
+  private function getDefaultMapelId(): string
+  {
+    $stmt = $this->db->prepare("SELECT id FROM mapel WHERE LOWER(nama) = 'privat' LIMIT 1");
+    $stmt->execute();
+    $existingId = $stmt->fetchColumn();
+    if ($existingId) {
+      return (string)$existingId;
+    }
+
+    $idCounterModel = new IdCounterModel($this->db);
+    $mapelId = $idCounterModel->generateId('mapel', 'MPL');
+
+    $ins = $this->db->prepare("INSERT INTO mapel (id, nama, deskripsi) VALUES (?, 'Privat', '')");
+    $ins->execute([$mapelId]);
+    return $mapelId;
   }
 
   private function normalizeNullableText(mixed $value): ?string

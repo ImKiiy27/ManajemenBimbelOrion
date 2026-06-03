@@ -24,7 +24,7 @@ $oldInput = is_array($oldInput ?? null) ? $oldInput : [];
             <div class="logo-icon"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 100%; height: 100%; object-fit: contain;"></div>
             <div>
               <h3>Bimbel Orion</h3>
-              <p>Sistem manajemen bimbel terintegrasi untuk semua pihak.</p>
+              <p>Bimbingan Belajar Privat Terpercaya</p>
             </div>
           </div>
 

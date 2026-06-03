@@ -183,22 +183,22 @@ $statCards = match ($role) {
             <div class="profile-detail-grid">
               <?php if ($role !== 'admin'): ?>
                 <div class="profile-detail-item">
-                  <span>Nama Lengkap (Boleh diubah)</span>
+                  <span>Nama Lengkap</span>
                   <input type="text" class="form-control" name="nama" value="<?= htmlspecialchars((string)($profile['nama'] ?? '')) ?>" required>
                 </div>
               <?php endif; ?>
               <div class="profile-detail-item">
-                <span>Email (Boleh diubah)</span>
+                <span>Email</span>
                 <input type="email" class="form-control" name="email" value="<?= htmlspecialchars($email) ?>" required>
               </div>
 
               <?php if ($role === 'guru' || $role === 'siswa' || $role === 'wali_murid'): ?>
                 <div class="profile-detail-item">
-                  <span>No. Telepon (Boleh diubah)</span>
+                  <span>No. Telepon</span>
                   <input type="text" class="form-control" name="no_telp" value="<?= htmlspecialchars((string)($profile['no_telp'] ?? '')) ?>">
                 </div>
                 <div class="profile-detail-item">
-                  <span>Alamat (Boleh diubah)</span>
+                  <span>Alamat</span>
                   <input type="text" class="form-control" name="alamat" value="<?= htmlspecialchars((string)($profile['alamat'] ?? '')) ?>">
                 </div>
               <?php endif; ?>
@@ -209,7 +209,7 @@ $statCards = match ($role) {
                   <input type="text" class="form-control" value="<?= htmlspecialchars((string)($profile['mapel_nama'] ?? '-')) ?>" disabled>
                 </div>
                 <div class="profile-detail-item">
-                  <span>Bio (Boleh diubah)</span>
+                  <span>Bio</span>
                   <textarea class="form-control" name="bio" rows="3"><?= htmlspecialchars((string)($profile['bio'] ?? '')) ?></textarea>
                 </div>
               <?php elseif ($role === 'siswa'): ?>
@@ -222,25 +222,25 @@ $statCards = match ($role) {
                   <input type="text" class="form-control" value="<?= htmlspecialchars((string)($profile['wali_nama'] ?? '-')) ?>" disabled>
                 </div>
                 <div class="profile-detail-item">
-                  <span>Asal Sekolah (Boleh diubah)</span>
+                  <span>Asal Sekolah</span>
                   <input type="text" class="form-control" name="asal_sekolah" value="<?= htmlspecialchars((string)($profile['asal_sekolah'] ?? '')) ?>">
                 </div>
               <?php elseif ($role === 'wali_murid'): ?>
                 <div class="profile-detail-item">
-                  <span>Hubungan (Boleh diubah)</span>
+                  <span>Hubungan</span>
                   <input type="text" class="form-control" name="hubungan" value="<?= htmlspecialchars((string)($profile['hubungan'] ?? '')) ?>">
                 </div>
                 <div class="profile-detail-item">
-                  <span>Pekerjaan (Boleh diubah)</span>
+                  <span>Pekerjaan</span>
                   <input type="text" class="form-control" name="pekerjaan" value="<?= htmlspecialchars((string)($profile['pekerjaan'] ?? '')) ?>">
                 </div>
               <?php else: ?>
                 <div class="profile-detail-item">
-                  <span>Role (Tidak bisa diubah user)</span>
+                  <span>Role Akun</span>
                   <input type="text" class="form-control" value="<?= htmlspecialchars(roleLabel($role)) ?>" disabled>
                 </div>
                 <div class="profile-detail-item">
-                  <span>Status Akun (Tidak bisa diubah user)</span>
+                  <span>Status Akun</span>
                   <input type="text" class="form-control" value="<?= htmlspecialchars($statusLabel) ?>" disabled>
                 </div>
               <?php endif; ?>
