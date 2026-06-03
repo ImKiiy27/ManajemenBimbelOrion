@@ -1,0 +1,23 @@
+@startuml
+title Activity Diagram - Pengguna Melakukan Logout
+
+start
+
+partition "Pengguna Login" {
+  :Berada pada dashboard sesuai role;
+  :Klik menu Logout;
+}
+
+partition "Sistem" {
+  :Menghapus data session pengguna;
+  :Menghapus cookie session bila ada;
+  :Menampilkan pesan berhasil logout;
+  :Mengarahkan ke halaman login;
+}
+
+partition "Pengguna" {
+  :Melihat halaman login;
+}
+
+stop
+@enduml

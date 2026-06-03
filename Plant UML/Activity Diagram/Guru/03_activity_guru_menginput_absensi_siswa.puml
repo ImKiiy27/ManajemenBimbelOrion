@@ -1,0 +1,110 @@
+@startuml
+title Activity Diagram - Guru Menginput Absensi Siswa
+
+start
+
+partition "Guru" {
+    :Guru membuka halaman login;
+    :Guru memasukkan username dan password;
+    :Guru klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login guru;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Guru" {
+        :Guru masuk ke dashboard;
+        :Guru memilih menu Input Absensi;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Input Absensi;
+        :Menampilkan tab Input Absensi dan Riwayat;
+        :Menampilkan pilihan jadwal;
+        :Menampilkan pilihan tanggal;
+    }
+
+    if (Jadwal guru tersedia?) then (Ya)
+
+        partition "Guru" {
+            :Guru memilih jadwal;
+            :Guru memilih tanggal absensi;
+        }
+
+        partition "Sistem" {
+            :Memeriksa jadwal dan tanggal yang dipilih;
+        }
+
+        if (Pilihan jadwal dan tanggal valid?) then (Ya)
+
+            partition "Sistem" {
+                :Menampilkan daftar siswa pada jadwal tersebut;
+                :Menampilkan data absensi yang sudah ada
+jika sebelumnya pernah diisi;
+            }
+
+            partition "Guru" {
+                :Guru memilih status absensi siswa;
+                :Guru mengisi alasan jika status
+Izin, Sakit, atau Alpa;
+                :Guru mengisi catatan guru jika diperlukan;
+                :Guru klik tombol Simpan Semua;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data absensi yang diisi guru;
+            }
+
+            if (Data absensi valid?) then (Ya)
+                partition "Sistem" {
+                    :Menyimpan data absensi;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali halaman Input Absensi;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali halaman Input Absensi;
+                }
+            endif
+
+        else (Tidak)
+
+            partition "Sistem" {
+                :Menampilkan pesan error;
+                :Menampilkan kembali pilihan jadwal dan tanggal;
+            }
+
+        endif
+
+    else (Tidak)
+
+        partition "Sistem" {
+            :Pilihan jadwal kosong;
+            :Siswa tidak dapat ditampilkan;
+        }
+
+        partition "Guru" {
+            :Guru tidak dapat menginput absensi;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Guru" {
+        :Guru kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

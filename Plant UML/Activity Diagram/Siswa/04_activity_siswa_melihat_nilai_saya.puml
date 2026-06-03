@@ -1,0 +1,69 @@
+@startuml
+title Activity Diagram - Siswa Melihat Nilai Saya
+
+start
+
+partition "Siswa" {
+    :Siswa membuka halaman login;
+    :Siswa memasukkan username dan password;
+    :Siswa klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login siswa;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Siswa" {
+        :Siswa masuk ke dashboard;
+        :Siswa memilih menu Nilai;
+    }
+
+    partition "Sistem" {
+        :Mengambil data nilai milik siswa;
+        :Menampilkan halaman Nilai Saya;
+        :Menampilkan total nilai input;
+    }
+
+    if (Data nilai tersedia?) then (Ya)
+
+        partition "Sistem" {
+            :Menampilkan daftar nilai siswa;
+            :Menampilkan guru, mapel, hari/jam,
+pertemuan, tipe nilai, nilai, dan catatan;
+            :Menampilkan penjelasan tipe nilai;
+        }
+
+        partition "Siswa" {
+            :Siswa melihat nilai dan catatan guru;
+        }
+
+    else (Tidak)
+
+        partition "Sistem" {
+            :Menampilkan pesan belum ada nilai;
+        }
+
+        partition "Siswa" {
+            :Siswa mengetahui bahwa nilai
+belum diberikan oleh guru;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Siswa" {
+        :Siswa kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

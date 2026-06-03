@@ -1,0 +1,119 @@
+@startuml
+title Activity Diagram - Admin Atur Pengajar
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Atur Pengajar;
+    }
+
+    partition "Sistem" {
+        :Menampilkan data relasi belajar;
+        :Menampilkan form tambah relasi belajar;
+    }
+
+    partition "Admin" {
+        :Admin melihat data relasi belajar;
+    }
+
+    if (Admin ingin mengelola relasi belajar?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih aksi relasi belajar;
+        }
+
+        if (Aksi yang dipilih?) then (Tambah / Edit Relasi)
+
+            partition "Admin" {
+                :Admin memilih siswa;
+                :Admin memilih mapel yang diikuti siswa;
+                :Admin memilih guru sesuai mapel siswa;
+                :Admin memilih status relasi;
+                :Admin klik tombol Simpan / Proses;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data relasi belajar;
+            }
+
+            if (Data relasi valid?) then (Ya)
+                partition "Sistem" {
+                    :Menyimpan perubahan relasi belajar;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali data relasi dan form;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali data relasi dan form;
+                }
+            endif
+
+        else (Hapus Relasi)
+
+            partition "Admin" {
+                :Admin memilih relasi belajar;
+                :Admin melakukan konfirmasi hapus;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data relasi belajar;
+            }
+
+            if (Relasi dapat dihapus?) then (Ya)
+                partition "Sistem" {
+                    :Menghapus relasi belajar;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali data relasi dan form;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali data relasi dan form;
+                }
+            endif
+
+        endif
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak melakukan perubahan relasi belajar;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

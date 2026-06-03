@@ -1,0 +1,86 @@
+@startuml
+title Activity Diagram - Guru Melihat Riwayat Absensi
+
+start
+
+partition "Guru" {
+    :Guru membuka halaman login;
+    :Guru memasukkan username dan password;
+    :Guru klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login guru;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Guru" {
+        :Guru masuk ke dashboard;
+        :Guru memilih menu Input Absensi;
+        :Guru membuka tab Riwayat;
+        :Guru klik link Lihat Riwayat Absensi Lengkap;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Riwayat Absensi;
+        :Menampilkan ringkasan total absensi;
+        :Menampilkan ringkasan Hadir, Izin + Sakit, dan Alpa;
+        :Menampilkan filter tanggal;
+        :Menampilkan tabel data absensi;
+    }
+
+    partition "Guru" {
+        :Guru melihat riwayat absensi;
+    }
+
+    if (Guru ingin memfilter riwayat?) then (Ya)
+
+        partition "Guru" {
+            :Guru mengisi tanggal dari;
+            :Guru mengisi tanggal sampai;
+            :Guru klik tombol Filter;
+        }
+
+        partition "Sistem" {
+            :Menampilkan data absensi
+sesuai rentang tanggal yang dipilih;
+        }
+
+    else (Tidak)
+
+        partition "Guru" {
+            :Guru tidak melakukan filter tambahan;
+        }
+
+    endif
+
+    if (Guru ingin kembali ke input absensi?) then (Ya)
+        partition "Guru" {
+            :Guru klik tombol Kembali Input;
+        }
+        partition "Sistem" {
+            :Menampilkan kembali halaman Input Absensi;
+        }
+    else (Tidak)
+        partition "Guru" {
+            :Guru tetap melihat riwayat absensi
+atau memilih menu lain;
+        }
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Guru" {
+        :Guru kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

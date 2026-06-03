@@ -1,0 +1,66 @@
+@startuml
+title Activity Diagram - Wali Murid Melihat Absensi Anak
+
+start
+
+partition "Wali Murid" {
+    :Wali murid membuka halaman login;
+    :Wali murid memasukkan email/username dan password;
+    :Wali murid klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login wali murid;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Wali Murid" {
+        :Wali murid masuk ke dashboard;
+        :Wali murid memilih menu Absensi Anak;
+    }
+
+    partition "Sistem" {
+        :Mengambil riwayat absensi anak
+yang terhubung dengan wali murid;
+        :Menghitung ringkasan kehadiran;
+    }
+
+    if (Data absensi tersedia?) then (Ya)
+        partition "Sistem" {
+            :Menampilkan halaman Absensi Anak;
+            :Menampilkan ringkasan total absensi,
+hadir, izin, sakit, dan alpa;
+            :Menampilkan riwayat kehadiran per anak;
+            :Menampilkan informasi tanggal, hari,
+jam, guru, status, alasan,
+dan catatan guru;
+        }
+
+        partition "Wali Murid" {
+            :Wali murid melihat riwayat kehadiran anak;
+        }
+    else (Tidak)
+        partition "Sistem" {
+            :Menampilkan halaman Absensi Anak;
+            :Menampilkan pesan belum ada data absensi;
+        }
+
+        partition "Wali Murid" {
+            :Wali murid melihat informasi bahwa
+absensi anak belum tersedia;
+        }
+    endif
+
+else (Tidak)
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Wali Murid" {
+        :Wali murid kembali ke halaman login;
+    }
+endif
+
+stop
+@enduml

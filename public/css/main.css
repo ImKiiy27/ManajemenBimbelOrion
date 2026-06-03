@@ -47,7 +47,10 @@
 }
 
 * { font-family: 'Poppins', sans-serif; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-color);
+}
 
 body {
   margin: 0;

@@ -1,0 +1,119 @@
+@startuml
+title Activity Diagram - Admin Mengelola Profil
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Profil;
+    }
+
+    partition "Sistem" {
+        :Menampilkan data profil admin;
+        :Menampilkan form update profil;
+        :Menampilkan form ubah password;
+    }
+
+    partition "Admin" {
+        :Admin melihat data profil;
+    }
+
+    if (Admin ingin mengelola profil?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih aksi profil;
+        }
+
+        if (Aksi yang dipilih?) then (Update Profil)
+
+            partition "Admin" {
+                :Admin mengubah data profil;
+                :Admin klik tombol Simpan Profil;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data profil;
+            }
+
+            if (Data profil valid?) then (Ya)
+                partition "Sistem" {
+                    :Menyimpan perubahan profil;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali data profil;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali data profil;
+                }
+            endif
+
+        else (Ubah Password)
+
+            partition "Admin" {
+                :Admin mengisi password lama;
+                :Admin mengisi password baru;
+                :Admin mengisi konfirmasi password baru;
+                :Admin klik tombol Update Password;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data password;
+            }
+
+            if (Data password valid?) then (Ya)
+                partition "Sistem" {
+                    :Menyimpan password baru;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali halaman profil;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali halaman profil;
+                }
+            endif
+
+        endif
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak melakukan perubahan profil;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

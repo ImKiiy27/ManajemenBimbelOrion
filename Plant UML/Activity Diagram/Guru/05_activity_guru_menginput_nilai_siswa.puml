@@ -1,0 +1,136 @@
+@startuml
+title Activity Diagram - Guru Menginput Nilai Siswa
+
+start
+
+partition "Guru" {
+    :Guru membuka halaman login;
+    :Guru memasukkan username dan password;
+    :Guru klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login guru;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Guru" {
+        :Guru masuk ke dashboard;
+        :Guru memilih menu Input Nilai;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Input Nilai Siswa;
+        :Menampilkan total jadwal aktif;
+        :Menampilkan total nilai input;
+    }
+
+    if (Jadwal aktif tersedia?) then (Ya)
+
+        partition "Sistem" {
+            :Menampilkan form input nilai;
+            :Menampilkan daftar nilai yang sudah diinput;
+        }
+
+        partition "Guru" {
+            :Guru melihat form dan daftar nilai;
+        }
+
+        if (Guru ingin mengelola nilai?) then (Ya)
+
+            partition "Guru" {
+                :Guru memilih aksi nilai;
+            }
+
+            if (Aksi yang dipilih?) then (Tambah / Simpan Nilai)
+
+                partition "Guru" {
+                    :Guru memilih jadwal;
+                    :Guru mengisi pertemuan ke;
+                    :Guru memilih tipe nilai;
+                    :Guru mengisi nilai/score;
+                    :Guru mengisi catatan guru jika ada;
+                    :Guru mengisi catatan detail jika diperlukan;
+                    :Guru klik tombol Simpan Nilai;
+                }
+
+                partition "Sistem" {
+                    :Memeriksa data nilai;
+                }
+
+                if (Data nilai valid?) then (Ya)
+                    partition "Sistem" {
+                        :Menyimpan nilai siswa;
+                        :Menampilkan pesan berhasil;
+                        :Menampilkan kembali halaman Input Nilai Siswa;
+                    }
+                else (Tidak)
+                    partition "Sistem" {
+                        :Menampilkan pesan error;
+                        :Menampilkan kembali halaman Input Nilai Siswa;
+                    }
+                endif
+
+            else (Hapus Nilai)
+
+                partition "Guru" {
+                    :Guru memilih data nilai yang akan dihapus;
+                    :Guru mengonfirmasi hapus nilai;
+                }
+
+                partition "Sistem" {
+                    :Memeriksa data nilai yang dipilih;
+                }
+
+                if (Data nilai dapat dihapus?) then (Ya)
+                    partition "Sistem" {
+                        :Menghapus data nilai;
+                        :Menampilkan pesan berhasil;
+                        :Menampilkan kembali halaman Input Nilai Siswa;
+                    }
+                else (Tidak)
+                    partition "Sistem" {
+                        :Menampilkan pesan error;
+                        :Menampilkan kembali halaman Input Nilai Siswa;
+                    }
+                endif
+
+            endif
+
+        else (Tidak)
+
+            partition "Guru" {
+                :Guru tidak melakukan perubahan nilai;
+            }
+
+        endif
+
+    else (Tidak)
+
+        partition "Sistem" {
+            :Menampilkan informasi bahwa guru
+belum memiliki jadwal aktif;
+        }
+
+        partition "Guru" {
+            :Guru tidak dapat menginput nilai;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Guru" {
+        :Guru kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

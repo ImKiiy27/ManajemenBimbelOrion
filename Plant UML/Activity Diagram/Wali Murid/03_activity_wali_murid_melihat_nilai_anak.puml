@@ -1,0 +1,80 @@
+@startuml
+title Activity Diagram - Wali Murid Melihat Nilai Anak
+
+start
+
+partition "Wali Murid" {
+    :Wali murid membuka halaman login;
+    :Wali murid memasukkan email/username dan password;
+    :Wali murid klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login wali murid;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Wali Murid" {
+        :Wali murid masuk ke dashboard;
+        :Wali murid memilih menu Nilai Anak;
+    }
+
+    partition "Sistem" {
+        :Mengambil data anak yang terhubung
+dengan wali murid;
+    }
+
+    if (Data anak tersedia?) then (Ya)
+        partition "Sistem" {
+            :Mengambil data nilai setiap anak;
+        }
+
+        if (Nilai anak tersedia?) then (Ya)
+            partition "Sistem" {
+                :Menampilkan halaman Nilai Anak;
+                :Menampilkan rekap nilai per anak;
+                :Menampilkan informasi pertemuan,
+tipe nilai, predikat, guru,
+dan catatan guru;
+            }
+
+            partition "Wali Murid" {
+                :Wali murid melihat perkembangan nilai anak;
+            }
+        else (Tidak)
+            partition "Sistem" {
+                :Menampilkan halaman Nilai Anak;
+                :Menampilkan pesan belum ada nilai;
+            }
+
+            partition "Wali Murid" {
+                :Wali murid melihat informasi bahwa
+nilai anak belum tersedia;
+            }
+        endif
+
+    else (Tidak)
+        partition "Sistem" {
+            :Menampilkan halaman Nilai Anak;
+            :Menampilkan pesan belum ada data anak;
+        }
+
+        partition "Wali Murid" {
+            :Wali murid melihat informasi bahwa
+belum ada anak yang terhubung;
+        }
+    endif
+
+else (Tidak)
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Wali Murid" {
+        :Wali murid kembali ke halaman login;
+    }
+endif
+
+stop
+@enduml

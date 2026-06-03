@@ -1,0 +1,62 @@
+@startuml
+title Activity Diagram - Guru Melihat Jadwal Mengajar
+
+start
+
+partition "Guru" {
+    :Guru membuka halaman login;
+    :Guru memasukkan username dan password;
+    :Guru klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login guru;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Guru" {
+        :Guru masuk ke dashboard;
+        :Guru memilih menu Jadwal Mengajar;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Jadwal Mengajar;
+        :Menampilkan jumlah total jadwal;
+    }
+
+    if (Jadwal mengajar tersedia?) then (Ya)
+        partition "Sistem" {
+            :Menampilkan tabel jadwal mengajar;
+            :Menampilkan data hari, jam, siswa,
+kelas/program, mapel siswa, dan mapel guru;
+        }
+
+        partition "Guru" {
+            :Guru melihat jadwal mengajar;
+        }
+    else (Tidak)
+        partition "Sistem" {
+            :Menampilkan pesan belum ada jadwal mengajar;
+        }
+
+        partition "Guru" {
+            :Guru mengetahui bahwa jadwal belum tersedia;
+        }
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Guru" {
+        :Guru kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

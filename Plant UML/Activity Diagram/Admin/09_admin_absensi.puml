@@ -1,0 +1,116 @@
+@startuml
+title Activity Diagram - Admin Mengelola Absensi
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Absensi;
+    }
+
+    partition "Sistem" {
+        :Menampilkan filter absensi;
+        :Menampilkan rekap data absensi;
+    }
+
+    partition "Admin" {
+        :Admin melihat data absensi;
+    }
+
+    if (Admin ingin memfilter data absensi?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih guru;
+            :Admin memilih siswa;
+            :Admin memilih status absensi;
+            :Admin memilih rentang tanggal;
+            :Admin klik tombol Filter;
+        }
+
+        partition "Sistem" {
+            :Menampilkan data absensi sesuai filter;
+        }
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tetap melihat data absensi yang tampil;
+        }
+
+    endif
+
+    if (Admin ingin mengoreksi absensi?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih data absensi yang akan dikoreksi;
+        }
+
+        partition "Sistem" {
+            :Menampilkan detail absensi dan form koreksi;
+        }
+
+        partition "Admin" {
+            :Admin memilih status absensi baru;
+            :Admin mengisi alasan jika diperlukan;
+            :Admin mengisi alasan koreksi;
+            :Admin klik tombol Simpan Koreksi;
+        }
+
+        partition "Sistem" {
+            :Memeriksa data koreksi absensi;
+        }
+
+        if (Data koreksi valid?) then (Ya)
+            partition "Sistem" {
+                :Menyimpan koreksi absensi;
+                :Menampilkan pesan berhasil;
+                :Menampilkan kembali rekap absensi;
+            }
+        else (Tidak)
+            partition "Sistem" {
+                :Menampilkan pesan error;
+                :Menampilkan kembali rekap absensi dan form koreksi;
+            }
+        endif
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak melakukan koreksi absensi;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

@@ -1,0 +1,156 @@
+@startuml
+title Activity Diagram - Admin Mengelola Data Wali Murid
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Data Wali Murid;
+    }
+
+    partition "Sistem" {
+        :Menampilkan data wali murid;
+        :Menampilkan form tambah wali murid;
+    }
+
+    partition "Admin" {
+        :Admin melihat data wali murid;
+    }
+
+    if (Admin ingin mengelola data wali murid?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih aksi wali murid;
+        }
+
+        if (Aksi yang dipilih?) then (Tambah / Edit Wali)
+
+            partition "Admin" {
+                :Admin mengisi nama wali murid;
+                :Admin mengisi nomor telepon;
+                :Admin mengisi hubungan;
+                :Admin mengisi pekerjaan;
+                :Admin mengisi alamat;
+                :Admin klik tombol Simpan / Proses;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data wali murid;
+            }
+
+            if (Data wali murid valid?) then (Ya)
+                partition "Sistem" {
+                    :Menyimpan perubahan data wali murid;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali data wali murid dan form;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali data wali murid dan form;
+                }
+            endif
+
+        elseif (Buat Akun Wali)
+
+            partition "Admin" {
+                :Admin memilih wali yang belum memiliki akun;
+                :Admin mengisi email dan password akun wali;
+                :Admin klik tombol Buat Akun;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data akun wali;
+            }
+
+            if (Data akun valid?) then (Ya)
+                partition "Sistem" {
+                    :Membuat akun login wali murid;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali data wali murid dan form;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali data wali murid dan form;
+                }
+            endif
+
+        elseif (Lihat Siswa)
+
+            partition "Admin" {
+                :Admin memilih wali murid;
+                :Admin klik tombol lihat siswa;
+            }
+
+            partition "Sistem" {
+                :Menampilkan daftar siswa yang terhubung dengan wali;
+            }
+
+        else (Hapus Wali)
+
+            partition "Admin" {
+                :Admin memilih wali murid yang akan dihapus;
+                :Admin melakukan konfirmasi hapus;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data wali dan relasi siswa;
+            }
+
+            if (Wali murid dapat dihapus?) then (Ya)
+                partition "Sistem" {
+                    :Menghapus data wali murid;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali data wali murid dan form;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali data wali murid dan form;
+                }
+            endif
+
+        endif
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak melakukan perubahan data wali murid;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

@@ -1,0 +1,89 @@
+@startuml
+title Activity Diagram - Admin Mengelola Data Siswa
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Data Siswa;
+    }
+
+    partition "Sistem" {
+        :Menampilkan data siswa;
+        :Menampilkan ringkasan data siswa;
+        :Menampilkan form edit data siswa;
+    }
+
+    partition "Admin" {
+        :Admin melihat data siswa;
+    }
+
+    if (Admin ingin mengubah data siswa?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih siswa yang akan diedit;
+            :Admin mengubah nama siswa;
+            :Admin mengubah kelas siswa;
+            :Admin memilih wali murid;
+            :Admin memilih mapel yang diikuti siswa;
+            :Admin klik tombol Simpan Perubahan;
+        }
+
+        partition "Sistem" {
+            :Memeriksa data siswa;
+        }
+
+        if (Data siswa valid?) then (Ya)
+            partition "Sistem" {
+                :Menyimpan perubahan data siswa;
+                :Menampilkan pesan berhasil;
+                :Menampilkan kembali data siswa dan form;
+            }
+        else (Tidak)
+            partition "Sistem" {
+                :Menampilkan pesan error;
+                :Menampilkan kembali data siswa dan form;
+            }
+        endif
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak melakukan perubahan data siswa;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

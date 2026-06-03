@@ -1,0 +1,75 @@
+@startuml
+title Activity Diagram - Admin Mengakses Dashboard
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+    }
+
+    partition "Sistem" {
+        :Menampilkan ringkasan dashboard admin;
+        :Menampilkan total jadwal;
+        :Menampilkan total pendaftaran baru;
+        :Menampilkan daftar pendaftaran terbaru;
+    }
+
+    partition "Admin" {
+        :Admin melihat informasi dashboard;
+    }
+
+    if (Admin ingin melihat detail pendaftaran?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih salah satu data pendaftaran;
+        }
+
+        partition "Sistem" {
+            :Menampilkan detail pendaftaran;
+        }
+
+        partition "Admin" {
+            :Admin menutup detail pendaftaran;
+        }
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak membuka detail pendaftaran;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

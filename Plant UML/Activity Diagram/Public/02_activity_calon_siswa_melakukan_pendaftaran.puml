@@ -1,0 +1,144 @@
+@startuml
+title Activity Diagram - Calon Siswa Melakukan Pendaftaran
+
+start
+
+partition "Pengunjung / Calon Siswa" {
+  :Mengakses landing page;
+  :Klik tombol Daftar;
+}
+
+partition "Sistem" {
+  :Menampilkan halaman pendaftaran;
+  :Menampilkan form pendaftaran
+beserta pilihan program / mapel;
+}
+
+partition "Pengunjung / Calon Siswa" {
+  :Mengisi data pribadi;
+  :Mengisi data akademik;
+  :Mengisi data wali;
+  :Memilih program / mapel;
+  :Mengisi catatan tambahan bila ada;
+  :Klik tombol Simpan Pendaftaran;
+}
+
+partition "Sistem" {
+  :Memeriksa permintaan pendaftaran;
+}
+
+if (Terlalu banyak permintaan?) then (Ya)
+  partition "Sistem" {
+    :Menampilkan pesan terlalu banyak permintaan;
+  }
+  partition "Pengunjung / Calon Siswa" {
+    :Menunggu beberapa saat
+sebelum mencoba lagi;
+  }
+  stop
+else (Tidak)
+endif
+
+partition "Sistem" {
+  :Memvalidasi data pendaftaran;
+}
+
+if (Data wajib lengkap?) then (Ya)
+else (Tidak)
+  partition "Sistem" {
+    :Menampilkan pesan
+"Semua field wajib diisi";
+    :Menampilkan kembali form pendaftaran;
+  }
+  partition "Pengunjung / Calon Siswa" {
+    :Melengkapi data yang kosong;
+  }
+  stop
+endif
+
+if (Format dan panjang data valid?) then (Ya)
+else (Tidak)
+  partition "Sistem" {
+    :Menampilkan pesan error sesuai kesalahan;
+    note right
+    Contoh:
+    - Format email tidak valid
+    - Format nomor HP tidak valid
+    - Nama terlalu panjang
+    - Alamat terlalu panjang
+    - Jenjang tidak valid
+    end note
+    :Menampilkan kembali form pendaftaran;
+  }
+  partition "Pengunjung / Calon Siswa" {
+    :Memperbaiki data pendaftaran;
+  }
+  stop
+endif
+
+if (Program / mapel dipilih dan valid?) then (Ya)
+else (Tidak)
+  partition "Sistem" {
+    :Menampilkan pesan pilihan mapel tidak valid
+atau belum memilih mapel;
+    :Menampilkan kembali form pendaftaran;
+  }
+  partition "Pengunjung / Calon Siswa" {
+    :Memilih ulang program / mapel;
+  }
+  stop
+endif
+
+partition "Sistem" {
+  :Memeriksa email dan nomor HP;
+}
+
+if (Email / nomor HP sudah punya pendaftaran aktif?) then (Ya)
+  partition "Sistem" {
+    :Menampilkan pesan bahwa email
+atau nomor HP sudah memiliki
+pendaftaran aktif;
+    :Meminta calon siswa menunggu
+verifikasi admin;
+    :Menampilkan kembali form pendaftaran;
+  }
+  stop
+else (Tidak)
+endif
+
+if (Pernah mendaftar kurang dari 24 jam?) then (Ya)
+  partition "Sistem" {
+    :Menampilkan pesan harus menunggu
+sebelum mendaftar ulang;
+    :Menampilkan sisa waktu tunggu;
+    :Menampilkan kembali form pendaftaran;
+  }
+  stop
+else (Tidak)
+endif
+
+if (Email / nomor HP sudah terdaftar sebagai akun aktif?) then (Ya)
+  partition "Sistem" {
+    :Menampilkan pesan data sudah terdaftar
+atau meminta pengguna login;
+    :Menampilkan kembali form pendaftaran;
+  }
+  stop
+else (Tidak)
+endif
+
+partition "Sistem" {
+  :Menyimpan data pendaftaran;
+  :Menyimpan pilihan program / mapel;
+  :Memberi status pendaftaran pending;
+  :Menampilkan pesan pendaftaran berhasil;
+  :Memberi informasi bahwa admin akan
+memverifikasi dan menghubungi calon siswa;
+}
+
+partition "Pengunjung / Calon Siswa" {
+  :Melihat pesan pendaftaran berhasil;
+}
+
+stop
+@enduml

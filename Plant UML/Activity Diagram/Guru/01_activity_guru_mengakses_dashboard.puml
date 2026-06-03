@@ -1,0 +1,62 @@
+@startuml
+title Activity Diagram - Guru Mengakses Dashboard
+
+start
+
+partition "Guru" {
+    :Guru membuka halaman login;
+    :Guru memasukkan username dan password;
+    :Guru klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login guru;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Guru" {
+        :Guru masuk ke dashboard;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Dashboard Guru;
+        :Menampilkan informasi jadwal mengajar;
+        :Menampilkan informasi total siswa;
+        :Menampilkan informasi absensi hari ini;
+        :Menampilkan tabel Jadwal Mengajar Hari Ini;
+    }
+
+    partition "Guru" {
+        :Guru melihat informasi dashboard;
+    }
+
+    if (Guru ingin melihat semua jadwal?) then (Ya)
+        partition "Guru" {
+            :Guru klik tombol Lihat Semua;
+        }
+        partition "Sistem" {
+            :Mengarahkan ke halaman Jadwal Mengajar;
+        }
+    else (Tidak)
+        partition "Guru" {
+            :Guru tetap berada di dashboard
+atau memilih menu lain;
+        }
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Guru" {
+        :Guru kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

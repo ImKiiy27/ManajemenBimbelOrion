@@ -1,0 +1,61 @@
+@startuml
+title Activity Diagram - Wali Murid Mengakses Dashboard
+
+start
+
+partition "Wali Murid" {
+    :Wali murid membuka halaman login;
+    :Wali murid memasukkan email/username dan password;
+    :Wali murid klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login wali murid;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Sistem" {
+        :Mengarahkan ke Dashboard Wali Murid;
+        :Mengambil data anak yang terhubung;
+        :Mengambil ringkasan jadwal, nilai,
+dan kehadiran anak;
+    }
+
+    if (Data anak tersedia?) then (Ya)
+        partition "Sistem" {
+            :Menampilkan Dashboard Wali Murid;
+            :Menampilkan Ringkasan Keluarga;
+            :Menampilkan jumlah anak,
+total jadwal aktif, nilai terbaik,
+dan total kehadiran;
+            :Menampilkan Profil Anak;
+        }
+
+        partition "Wali Murid" {
+            :Wali murid melihat ringkasan perkembangan anak;
+        }
+    else (Tidak)
+        partition "Sistem" {
+            :Menampilkan Dashboard Wali Murid;
+            :Menampilkan pesan belum ada data anak;
+        }
+
+        partition "Wali Murid" {
+            :Wali murid melihat informasi bahwa
+belum ada anak yang terhubung;
+        }
+    endif
+
+else (Tidak)
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Wali Murid" {
+        :Wali murid kembali ke halaman login;
+    }
+endif
+
+stop
+@enduml

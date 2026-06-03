@@ -1,0 +1,79 @@
+@startuml
+title Activity Diagram - Wali Murid Melihat Jadwal Anak
+
+start
+
+partition "Wali Murid" {
+    :Wali murid membuka halaman login;
+    :Wali murid memasukkan email/username dan password;
+    :Wali murid klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login wali murid;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Wali Murid" {
+        :Wali murid masuk ke dashboard;
+        :Wali murid memilih menu Jadwal Anak;
+    }
+
+    partition "Sistem" {
+        :Mengambil data anak yang terhubung
+dengan wali murid;
+    }
+
+    if (Data anak tersedia?) then (Ya)
+        partition "Sistem" {
+            :Mengambil jadwal belajar setiap anak;
+        }
+
+        if (Jadwal anak tersedia?) then (Ya)
+            partition "Sistem" {
+                :Menampilkan halaman Jadwal Anak;
+                :Menampilkan daftar jadwal per anak;
+                :Menampilkan informasi hari, jam,
+guru, dan mata pelajaran;
+            }
+
+            partition "Wali Murid" {
+                :Wali murid melihat jadwal belajar anak;
+            }
+        else (Tidak)
+            partition "Sistem" {
+                :Menampilkan halaman Jadwal Anak;
+                :Menampilkan pesan belum ada jadwal;
+            }
+
+            partition "Wali Murid" {
+                :Wali murid melihat informasi bahwa
+jadwal anak belum tersedia;
+            }
+        endif
+
+    else (Tidak)
+        partition "Sistem" {
+            :Menampilkan halaman Jadwal Anak;
+            :Menampilkan pesan belum ada data anak;
+        }
+
+        partition "Wali Murid" {
+            :Wali murid melihat informasi bahwa
+belum ada anak yang terhubung;
+        }
+    endif
+
+else (Tidak)
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Wali Murid" {
+        :Wali murid kembali ke halaman login;
+    }
+endif
+
+stop
+@enduml

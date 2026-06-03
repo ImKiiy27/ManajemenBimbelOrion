@@ -1,0 +1,102 @@
+@startuml
+title Activity Diagram - Admin Kelola Mapel
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Kelola Mapel;
+    }
+
+    partition "Sistem" {
+        :Menampilkan data mapel;
+        :Menampilkan form tambah mapel;
+    }
+
+    partition "Admin" {
+        :Admin melihat data mapel;
+    }
+
+    if (Admin ingin mengelola mapel?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih aksi mapel;
+        }
+
+        if (Aksi yang dipilih?) then (Tambah / Edit)
+
+            partition "Admin" {
+                :Admin mengisi nama mapel;
+                :Admin mengisi deskripsi;
+                :Admin memilih status mapel;
+                :Admin klik tombol Simpan / Proses;
+            }
+
+        else (Ubah Status)
+
+            partition "Admin" {
+                :Admin memilih mapel;
+                :Admin mengubah status aktif / nonaktif;
+                :Admin klik tombol Simpan / Proses;
+            }
+
+        endif
+
+        partition "Sistem" {
+            :Memeriksa data mapel;
+        }
+
+        if (Data mapel valid?) then (Ya)
+            partition "Sistem" {
+                :Menyimpan perubahan data mapel;
+                :Menampilkan pesan berhasil;
+                :Menampilkan kembali data mapel dan form;
+            }
+        else (Tidak)
+            partition "Sistem" {
+                :Menampilkan pesan error;
+                :Menampilkan kembali data mapel dan form;
+            }
+        endif
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak melakukan perubahan mapel;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

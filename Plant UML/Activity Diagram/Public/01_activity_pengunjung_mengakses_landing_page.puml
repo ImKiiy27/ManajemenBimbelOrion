@@ -1,0 +1,66 @@
+@startuml
+title Activity Diagram - Pengunjung Mengakses Landing Page
+
+start
+
+partition "Pengunjung / Calon Siswa" {
+  :Membuka browser;
+  :Mengakses website Bimbel Orion;
+}
+
+partition "Sistem" {
+  :Menerima permintaan halaman utama;
+  :Memuat halaman landing page;
+}
+
+if (Landing page berhasil dimuat?) then (Ya)
+  partition "Sistem" {
+    :Menampilkan landing page;
+    :Menampilkan navbar, hero section,
+informasi layanan, program,
+tombol Daftar dan Login;
+  }
+
+  partition "Pengunjung / Calon Siswa" {
+    :Melihat informasi pada landing page;
+    :Memilih aksi yang tersedia;
+  }
+
+  if (Aksi yang dipilih?) then (Klik Daftar)
+    partition "Sistem" {
+      :Mengarahkan ke halaman pendaftaran;
+      :Menampilkan form pendaftaran siswa;
+    }
+  elseif (Klik Login)
+    partition "Sistem" {
+      :Mengarahkan ke halaman login;
+      :Menampilkan form login;
+    }
+  elseif (Lihat Informasi / Kontak)
+    partition "Sistem" {
+      :Menampilkan bagian informasi yang dipilih;
+    }
+  elseif (Syarat / Kebijakan Privasi)
+    partition "Sistem" {
+      :Menampilkan halaman informasi kebijakan;
+    }
+  else (Tidak memilih aksi)
+    partition "Pengunjung / Calon Siswa" {
+      :Tetap membaca halaman
+atau menutup website;
+    }
+  endif
+
+else (Tidak)
+  partition "Sistem" {
+    :Menampilkan halaman gagal dimuat
+atau koneksi bermasalah;
+  }
+  partition "Pengunjung / Calon Siswa" {
+    :Memuat ulang halaman
+atau menutup website;
+  }
+endif
+
+stop
+@enduml

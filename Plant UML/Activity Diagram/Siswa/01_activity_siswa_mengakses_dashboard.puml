@@ -1,0 +1,70 @@
+@startuml
+title Activity Diagram - Siswa Mengakses Dashboard
+
+start
+
+partition "Siswa" {
+    :Siswa membuka halaman login;
+    :Siswa memasukkan username dan password;
+    :Siswa klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login siswa;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Siswa" {
+        :Siswa masuk ke dashboard;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Dashboard Siswa;
+        :Menampilkan sapaan siswa;
+        :Menampilkan ringkasan mata pelajaran,
+total jadwal, dan kehadiran;
+        :Menampilkan bagian Jadwal Les Saya;
+        :Menampilkan bagian Nilai Terbaru;
+    }
+
+    partition "Siswa" {
+        :Siswa melihat informasi dashboard;
+    }
+
+    if (Siswa ingin membuka informasi lanjutan?) then (Ya)
+
+        partition "Siswa" {
+            :Siswa memilih tombol Lihat Semua
+pada jadwal atau nilai;
+        }
+
+        partition "Sistem" {
+            :Mengarahkan siswa ke halaman
+Jadwal Les atau Nilai;
+        }
+
+    else (Tidak)
+
+        partition "Siswa" {
+            :Siswa tetap di dashboard
+atau memilih menu lain;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Siswa" {
+        :Siswa kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

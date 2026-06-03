@@ -1,0 +1,132 @@
+@startuml
+title Activity Diagram - Siswa Mengelola Profil Saya
+
+start
+
+partition "Siswa" {
+    :Siswa membuka halaman login;
+    :Siswa memasukkan username dan password;
+    :Siswa klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login siswa;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Siswa" {
+        :Siswa masuk ke dashboard;
+        :Siswa memilih menu Profil;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Profil Saya;
+        :Menampilkan biodata siswa;
+        :Menampilkan ringkasan aktivitas siswa;
+        :Menampilkan form Ubah Profil;
+        :Menampilkan form Ganti Password;
+    }
+
+    partition "Siswa" {
+        :Siswa melihat profil saya;
+    }
+
+    if (Siswa ingin mengelola profil?) then (Ya)
+
+        partition "Siswa" {
+            :Siswa memilih aksi profil;
+        }
+
+        if (Aksi yang dipilih?) then (Ubah Profil)
+
+            partition "Siswa" {
+                :Siswa mengubah data profil;
+                note right
+                Data yang dapat diubah:
+                - Nama
+                - Email
+                - No. telepon
+                - Alamat
+                - Asal sekolah
+                - Bio
+                end note
+                :Siswa klik tombol Simpan Profil;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data profil;
+            }
+
+            if (Data profil valid?) then (Ya)
+
+                partition "Sistem" {
+                    :Menyimpan perubahan profil;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali halaman Profil Saya;
+                }
+
+            else (Tidak)
+
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali halaman Profil Saya;
+                }
+
+            endif
+
+        else (Ganti Password)
+
+            partition "Siswa" {
+                :Siswa mengisi password saat ini;
+                :Siswa mengisi password baru;
+                :Siswa mengisi konfirmasi password baru;
+                :Siswa klik tombol Update Password;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data password;
+            }
+
+            if (Data password valid?) then (Ya)
+
+                partition "Sistem" {
+                    :Menyimpan password baru;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali halaman Profil Saya;
+                }
+
+            else (Tidak)
+
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali halaman Profil Saya;
+                }
+
+            endif
+
+        endif
+
+    else (Tidak)
+
+        partition "Siswa" {
+            :Siswa tidak melakukan perubahan profil;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Siswa" {
+        :Siswa kembali ke halaman login;
+    }
+
+endif
+
+stop
+
+@enduml

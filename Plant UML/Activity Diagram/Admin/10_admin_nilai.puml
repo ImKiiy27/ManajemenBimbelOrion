@@ -1,0 +1,122 @@
+@startuml
+title Activity Diagram - Admin Mengelola Nilai
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Nilai;
+    }
+
+    partition "Sistem" {
+        :Menampilkan filter nilai;
+        :Menampilkan data nilai;
+    }
+
+    partition "Admin" {
+        :Admin melihat data nilai;
+    }
+
+    if (Admin ingin memfilter data nilai?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih guru;
+            :Admin memilih siswa;
+            :Admin menerapkan filter;
+        }
+
+        partition "Sistem" {
+            :Menampilkan data nilai sesuai filter;
+        }
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tetap melihat data nilai yang tampil;
+        }
+
+    endif
+
+    if (Admin ingin mengelola data nilai?) then (Ya)
+
+        partition "Admin" {
+            :Admin memilih aksi nilai;
+        }
+
+        if (Aksi yang dipilih?) then (Lihat Detail)
+
+            partition "Admin" {
+                :Admin memilih data nilai;
+            }
+
+            partition "Sistem" {
+                :Menampilkan detail nilai;
+            }
+
+        else (Hapus Nilai)
+
+            partition "Admin" {
+                :Admin memilih nilai yang akan dihapus;
+                :Admin melakukan konfirmasi hapus;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data nilai;
+            }
+
+            if (Data nilai valid?) then (Ya)
+                partition "Sistem" {
+                    :Menghapus data nilai;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali data nilai;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali data nilai;
+                }
+            endif
+
+        endif
+
+    else (Tidak)
+
+        partition "Admin" {
+            :Admin tidak melakukan perubahan data nilai;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

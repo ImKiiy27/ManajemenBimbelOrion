@@ -8,8 +8,8 @@
    ------------------------------------------------------------ */
 function initTheme() {
   const html = document.documentElement;
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  html.setAttribute('data-theme', savedTheme);
+  const savedTheme = getSavedTheme();
+  applyTheme(savedTheme);
   updateThemeIcon(savedTheme);
 
   const themeToggle = document.getElementById('themeToggle');
@@ -18,10 +18,29 @@ function initTheme() {
   themeToggle.addEventListener('click', function () {
     const current = html.getAttribute('data-theme');
     const next = current === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
+    applyTheme(next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch (error) {
+      // Theme still changes for the current page if storage is unavailable.
+    }
     updateThemeIcon(next);
   });
+}
+
+function getSavedTheme() {
+  try {
+    return localStorage.getItem('theme') || 'light';
+  } catch (error) {
+    return 'light';
+  }
+}
+
+function applyTheme(theme) {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', theme);
+  html.style.backgroundColor = theme === 'dark' ? '#1a1a2e' : '#f8f9fa';
+  html.style.colorScheme = theme;
 }
 
 function updateThemeIcon(theme) {

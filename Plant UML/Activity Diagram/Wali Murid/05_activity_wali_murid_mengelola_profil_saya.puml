@@ -1,0 +1,117 @@
+@startuml
+title Activity Diagram - Wali Murid Mengelola Profil Saya
+
+start
+
+partition "Wali Murid" {
+    :Wali murid membuka halaman login;
+    :Wali murid memasukkan email/username dan password;
+    :Wali murid klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login wali murid;
+}
+
+if (Login valid?) then (Ya)
+
+    partition "Wali Murid" {
+        :Wali murid masuk ke dashboard;
+        :Wali murid memilih menu Profil;
+    }
+
+    partition "Sistem" {
+        :Menampilkan halaman Profil Saya;
+        :Menampilkan biodata wali murid;
+        :Menampilkan form Ubah Profil;
+        :Menampilkan form Ganti Password;
+        :Menampilkan Data Anak;
+    }
+
+    partition "Wali Murid" {
+        :Wali murid melihat profil;
+    }
+
+    if (Wali murid ingin mengelola profil?) then (Ya)
+        partition "Wali Murid" {
+            :Wali murid memilih aksi profil;
+        }
+
+        if (Aksi yang dipilih?) then (Ubah Profil)
+            partition "Wali Murid" {
+                :Wali murid mengubah data profil;
+                note right
+                Data yang dapat diubah:
+                - Nama lengkap
+                - Email
+                - No. telepon
+                - Alamat
+                - Hubungan
+                - Pekerjaan
+                end note
+                :Wali murid klik tombol Simpan Profil;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data profil;
+            }
+
+            if (Data profil valid?) then (Ya)
+                partition "Sistem" {
+                    :Menyimpan perubahan profil;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali halaman Profil Saya;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali halaman Profil Saya
+beserta form profil;
+                }
+            endif
+
+        else (Ganti Password)
+            partition "Wali Murid" {
+                :Wali murid mengisi password saat ini;
+                :Wali murid mengisi password baru;
+                :Wali murid mengisi konfirmasi password baru;
+                :Wali murid klik tombol Update Password;
+            }
+
+            partition "Sistem" {
+                :Memeriksa data password;
+            }
+
+            if (Data password valid?) then (Ya)
+                partition "Sistem" {
+                    :Memperbarui password;
+                    :Menampilkan pesan berhasil;
+                    :Menampilkan kembali halaman Profil Saya;
+                }
+            else (Tidak)
+                partition "Sistem" {
+                    :Menampilkan pesan error;
+                    :Menampilkan kembali halaman Profil Saya
+beserta form password;
+                }
+            endif
+        endif
+
+    else (Tidak)
+        partition "Wali Murid" {
+            :Wali murid tidak melakukan perubahan profil;
+        }
+    endif
+
+else (Tidak)
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Wali Murid" {
+        :Wali murid kembali ke halaman login;
+    }
+endif
+
+stop
+@enduml

@@ -1,0 +1,140 @@
+@startuml
+title Activity Diagram - Pengguna Login dan Diarahkan Sesuai Role
+
+start
+
+partition "Pengguna" {
+  :Membuka halaman login;
+}
+
+partition "Sistem" {
+  :Menampilkan form login;
+}
+
+partition "Pengguna" {
+  :Mengisi email dan password;
+  :Klik tombol Masuk;
+}
+
+partition "Sistem" {
+  :Memeriksa permintaan login;
+}
+
+if (Terlalu banyak permintaan?) then (Ya)
+  partition "Sistem" {
+    :Menampilkan pesan terlalu banyak permintaan;
+  }
+  partition "Pengguna" {
+    :Menunggu beberapa saat
+sebelum mencoba lagi;
+  }
+  stop
+else (Tidak)
+endif
+
+partition "Sistem" {
+  :Memvalidasi input login;
+}
+
+if (Email dan password diisi?) then (Ya)
+else (Tidak)
+  partition "Sistem" {
+    :Menampilkan pesan
+"Email dan password wajib diisi";
+    :Menampilkan kembali form login;
+  }
+  stop
+endif
+
+if (Format email valid?) then (Ya)
+else (Tidak)
+  partition "Sistem" {
+    :Menampilkan pesan
+"Format email tidak valid";
+    :Menampilkan kembali form login;
+  }
+  stop
+endif
+
+partition "Sistem" {
+  :Memeriksa email pada data user;
+}
+
+if (Email terdaftar?) then (Ya)
+else (Tidak)
+  partition "Sistem" {
+    :Menampilkan pesan
+"Email tidak terdaftar";
+    :Menampilkan kembali form login;
+  }
+  stop
+endif
+
+if (Status akun terkunci?) then (Ya)
+  partition "Sistem" {
+    :Menampilkan pesan akun terkunci
+karena terlalu banyak percobaan login;
+    :Meminta pengguna menghubungi admin;
+    :Menampilkan kembali form login;
+  }
+  stop
+else (Tidak)
+endif
+
+partition "Sistem" {
+  :Memeriksa password;
+}
+
+if (Password benar?) then (Ya)
+  partition "Sistem" {
+    :Mengatur session login;
+    :Mereset jumlah percobaan login;
+    :Membaca role pengguna;
+  }
+
+  if (Role pengguna?) then (Admin)
+    partition "Sistem" {
+      :Mengarahkan ke Dashboard Admin;
+    }
+  elseif (Guru)
+    partition "Sistem" {
+      :Mengarahkan ke Dashboard Guru;
+    }
+  elseif (Siswa)
+    partition "Sistem" {
+      :Mengarahkan ke Dashboard Siswa;
+    }
+  elseif (Wali Murid)
+    partition "Sistem" {
+      :Mengarahkan ke Dashboard Wali Murid;
+    }
+  else (Role tidak dikenali)
+    partition "Sistem" {
+      :Mengarahkan kembali ke halaman login;
+    }
+  endif
+
+else (Tidak)
+  partition "Sistem" {
+    :Menambah jumlah percobaan login gagal;
+    :Menghitung sisa percobaan dari batas 5 kali;
+  }
+
+  if (Sisa percobaan masih ada?) then (Ya)
+    partition "Sistem" {
+      :Menampilkan pesan password salah
+beserta sisa percobaan;
+      :Menampilkan kembali form login;
+    }
+  else (Tidak)
+    partition "Sistem" {
+      :Mengunci akun pengguna;
+      :Menampilkan pesan akun terkunci;
+      :Meminta pengguna menghubungi admin;
+      :Menampilkan kembali form login;
+    }
+  endif
+endif
+
+stop
+@enduml

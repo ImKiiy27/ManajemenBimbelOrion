@@ -1,0 +1,134 @@
+@startuml
+title Activity Diagram - Admin Mengatur Jadwal
+
+skinparam activity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F4F8F
+  FontColor #1F2937
+}
+
+start
+
+partition "Admin" {
+    :Admin membuka halaman login;
+    :Admin memasukkan email dan password;
+    :Admin klik tombol Login;
+}
+
+partition "Sistem" {
+    :Memeriksa data login admin;
+}
+
+if (Login valid?) then (Ya)
+
+
+    partition "Admin" {
+        :Admin masuk ke dashboard;
+        :Admin memilih menu Jadwal;
+    }
+
+    partition "Sistem" {
+        :Menampilkan data jadwal;
+        :Menampilkan form tambah jadwal;
+        :Menampilkan pilihan relasi belajar aktif;
+    }
+
+    if (Relasi belajar aktif tersedia?) then (Ya)
+
+        partition "Admin" {
+            :Admin melihat data jadwal;
+        }
+
+        if (Admin ingin mengelola jadwal?) then (Ya)
+
+            partition "Admin" {
+                :Admin memilih aksi jadwal;
+            }
+
+            if (Aksi yang dipilih?) then (Tambah / Edit Jadwal)
+
+                partition "Admin" {
+                    :Admin memilih relasi belajar;
+                    :Admin memilih hari;
+                    :Admin mengisi jam mulai;
+                    :Admin mengisi jam selesai;
+                    :Admin klik tombol Simpan / Proses;
+                }
+
+                partition "Sistem" {
+                    :Memeriksa data jadwal;
+                }
+
+                if (Data jadwal valid?) then (Ya)
+                    partition "Sistem" {
+                        :Menyimpan perubahan jadwal;
+                        :Menampilkan pesan berhasil;
+                        :Menampilkan kembali data jadwal dan form;
+                    }
+                else (Tidak)
+                    partition "Sistem" {
+                        :Menampilkan pesan error;
+                        :Menampilkan kembali data jadwal dan form;
+                    }
+                endif
+
+            else (Hapus Jadwal)
+
+                partition "Admin" {
+                    :Admin memilih jadwal yang akan dihapus;
+                    :Admin melakukan konfirmasi hapus;
+                }
+
+                partition "Sistem" {
+                    :Memeriksa data jadwal;
+                }
+
+                if (Jadwal dapat dihapus?) then (Ya)
+                    partition "Sistem" {
+                        :Menghapus data jadwal;
+                        :Menampilkan pesan berhasil;
+                        :Menampilkan kembali data jadwal dan form;
+                    }
+                else (Tidak)
+                    partition "Sistem" {
+                        :Menampilkan pesan error;
+                        :Menampilkan kembali data jadwal dan form;
+                    }
+                endif
+
+            endif
+
+        else (Tidak)
+
+            partition "Admin" {
+                :Admin tidak melakukan perubahan jadwal;
+            }
+
+        endif
+
+    else (Tidak)
+
+        partition "Sistem" {
+            :Menampilkan pesan belum ada relasi belajar aktif;
+        }
+
+        partition "Admin" {
+            :Admin tidak dapat menambah jadwal;
+        }
+
+    endif
+
+else (Tidak)
+
+    partition "Sistem" {
+        :Menampilkan pesan login gagal;
+    }
+
+    partition "Admin" {
+        :Admin kembali ke halaman login;
+    }
+
+endif
+
+stop
+@enduml

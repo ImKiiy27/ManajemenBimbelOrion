@@ -3,6 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.backgroundColor = theme === 'dark' ? '#1a1a2e' : '#f8f9fa';
+        document.documentElement.style.colorScheme = theme;
+      } catch (error) {
+        document.documentElement.style.backgroundColor = '#f8f9fa';
+      }
+    })();
+  </script>
   <link rel="icon" type="image/jpeg" href="public/image/logo-bimbel-orion.jpg">
   <title><?= htmlspecialchars($pageTitle ?? 'Bimbel Orion') ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
