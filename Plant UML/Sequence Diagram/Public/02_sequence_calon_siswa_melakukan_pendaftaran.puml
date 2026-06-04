@@ -1,0 +1,62 @@
+@startuml 02_sequence_calon_siswa_melakukan_pendaftaran
+title Sequence Diagram - Calon Siswa Melakukan Pendaftaran
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Calon Siswa" as Calon
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+note over Calon,Database
+Diagram ini dibuat untuk laporan, jadi hanya menampilkan bagian penting:
+pengguna, halaman sistem, proses sistem, dan database.
+end note
+
+Calon -> Halaman: Buka halaman pendaftaran
+Halaman -> Sistem: Meminta halaman pendaftaran
+Sistem -> Database: Mengambil data mata pelajaran
+Database --> Sistem: Mengirim daftar mata pelajaran
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Calon: Tampilkan form pendaftaran
+Calon -> Halaman: Isi biodata, data wali, mapel, lalu submit
+Halaman -> Sistem: Mengirim data formulir pendaftaran
+Sistem -> Sistem: Memeriksa kode keamanan formulir + cek honeypot
+alt Data form tidak benar
+  Sistem --> Halaman: Mengalihkan pendaftaran + pesan gagal
+  Halaman --> Calon: Tampilkan pesan error
+else Data form benar
+  Sistem -> Database: Mengambil data pendaftaran aktif
+  Database --> Sistem: Hasil cek aktif
+  Sistem -> Database: Mengambil data pendaftaran terakhir 24 jam
+  Database --> Sistem: Mengirim hasil data
+  alt Masih duplikat atau cooldown
+    Sistem --> Halaman: Mengalihkan pendaftaran + pesan gagal
+    Halaman --> Calon: Tampilkan pesan duplikat/cooldown
+  else Boleh mendaftar
+    Sistem -> Database: Mengolah data di database
+    Sistem -> Database: Memperbarui data id_counter / ambil ID baru
+    Database --> Sistem: Mengirim hasil data
+    Sistem -> Database: Menyimpan data baru pendaftaran status pending
+    loop Untuk setiap mapel dipilih
+      Sistem -> Database: Memperbarui data id_counter / ambil ID relasi
+      Sistem -> Database: Menyimpan data baru pendaftaran_mapel
+    end
+    Sistem -> Database: Mengolah data di database
+    Sistem --> Halaman: Mengalihkan pendaftaran + pesan berhasil
+    Halaman --> Calon: Tampilkan pesan pendaftaran berhasil
+  end
+@enduml

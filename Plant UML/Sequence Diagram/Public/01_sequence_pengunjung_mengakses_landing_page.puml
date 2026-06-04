@@ -1,0 +1,33 @@
+@startuml 01_sequence_pengunjung_mengakses_landing_page
+title Sequence Diagram - Pengunjung Mengakses Landing Page
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Pengunjung" as Pengunjung
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Pengunjung -> Halaman: Membuka URL utama sistem
+Halaman -> Sistem: Meminta halaman index
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Pengunjung: Tampilkan informasi program, login, dan pendaftaran
+opt Pengunjung memilih Login / Pendaftaran / Kebijakan
+  Pengunjung -> Halaman: Klik menu publik
+  Halaman -> Sistem: Mengirim permintaan ke sistem
+  Sistem --> Halaman: Mengirim hasil ke halaman
+end
+@enduml

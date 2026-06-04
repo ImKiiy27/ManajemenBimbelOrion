@@ -1,0 +1,35 @@
+@startuml 01_sequence_guru_mengakses_dashboard
+title Sequence Diagram - Guru Mengakses Dashboard
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Guru" as Guru
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Guru -> Halaman: Pilih menu Dashboard Guru
+Halaman -> Sistem: Meminta halaman guru dashboard
+Sistem -> Sistem: Memastikan pengguna sudah masuk sebagai guru
+alt Sesi login benar dan hak akses guru
+  Sistem -> Sistem: Menyiapkan isi dashboard
+  Sistem --> Halaman: Mengirim hasil ke halaman
+  Halaman --> Guru: Tampilkan ringkasan dashboard guru
+else Sesi login tidak benar / hak akses salah
+  Sistem --> Halaman: Mengalihkan ke login atau menolak akses
+  Halaman --> Guru: Menampilkan pesan bahwa akses tidak diizinkan
+end
+@enduml

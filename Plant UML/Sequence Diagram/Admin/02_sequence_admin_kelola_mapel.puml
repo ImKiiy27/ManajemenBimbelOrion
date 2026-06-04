@@ -1,0 +1,59 @@
+@startuml 02_sequence_admin_kelola_mapel
+title Sequence Diagram - Admin Kelola Mapel
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Admin" as Admin
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+
+
+Admin -> Halaman: Buka menu Kelola Mapel
+Halaman -> Sistem: Meminta halaman kelola mata pelajaran
+Sistem -> Sistem: Memastikan hak aksesnya admin
+Sistem -> Sistem: Menyiapkan data mata pelajaran
+Sistem -> Database: Mengambil data mata pelajaran
+Database --> Sistem: Mengirim daftar mata pelajaran
+Sistem -> Sistem: Menghitung ringkasan mata pelajaran
+Sistem -> Sistem: Menyiapkan halaman kelola mata pelajaran
+Sistem --> Halaman: Menampilkan daftar dan form mata pelajaran
+Halaman --> Admin: Menampilkan hasil kepada pengguna
+opt Admin tambah / edit / ubah status mapel
+  Admin -> Halaman: Mengirim form mata pelajaran
+  Halaman -> Sistem: Mengirim data mata pelajaran dari form
+  Sistem -> Sistem: Menyiapkan data mata pelajaran
+  Sistem -> Sistem: Memeriksa kode keamanan formulir
+  alt kode keamanan formulir tidak benar
+    Sistem --> Halaman: Mengirim hasil gagal
+  else kode keamanan formulir benar
+    Sistem -> Sistem: Memproses tambah, ubah, atau ubah status
+    alt aksi create
+      Sistem -> Sistem: Menyimpan mata pelajaran baru
+      Sistem -> Database: Menyimpan data mata pelajaran baru
+    else aksi update
+      Sistem -> Database: Memperbarui data mata pelajaran
+    else aksi toggle-status
+      Sistem -> Sistem: Mengubah status mata pelajaran
+      Sistem -> Database: Memperbarui status mata pelajaran
+    end
+    Database --> Sistem: Mengirim hasil proses
+    Sistem --> Sistem: Menyiapkan pesan untuk pengguna
+    Sistem --> Halaman: Mengirim hasil ke halaman
+    Halaman --> Admin: Menampilkan pesan dan data terbaru
+  end
+@enduml

@@ -1,0 +1,51 @@
+@startuml 01_sequence_admin_dashboard
+title Sequence Diagram - Admin Mengakses Dashboard
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Admin" as Admin
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+
+'Kondisi awal: Admin sudah login.
+'Alur login lengkap ada pada diagram login utama.
+Admin -> Halaman: Membuka menu Dashboard Admin
+Halaman -> Sistem: Meminta halaman dashboard admin
+Sistem -> Sistem: Memastikan admin sudah masuk
+alt Sesi login benar dan hak akses admin
+  Sistem -> Sistem: Menyiapkan isi dashboard
+  Sistem -> Database: Mengambil pendaftaran terbaru beserta pilihan mapel
+  Database --> Sistem: Mengirim daftar pendaftaran
+  Sistem -> Sistem: Menghitung jumlah pendaftaran
+  Sistem -> Database: Menghitung total pendaftar di database
+  Database --> Sistem: Mengirim hasil data
+  Sistem -> Database: Mengambil jadwal beserta siswa dan guru
+  Database --> Sistem: Mengirim daftar jadwal
+  Sistem -> Sistem: Menyiapkan halaman dashboard
+  Sistem --> Halaman: Mengirim data dashboard
+  Halaman --> Admin: Menampilkan statistik dan pendaftaran terbaru
+  opt Admin klik detail pendaftaran
+    Admin -> Halaman: Membuka detail pendaftaran
+    Halaman -> Sistem: Mengirim permintaan ke sistem
+    Sistem --> Halaman: Menampilkan detail pendaftaran
+  end
+else Sesi login tidak benar / hak akses salah
+  Sistem --> Halaman: Mengalihkan ke login atau menolak akses
+  Halaman --> Admin: Menampilkan pesan bahwa akses tidak diizinkan
+end
+@enduml

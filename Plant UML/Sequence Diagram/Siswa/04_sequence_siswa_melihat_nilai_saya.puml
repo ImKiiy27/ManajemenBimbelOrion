@@ -1,0 +1,32 @@
+@startuml 04_sequence_siswa_melihat_nilai_saya
+title Sequence Diagram - Siswa Melihat Nilai Saya
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Siswa" as Siswa
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+
+Siswa -> Halaman: Buka menu Nilai Saya
+Halaman -> Sistem: Meminta halaman siswa nilai
+Sistem -> Sistem: Memastikan hak aksesnya siswa
+Sistem -> Database: Mengambil data nilai berdasarkan siswa
+Database --> Sistem: Mengirim daftar nilai
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Siswa: Menampilkan hasil kepada pengguna
+@enduml

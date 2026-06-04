@@ -1,0 +1,42 @@
+@startuml 01_sequence_wali_murid_mengakses_dashboard
+title Sequence Diagram - Wali Murid Mengakses Dashboard
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Wali Murid" as Wali
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+
+Wali -> Halaman: Pilih menu Dashboard Wali
+Halaman -> Sistem: Meminta halaman wali dashboard
+Sistem -> Sistem: Memastikan pengguna sudah masuk sebagai wali_murid
+alt Sesi login benar dan hak akses wali_murid
+  Sistem -> Sistem: Menyiapkan isi dashboard
+  Sistem -> Database: Mengambil data wali_murid
+  Database --> Sistem: Data wali
+  Sistem -> Database: Mengambil data siswa WHERE wali_id=?
+  Database --> Sistem: Mengirim daftar anak
+  Sistem -> Database: Mengambil data ringkasan jadwal, nilai, absensi anak
+  Database --> Sistem: Mengirim hasil data
+  Sistem --> Halaman: Mengirim hasil ke halaman
+  Halaman --> Wali: Tampilkan ringkasan perkembangan anak
+else Sesi login tidak benar / hak akses salah
+  Sistem --> Halaman: Mengalihkan ke login atau menolak akses
+  Halaman --> Wali: Menampilkan pesan bahwa akses tidak diizinkan
+end
+@enduml

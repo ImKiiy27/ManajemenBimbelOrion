@@ -1,0 +1,66 @@
+@startuml 09_sequence_admin_absensi
+title Sequence Diagram - Admin Monitoring dan Koreksi Absensi
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Admin" as Admin
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Admin -> Halaman: Buka menu Absensi / gunakan filter
+Halaman -> Sistem: Meminta halaman admin absensi&filter
+Sistem -> Sistem: Memastikan hak aksesnya admin
+Sistem -> Database: Mengambil data absensi dengan filter
+Database --> Sistem: Mengirim daftar absensi
+Sistem -> Sistem: Menghitung absensi berdasarkan admin
+Sistem -> Database: Mengambil data COUNT absensi
+Database --> Sistem: Mengirim hasil data
+Sistem -> Database: Mengambil data opsi guru dan siswa
+Database --> Sistem: Mengirim hasil data
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Admin: Menampilkan hasil kepada pengguna
+opt Admin melihat detail absensi
+  Admin -> Halaman: Klik detail/koreksi
+  Halaman -> Sistem: Mengirim permintaan ke sistem
+  Sistem -> Database: Mengambil data detail absensi
+  Database --> Sistem: Mengirim hasil data
+  Sistem -> Database: Mengambil data absensi_audit
+  Database --> Sistem: Mengirim hasil data
+  Sistem --> Halaman: Mengirim hasil ke halaman
+  Halaman --> Admin: Tampilkan modal koreksi
+end
+opt Admin menyimpan koreksi absensi
+  Admin -> Halaman: Submit koreksi status/alasan/reason
+  Halaman -> Sistem: Mengirim data formulir admin absensi&aksi=save-correction
+  alt Validasi gagal
+    Sistem --> Halaman: Mengirim hasil ke halaman
+    Halaman --> Admin: Tampilkan pesan gagal
+  else Validasi berhasil
+    Sistem -> Database: Mengambil data absensi lama
+    Database --> Sistem: Data absensi lama
+    Sistem -> Database: Memperbarui data absensi + INSERT audit
+    Database --> Sistem: Hasil ubah
+    alt Koreksi sukses
+      Sistem -> Database: Menyimpan data baru absensi_audit aksi CORRECTION_REASON
+      Database --> Sistem: Mengirim hasil data
+      Sistem --> Halaman: Mengirim hasil ke halaman
+    else Koreksi gagal
+      Sistem --> Halaman: Mengirim hasil ke halaman
+    end
+    Halaman --> Admin: Tampilkan hasil koreksi
+  end
+@enduml

@@ -1,0 +1,33 @@
+@startuml 04_sequence_guru_melihat_riwayat_absensi
+title Sequence Diagram - Guru Melihat Riwayat Absensi
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Guru" as Guru
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Guru -> Halaman: Buka Riwayat Absensi / pilih tanggal
+Halaman -> Sistem: Meminta halaman guru absensi&aksi=riwayat&tgl_dari&tgl_sampai
+Sistem -> Sistem: Memastikan hak aksesnya guru
+Sistem -> Database: Mengambil data riwayat absensi milik guru
+Database --> Sistem: Mengirim daftar absensi
+Sistem -> Database: Mengambil data rekap absensi guru
+Database --> Sistem: Mengirim hasil data
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Guru: Menampilkan hasil kepada pengguna
+@enduml

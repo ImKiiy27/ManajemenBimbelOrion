@@ -1,0 +1,62 @@
+@startuml 07_sequence_admin_atur_pengajar
+title Sequence Diagram - Admin Atur Pengajar / Relasi Belajar
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Admin" as Admin
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+
+Admin -> Halaman: Buka menu Atur Pengajar
+Halaman -> Sistem: Meminta halaman admin relasi
+Sistem -> Sistem: Memastikan hak aksesnya admin
+Sistem -> Database: Mengambil data kelas JOIN siswa JOIN guru JOIN mapel
+Database --> Sistem: Mengirim daftar relasi
+Sistem -> Database: Mengambil data opsi siswa, guru, siswa_mapel
+Database --> Sistem: Mengirim hasil data
+Sistem -> Sistem: Menghitung relasi aktif
+Sistem -> Sistem: Menghitung siswa siap jadwal
+Sistem -> Database: Mengambil data COUNT relasi aktif/siap jadwal
+Database --> Sistem: Mengirim hasil data
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Admin: Menampilkan hasil kepada pengguna
+opt Admin tambah / edit / hapus relasi belajar
+  Admin -> Halaman: Mengirim form relasi
+  Halaman -> Sistem: Mengirim data formulir admin relasi
+  Sistem -> Sistem: Memeriksa kode keamanan formulir
+  alt kode keamanan formulir tidak benar
+    Sistem --> Halaman: Mengirim hasil gagal
+  else kode keamanan formulir benar
+    alt create/update
+      Sistem -> Database: Mengolah data di database
+      Database --> Sistem: Hasil benarasi
+      alt Relasi benar
+        Sistem -> Database: Mengolah data di database
+        Database --> Sistem: Mengirim hasil data
+      else Relasi tidak benar
+      end
+    else delete
+      Sistem -> Sistem: Menghapus relasi
+      Sistem -> Database: Mengolah data di database
+      Database --> Sistem: Mengirim hasil proses
+    end
+    Sistem --> Sistem: Menyiapkan pesan untuk pengguna
+    Sistem --> Halaman: Mengalihkan page=admin-relasi
+    Halaman --> Admin: Menampilkan pesan dan data terbaru
+  end
+@enduml

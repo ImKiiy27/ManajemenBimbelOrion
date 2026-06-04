@@ -1,0 +1,49 @@
+@startuml 10_sequence_admin_nilai
+title Sequence Diagram - Admin Monitoring Nilai
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Admin" as Admin
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Admin -> Halaman: Buka menu Nilai / gunakan filter
+Halaman -> Sistem: Meminta halaman admin nilai&filter
+Sistem -> Sistem: Memastikan hak aksesnya admin
+Sistem -> Database: Mengambil data nilai dengan filter
+Database --> Sistem: Mengirim daftar nilai
+Sistem -> Database: Mengambil data guru
+Database --> Sistem: Mengirim hasil data
+Sistem -> Database: Mengambil data siswa
+Database --> Sistem: Mengirim hasil data
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Admin: Menampilkan hasil kepada pengguna
+opt Admin menghapus nilai
+  Admin -> Halaman: Submit hapus-nilai
+  Halaman -> Sistem: Mengirim data formulir admin nilai
+  Sistem -> Sistem: Memeriksa kode keamanan formulir
+  alt kode keamanan formulir tidak benar
+    Sistem --> Halaman: Mengirim hasil gagal
+  else kode keamanan formulir benar
+    Sistem -> Sistem: Menghapus nilai
+    Sistem -> Database: Menghapus data nilai WHERE id=?
+    Database --> Sistem: Mengirim hasil proses
+    Sistem --> Sistem: Menyiapkan pesan untuk pengguna
+    Sistem --> Halaman: Mengalihkan page=admin-nilai
+    Halaman --> Admin: Menampilkan pesan dan data terbaru
+  end
+@enduml

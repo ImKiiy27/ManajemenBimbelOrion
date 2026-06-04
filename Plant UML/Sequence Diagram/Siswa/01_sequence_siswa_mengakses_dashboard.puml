@@ -1,0 +1,37 @@
+@startuml 01_sequence_siswa_mengakses_dashboard
+title Sequence Diagram - Siswa Mengakses Dashboard
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Siswa" as Siswa
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+
+
+Siswa -> Halaman: Pilih menu Dashboard Siswa
+Halaman -> Sistem: Meminta halaman siswa dashboard
+Sistem -> Sistem: Memastikan pengguna sudah masuk sebagai siswa
+alt Sesi login benar dan hak akses siswa
+  Sistem -> Sistem: Menyiapkan isi dashboard
+  Sistem --> Halaman: Mengirim hasil ke halaman
+  Halaman --> Siswa: Tampilkan ringkasan belajar siswa
+else Sesi login tidak benar / hak akses salah
+  Sistem --> Halaman: Mengalihkan ke login atau menolak akses
+  Halaman --> Siswa: Menampilkan pesan bahwa akses tidak diizinkan
+end
+@enduml

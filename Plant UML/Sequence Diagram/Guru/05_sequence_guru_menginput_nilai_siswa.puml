@@ -1,0 +1,60 @@
+@startuml 05_sequence_guru_menginput_nilai_siswa
+title Sequence Diagram - Guru Menginput Nilai Siswa
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Guru" as Guru
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Guru -> Halaman: Buka menu Nilai
+Halaman -> Sistem: Meminta halaman guru nilai
+Sistem -> Sistem: Memastikan hak aksesnya guru
+Sistem -> Database: Mengambil data jadwal milik guru
+Database --> Sistem: Mengirim daftar jadwal
+Sistem -> Database: Mengambil data nilai milik guru
+Database --> Sistem: Mengirim daftar nilai
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Guru: Menampilkan hasil kepada pengguna
+opt Guru tambah / ubah / hapus nilai
+  Guru -> Halaman: Mengirim form nilai
+  Halaman -> Sistem: Mengirim data formulir guru nilai
+  Sistem -> Sistem: Memeriksa kode keamanan formulir
+  alt kode keamanan formulir tidak benar
+    Sistem --> Halaman: Mengirim hasil gagal
+  else kode keamanan formulir benar
+    Sistem -> Database: Mengambil data benarasi jadwal/nilai guru
+    Database --> Sistem: Mengirim hasil data
+    alt Bukan milik guru / data tidak benar
+    else Data benar
+      alt save dan nilai sudah ada
+        Sistem -> Database: Memperbarui data nilai
+      else save nilai baru
+        Sistem -> Database: Menyimpan data baru nilai
+      else update nilai
+        Sistem -> Database: Memperbarui data nilai
+      else delete nilai
+        Sistem -> Sistem: Menghapus nilai
+        Sistem -> Database: Menghapus data nilai
+      end
+      Database --> Sistem: Mengirim hasil proses
+    end
+    Sistem --> Sistem: Menyiapkan pesan untuk pengguna
+    Sistem --> Halaman: Mengalihkan page=guru-nilai
+    Halaman --> Guru: Menampilkan pesan dan data terbaru
+  end
+@enduml

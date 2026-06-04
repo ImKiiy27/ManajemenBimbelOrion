@@ -1,0 +1,33 @@
+@startuml 04_sequence_pengguna_logout
+title Sequence Diagram - Pengguna Logout
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Pengguna" as Pengguna
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+note over Pengguna,Database
+Diagram ini dibuat untuk laporan, jadi hanya menampilkan bagian penting:
+pengguna, halaman sistem, proses sistem, dan database.
+end note
+
+Sistem -> Halaman: Mengirim hasil ke halaman
+Halaman -> Sistem: Meminta halaman logout
+Sistem --> Halaman: Mengalihkan ke login
+Halaman --> Sistem: Mengirim permintaan ke sistem
+@enduml

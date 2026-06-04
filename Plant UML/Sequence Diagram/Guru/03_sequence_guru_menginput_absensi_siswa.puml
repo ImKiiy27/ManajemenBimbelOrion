@@ -1,0 +1,63 @@
+@startuml 03_sequence_guru_menginput_absensi_siswa
+title Sequence Diagram - Guru Menginput Absensi Siswa
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Guru" as Guru
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Guru -> Halaman: Buka menu Input Absensi
+Halaman -> Sistem: Meminta halaman guru absensi
+Sistem -> Sistem: Memastikan hak aksesnya guru
+Sistem -> Database: Mengambil data jadwal milik guru
+Database --> Sistem: Mengirim daftar jadwal
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Guru: Menampilkan hasil kepada pengguna
+Guru -> Halaman: Pilih jadwal
+Halaman -> Sistem: Mengirim data formulir guru absensi&aksi=load-siswa
+Sistem -> Database: Mengambil data jadwal milik guru
+Database --> Sistem: Mengirim hasil data
+alt Jadwal bukan milik guru
+  Sistem --> Halaman: Mengirim hasil ke halaman
+else Jadwal benar
+  Sistem -> Database: Mengambil data siswa dalam jadwal
+  Database --> Sistem: Mengirim daftar siswa
+  Sistem --> Halaman: Mengirim hasil ke halaman
+  Halaman --> Guru: Tampilkan siswa untuk absensi
+end
+opt Guru menyimpan absensi
+  Guru -> Halaman: Submit status absensi siswa
+  Halaman -> Sistem: Mengirim data formulir guru absensi&aksi=save
+  Sistem -> Database: Mengambil data jadwal milik guru
+  Database --> Sistem: Mengirim hasil data
+  alt Validasi gagal
+    Sistem --> Halaman: Mengirim hasil ke halaman
+    Halaman --> Guru: Tampilkan pesan gagal
+  else Validasi berhasil
+    Sistem -> Database: Mengolah data di database
+    Database --> Sistem: Hasil benarasi
+    alt Absensi sudah ada
+      Sistem -> Database: Memperbarui data absensi + INSERT absensi_audit
+    else Absensi belum ada
+      Sistem -> Database: Menyimpan data baru absensi + INSERT absensi_audit
+    end
+    Database --> Sistem: Hasil simpan
+    Sistem --> Halaman: Mengirim hasil ke halaman
+    Halaman --> Guru: Tampilkan pesan hasil absensi
+  end
+@enduml

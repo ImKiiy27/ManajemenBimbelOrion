@@ -1,0 +1,53 @@
+@startuml 11_sequence_admin_profil
+title Sequence Diagram - Admin Mengelola Profil
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Admin" as Admin
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Admin -> Halaman: Buka menu Profil Admin
+Halaman -> Sistem: Meminta halaman admin profil
+Sistem -> Sistem: Memastikan hak aksesnya admin
+Sistem -> Database: Mengambil data users
+Database --> Sistem: Mengirim hasil data
+Sistem -> Database: Mengambil data COUNT data dashboard profil
+Database --> Sistem: Mengirim hasil data
+Sistem -> Database: Mengambil data users terbaru
+Database --> Sistem: Mengirim daftar user terbaru
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Admin: Menampilkan hasil kepada pengguna
+opt Admin ubah profil / ganti password
+  Admin -> Halaman: Mengirim form profil/password
+  Halaman -> Sistem: Mengirim data formulir admin profil
+  Sistem -> Sistem: Memeriksa kode keamanan formulir
+  alt kode keamanan formulir tidak benar
+    Sistem --> Halaman: Mengirim hasil gagal
+  else kode keamanan formulir benar
+    alt update-profile
+      Sistem -> Database: Mengolah data di database
+    else change-password
+      Sistem -> Database: Mengambil data password lama
+      Database --> Sistem: Mengirim hasil data
+      Sistem -> Database: Memperbarui data users.password jika benar
+    end
+    Database --> Sistem: Mengirim hasil proses
+    Sistem --> Halaman: Mengalihkan page=admin-profil
+    Halaman --> Admin: Tampilkan pesan hasil
+  end
+@enduml

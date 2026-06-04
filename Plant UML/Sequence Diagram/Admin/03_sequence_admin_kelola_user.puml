@@ -1,0 +1,65 @@
+@startuml 03_sequence_admin_kelola_user
+title Sequence Diagram - Admin Kelola User
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Admin" as Admin
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Admin -> Halaman: Buka menu Kelola User
+Halaman -> Sistem: Meminta halaman kelola pengguna
+Sistem -> Sistem: Memastikan hak aksesnya admin
+Sistem -> Sistem: Menyiapkan data pengguna
+Sistem -> Database: Mengambil data users beserta detail profil hak akses
+Database --> Sistem: Mengirim daftar user
+loop Untuk tiap user
+  Sistem -> Database: Mengambil data relasi guru/siswa/wali
+  Database --> Sistem: Mengirim hasil data
+end
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Admin: Menampilkan hasil kepada pengguna
+opt Admin menjalankan aksi user
+  Admin -> Halaman: Mengirim form tambah/ubah/hapus/buka kunci akun
+  Halaman -> Sistem: Mengirim data pengguna dari form
+  Sistem -> Sistem: Menyiapkan data pengguna
+  Sistem -> Sistem: Memeriksa kode keamanan formulir
+  alt kode keamanan formulir tidak benar
+    Sistem --> Halaman: Mengirim hasil gagal
+  else kode keamanan formulir benar
+    alt Validasi form gagal
+    else Validasi berhasil
+      alt create
+        Sistem -> Database: Menyimpan data baru users + profil hak akses bila perlu
+      else update
+        Sistem -> Database: Memperbarui data users / profil hak akses
+      else delete normal
+        Sistem -> Sistem: Menghapus user
+        Sistem -> Database: Mengolah data di database
+      else delete-force
+        Sistem -> Sistem: Menghapus user force
+        Sistem -> Database: Mengolah data di database
+      else unlock
+        Sistem -> Database: Memperbarui data attempts=0,is_locked=0
+      end
+      Database --> Sistem: Mengirim hasil proses
+    end
+    Sistem --> Sistem: Menyiapkan pesan untuk pengguna
+    Sistem --> Halaman: Mengalihkan page=admin-user
+    Halaman --> Admin: Menampilkan pesan dan data terbaru
+  end
+@enduml

@@ -1,0 +1,51 @@
+@startuml 06_sequence_guru_mengelola_profil_saya
+title Sequence Diagram - Guru Mengelola Profil Saya
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #2F4F8F
+  LifeLineBorderColor #6B7280
+  LifeLineBackgroundColor #F9FAFB
+  ParticipantBorderColor #2F4F8F
+  ParticipantBackgroundColor #F8FBFF
+  ActorBorderColor #111827
+  ActorBackgroundColor #FFFFFF
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #FFFFFF
+}
+
+
+actor "Guru" as Guru
+boundary "Halaman Sistem" as Halaman
+control "Sistem BimbelOrion" as Sistem
+database "Database" as Database
+
+Guru -> Halaman: Buka menu Profil
+Halaman -> Sistem: Meminta halaman guru profil
+Sistem -> Sistem: Memastikan hak aksesnya guru
+Sistem -> Database: Mengambil data users JOIN guru JOIN mapel
+Database --> Sistem: Mengirim hasil data
+Sistem -> Database: Mengambil data statistik jadwal/nilai/absensi
+Database --> Sistem: Mengirim hasil data
+Sistem -> Database: Mengambil data jadwal guru
+Database --> Sistem: Mengirim hasil data
+Sistem --> Halaman: Mengirim hasil ke halaman
+Halaman --> Guru: Menampilkan hasil kepada pengguna
+opt Guru ubah profil / ganti password
+  Guru -> Halaman: Mengirim form profil/password
+  Halaman -> Sistem: Mengirim data formulir guru profil
+  Sistem -> Sistem: Memeriksa kode keamanan formulir
+  alt kode keamanan formulir tidak benar
+    Sistem --> Halaman: Mengirim hasil gagal
+  else kode keamanan formulir benar
+    alt update-profile
+      Sistem -> Database: Memperbarui data users + guru jika benar
+    else change-password
+      Sistem -> Database: Mengambil data password lalu UPDATE users.password
+    end
+    Database --> Sistem: Mengirim hasil proses
+    Sistem --> Halaman: Mengalihkan page=guru-profil
+    Halaman --> Guru: Tampilkan pesan hasil
+  end
+@enduml
