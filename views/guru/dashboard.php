@@ -19,18 +19,18 @@
     </div>
 
     <div class="stats-grid">
-      <div class="stat-card animate-fade-in delay-1">
+      <a href="index.php?page=guru-jadwal" class="stat-card stat-card-link animate-fade-in delay-1">
         <div class="icon blue"><i class="fas fa-calendar-days"></i></div>
-        <div class="info"><h3>-</h3><p>Jadwal Mengajar</p></div>
-      </div>
-      <div class="stat-card animate-fade-in delay-2">
+        <div class="info"><h3><?= (int)($metrics['total_jadwal'] ?? 0) ?></h3><p>Jadwal Mengajar</p></div>
+      </a>
+      <a href="index.php?page=guru-jadwal" class="stat-card stat-card-link animate-fade-in delay-2">
         <div class="icon green"><i class="fas fa-user-graduate"></i></div>
-        <div class="info"><h3>-</h3><p>Total Siswa</p></div>
-      </div>
-      <div class="stat-card animate-fade-in delay-3">
+        <div class="info"><h3><?= (int)($metrics['total_siswa'] ?? 0) ?></h3><p>Total Siswa</p></div>
+      </a>
+      <a href="index.php?page=guru-absensi" class="stat-card stat-card-link animate-fade-in delay-3">
         <div class="icon orange"><i class="fas fa-clipboard-list"></i></div>
-        <div class="info"><h3>-</h3><p>Absensi Hari Ini</p></div>
-      </div>
+        <div class="info"><h3><?= (int)($metrics['absensi_hari_ini'] ?? 0) ?></h3><p>Absensi Hari Ini</p></div>
+      </a>
     </div>
 
     <!-- Jadwal Hari Ini -->
@@ -50,11 +50,22 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colspan="4" class="text-center empty-state-md">
-                Tidak ada jadwal hari ini
-              </td>
-            </tr>
+            <?php if (!empty($jadwalHariIni)): ?>
+              <?php foreach ($jadwalHariIni as $row): ?>
+                <tr>
+                  <td><?= htmlspecialchars($row['siswa_nama'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($row['mata_pelajaran'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars(substr((string)($row['jam_mulai'] ?? ''), 0, 5)) ?></td>
+                  <td><?= htmlspecialchars(substr((string)($row['jam_selesai'] ?? ''), 0, 5)) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="4" class="text-center empty-state-md">
+                  Tidak ada jadwal hari ini
+                </td>
+              </tr>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>

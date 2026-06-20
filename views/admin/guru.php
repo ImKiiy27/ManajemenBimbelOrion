@@ -51,7 +51,7 @@
         </div>
       </div>
       <div class="stat-card animate-fade-in delay-4">
-        <div class="icon purple"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 20px; height: 20px; object-fit: contain;"></div>
+        <div class="icon purple"><i class="fas fa-book-open"></i></div>
         <div class="info">
           <h3><?= (int)($guruSudahSetMapel ?? 0) ?></h3>
           <p>Guru Sudah Set Mapel</p>

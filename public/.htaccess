@@ -68,10 +68,7 @@ Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains
     ExpiresByType image/svg+xml "access plus 1 year"
 </IfModule>
 
-# 7. BLOCK HOTLINKING
-# Izinkan asset diakses dari domain sendiri + localhost (development).
-RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?localhost(:[0-9]+)?/ [NC]
-RewriteCond %{HTTP_REFERER} !^http(s)?://127\.0\.0\.1(:[0-9]+)?/ [NC]
-RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?yourdomain\.com/ [NC]
-RewriteRule \.(jpg|jpeg|png|gif|svg)$ - [NC,F,L]
+# 7. HOTLINKING
+# Dinonaktifkan agar asset gambar tetap muncul saat domain deployment berubah.
+# Jika ingin mengaktifkan kembali, pastikan domain produksi sudah dimasukkan
+# ke allowlist agar logo dan gambar tidak terblokir.

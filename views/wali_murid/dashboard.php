@@ -13,44 +13,6 @@
   <main class="main-content">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
-    <?php
-      $totalAnak = (int)($summary['total_anak'] ?? 0);
-      $totalJadwal = (int)($summary['total_jadwal'] ?? 0);
-      $totalPredikatA = (int)($summary['nilai_summary']['predikat_a'] ?? 0);
-      $totalHadir = (int)($summary['absensi_summary']['total_hadir'] ?? 0);
-    ?>
-
-    <section class="wali-hero animate-fade-in">
-      <div class="wali-hero-content">
-        <div class="wali-hero-copy">
-          <span class="wali-hero-label"><i class="fas fa-shield-heart"></i> Portal Wali Murid</span>
-          <h1>Dashboard Wali Murid</h1>
-          <p>Selamat datang, <?= htmlspecialchars($_SESSION['nama'] ?? 'Wali Murid') ?>. Pantau jadwal, nilai, dan kehadiran anak dalam satu tampilan yang lebih rapi dan mudah dibaca.</p>
-        </div>
-        <div class="wali-hero-badge">
-          <i class="fas fa-users"></i>
-          <div>
-            <strong><?= $totalAnak ?></strong>
-            <span>Anak Terhubung</span>
-          </div>
-        </div>
-      </div>
-      <div class="wali-hero-meta">
-        <div class="wali-hero-meta-card">
-          <span>Jadwal Aktif</span>
-          <strong><?= $totalJadwal ?></strong>
-        </div>
-        <div class="wali-hero-meta-card">
-          <span>Predikat A</span>
-          <strong><?= $totalPredikatA ?></strong>
-        </div>
-        <div class="wali-hero-meta-card">
-          <span>Total Hadir</span>
-          <strong><?= $totalHadir ?></strong>
-        </div>
-      </div>
-    </section>
-
     <div class="page-header animate-fade-in">
       <h1>Ringkasan Keluarga</h1>
       <p>Semua informasi penting anak-anak Anda dirangkum dalam kartu dan tabel yang konsisten.</p>

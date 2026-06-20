@@ -13,41 +13,6 @@
   <main class="main-content">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
-    <?php
-      $totalAnak = count($anak ?? []);
-      $totalJadwal = 0;
-      foreach (($jadwalPerAnak ?? []) as $jadwalList) {
-        $totalJadwal += count($jadwalList);
-      }
-    ?>
-
-    <section class="wali-hero animate-fade-in">
-      <div class="wali-hero-content">
-        <div class="wali-hero-copy">
-          <span class="wali-hero-label"><i class="fas fa-calendar-check"></i> Jadwal Anak</span>
-          <h1>Jadwal Belajar Terpantau</h1>
-          <p>Lihat jadwal setiap anak dalam tampilan yang lebih rapi, dengan informasi guru dan mata pelajaran yang mudah dipindai.</p>
-        </div>
-        <div class="wali-hero-badge">
-          <i class="fas fa-calendar-days"></i>
-          <div>
-            <strong><?= $totalJadwal ?></strong>
-            <span>Total Jadwal</span>
-          </div>
-        </div>
-      </div>
-      <div class="wali-hero-meta">
-        <div class="wali-hero-meta-card">
-          <span>Anak Dipantau</span>
-          <strong><?= $totalAnak ?></strong>
-        </div>
-        <div class="wali-hero-meta-card">
-          <span>Jadwal Tersedia</span>
-          <strong><?= $totalJadwal ?></strong>
-        </div>
-      </div>
-    </section>
-
     <div class="page-header animate-fade-in">
       <h1>Daftar Jadwal Anak</h1>
       <p>Setiap anak memiliki panel sendiri agar informasi belajarnya lebih mudah dibaca.</p>
@@ -63,7 +28,7 @@
               <div class="wali-panel-icon"><i class="fas fa-user-graduate"></i></div>
               <div>
                 <h2><?= htmlspecialchars($a['nama']) ?></h2>
-                <p><?= htmlspecialchars($a['kelas_sekolah']) ?> • <?= count($jadwalAnak) ?> jadwal terdaftar</p>
+                <p><?= htmlspecialchars($a['kelas_sekolah']) ?> &bull; <?= count($jadwalAnak) ?> jadwal terdaftar</p>
               </div>
             </div>
             <span class="wali-chip"><img src="public/image/logo-bimbel-orion.jpg" alt="Logo Bimbel Orion" style="width: 16px; height: 16px; object-fit: contain;"> <?= htmlspecialchars($a['mapel_aktif'] ?? '-') ?></span>
@@ -72,7 +37,7 @@
           <?php if (!empty($jadwalAnak)): ?>
             <div class="wali-table-wrap">
               <div class="table-responsive">
-                <table class="data-table">
+                <table class="table-custom">
                   <thead>
                     <tr>
                       <th>Hari</th>

@@ -13,47 +13,6 @@
   <main class="main-content">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
-    <?php
-      $totalAnak = count($anak ?? []);
-      $totalNilai = 0;
-      $totalPredikatA = 0;
-      foreach (($nilaiPerAnak ?? []) as $nilaiList) {
-        $totalNilai += count($nilaiList);
-        foreach ($nilaiList as $n) {
-          if (($n['predikat'] ?? '') === 'A') {
-            $totalPredikatA++;
-          }
-        }
-      }
-    ?>
-
-    <section class="wali-hero animate-fade-in">
-      <div class="wali-hero-content">
-        <div class="wali-hero-copy">
-          <span class="wali-hero-label"><i class="fas fa-chart-line"></i> Nilai Anak</span>
-          <h1>Perkembangan Belajar Lebih Jelas</h1>
-          <p>Pantau hasil belajar setiap anak berdasarkan guru, mapel, pertemuan, dan catatan evaluasi yang diberikan.</p>
-        </div>
-        <div class="wali-hero-badge">
-          <i class="fas fa-star"></i>
-          <div>
-            <strong><?= $totalPredikatA ?></strong>
-            <span>Predikat A</span>
-          </div>
-        </div>
-      </div>
-      <div class="wali-hero-meta">
-        <div class="wali-hero-meta-card">
-          <span>Anak Dipantau</span>
-          <strong><?= $totalAnak ?></strong>
-        </div>
-        <div class="wali-hero-meta-card">
-          <span>Total Nilai</span>
-          <strong><?= $totalNilai ?></strong>
-        </div>
-      </div>
-    </section>
-
     <div class="page-header animate-fade-in">
       <h1>Rekap Nilai Anak</h1>
       <p>Nilai dikelompokkan per anak agar progres akademik lebih mudah dipahami.</p>

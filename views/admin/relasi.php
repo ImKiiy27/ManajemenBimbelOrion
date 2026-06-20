@@ -257,23 +257,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!siswaId) {
       selectEl.innerHTML = '<option value="">Pilih siswa dulu</option>';
-      return;
+      return '';
     }
 
     if (mapelList.length === 0) {
       selectEl.innerHTML = '<option value="">Siswa belum memiliki mapel</option>';
-      return;
+      return '';
+    }
+
+    if (!selectedMapelId && mapelList.length > 1) {
+      var placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = 'Pilih mapel siswa';
+      selectEl.appendChild(placeholder);
     }
 
     mapelList.forEach(function (mapel) {
       var option = document.createElement('option');
       option.value = mapel.id;
       option.textContent = mapel.nama;
-      if (selectedMapelId && String(selectedMapelId) === String(mapel.id)) {
+      if (
+        (selectedMapelId && String(selectedMapelId) === String(mapel.id)) ||
+        (!selectedMapelId && mapelList.length === 1)
+      ) {
         option.selected = true;
       }
       selectEl.appendChild(option);
     });
+
+    return selectEl.value || '';
   }
 
   function fillGuruOptions(selectEl, mapelId, selectedGuruId) {
@@ -313,8 +325,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (createSiswaSelect && createMapelSelect && createGuruSelect) {
     createSiswaSelect.addEventListener('change', function () {
-      fillMapelOptions(createMapelSelect, this.value);
-      fillGuruOptions(createGuruSelect, '');
+      var selectedMapelId = fillMapelOptions(createMapelSelect, this.value);
+      fillGuruOptions(createGuruSelect, selectedMapelId);
     });
 
     createMapelSelect.addEventListener('change', function () {
@@ -331,8 +343,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (editRelasiSiswa && editMapelSelect && editRelasiGuru) {
     editRelasiSiswa.addEventListener('change', function () {
-      fillMapelOptions(editMapelSelect, this.value);
-      fillGuruOptions(editRelasiGuru, '');
+      var selectedMapelId = fillMapelOptions(editMapelSelect, this.value);
+      fillGuruOptions(editRelasiGuru, selectedMapelId);
     });
 
     editMapelSelect.addEventListener('change', function () {

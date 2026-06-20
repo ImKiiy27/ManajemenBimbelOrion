@@ -129,27 +129,46 @@
                     ? $row['mata_pelajaran']
                     : (trim((string)($row['guru_mapel'] ?? '')) !== '' ? $row['guru_mapel'] : '-');
                   $nilaiScore = trim((string)($row['predikat'] ?? '')) !== '' ? $row['predikat'] : '-';
+                  $catatanGuru = trim((string)($row['catatan_guru'] ?? '')) !== '' ? $row['catatan_guru'] : '-';
+                  $jadwalText = (string)($row['hari'] ?? '-') . ' (' . $jamMulai . ' - ' . $jamSelesai . ')';
+                  $tipeNilai = (string)($row['tipe_nilai'] ?? 'utama');
                   $tipeDisplay = [
                     'utama' => '<span class="badge bg-primary">Utama</span>',
                     'susulan' => '<span class="badge bg-warning">Susulan</span>',
                     'remedial' => '<span class="badge bg-info">Remedial</span>'
-                  ][$row['tipe_nilai'] ?? 'utama'] ?? $row['tipe_nilai'];
+                  ][$tipeNilai] ?? $tipeNilai;
                 ?>
                 <tr>
                   <td><?= htmlspecialchars($row['siswa_nama'] ?? 'Belum diisi') ?></td>
                   <td><?= htmlspecialchars($row['guru_nama'] ?? 'Belum diisi') ?></td>
-                  <td><?= htmlspecialchars($row['hari']) ?> (<?= $jamMulai ?> - <?= $jamSelesai ?>)</td>
+                  <td><?= htmlspecialchars($jadwalText) ?></td>
                   <td><?= htmlspecialchars($kelas) ?></td>
                   <td><?= htmlspecialchars($mapel) ?></td>
                   <td class="text-center-custom"><?= (int)($row['pertemuan_ke'] ?? 1) ?></td>
                   <td><?= $tipeDisplay ?></td>
                   <td class="text-center-custom"><strong><?= htmlspecialchars($nilaiScore) ?></strong></td>
-                  <td><?= htmlspecialchars($row['catatan_guru'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($catatanGuru) ?></td>
                   <td>
                     <div class="action-buttons">
-                      <a href="#" class="btn btn-sm btn-info" title="Detail" onclick="viewNilaiDetail('<?= htmlspecialchars($row['id']) ?>')">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-info js-detail-nilai"
+                        title="Detail"
+                        data-bs-toggle="modal"
+                        data-bs-target="#detailNilaiModal"
+                        data-nilai-id="<?= htmlspecialchars($row['id']) ?>"
+                        data-siswa="<?= htmlspecialchars($row['siswa_nama'] ?? 'Belum diisi') ?>"
+                        data-guru="<?= htmlspecialchars($row['guru_nama'] ?? 'Belum diisi') ?>"
+                        data-jadwal="<?= htmlspecialchars($jadwalText) ?>"
+                        data-kelas="<?= htmlspecialchars($kelas) ?>"
+                        data-mapel="<?= htmlspecialchars($mapel) ?>"
+                        data-pertemuan="<?= (int)($row['pertemuan_ke'] ?? 1) ?>"
+                        data-tipe="<?= htmlspecialchars(ucfirst($tipeNilai)) ?>"
+                        data-nilai="<?= htmlspecialchars($nilaiScore) ?>"
+                        data-catatan="<?= htmlspecialchars($catatanGuru) ?>"
+                      >
                         <i class="fas fa-eye"></i>
-                      </a>
+                      </button>
                       <form method="POST" class="show-inline">
                         <input type="hidden" name="action" value="delete-nilai">
                         <input type="hidden" name="nilai_id" value="<?= htmlspecialchars($row['id']) ?>">
@@ -180,6 +199,97 @@
     </div>
   </main>
 </div>
+
+<div class="modal fade" id="detailNilaiModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detail Nilai Siswa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="border rounded p-3 bg-light admin-detail-panel">
+          <h6 class="mb-3">Informasi Nilai</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold mb-1">ID Nilai</label>
+              <div id="detailNilaiId">-</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold mb-1">Nilai</label>
+              <div id="detailNilaiScore">-</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold mb-1">Siswa</label>
+              <div id="detailNilaiSiswa">-</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold mb-1">Guru</label>
+              <div id="detailNilaiGuru">-</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold mb-1">Jadwal</label>
+              <div id="detailNilaiJadwal">-</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold mb-1">Kelas</label>
+              <div id="detailNilaiKelas">-</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold mb-1">Mapel</label>
+              <div id="detailNilaiMapel">-</div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold mb-1">Pertemuan</label>
+              <div id="detailNilaiPertemuan">-</div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold mb-1">Tipe</label>
+              <div id="detailNilaiTipe">-</div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label fw-semibold mb-1">Catatan Guru</label>
+              <div id="detailNilaiCatatan" class="text-break">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const detailNilaiModal = document.getElementById('detailNilaiModal');
+  if (!detailNilaiModal) return;
+
+  const setDetailValue = (id, value) => {
+    const element = document.getElementById(id);
+    if (!element) return;
+    const normalized = (value || '').toString().trim();
+    element.textContent = normalized !== '' ? normalized : '-';
+  };
+
+  detailNilaiModal.addEventListener('show.bs.modal', (event) => {
+    const button = event.relatedTarget;
+    if (!button) return;
+
+    setDetailValue('detailNilaiId', button.getAttribute('data-nilai-id'));
+    setDetailValue('detailNilaiScore', button.getAttribute('data-nilai'));
+    setDetailValue('detailNilaiSiswa', button.getAttribute('data-siswa'));
+    setDetailValue('detailNilaiGuru', button.getAttribute('data-guru'));
+    setDetailValue('detailNilaiJadwal', button.getAttribute('data-jadwal'));
+    setDetailValue('detailNilaiKelas', button.getAttribute('data-kelas'));
+    setDetailValue('detailNilaiMapel', button.getAttribute('data-mapel'));
+    setDetailValue('detailNilaiPertemuan', button.getAttribute('data-pertemuan'));
+    setDetailValue('detailNilaiTipe', button.getAttribute('data-tipe'));
+    setDetailValue('detailNilaiCatatan', button.getAttribute('data-catatan'));
+  });
+})();
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
 

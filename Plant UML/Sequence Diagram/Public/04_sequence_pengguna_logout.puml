@@ -21,10 +21,6 @@ boundary "Halaman Sistem" as Halaman
 control "Sistem BimbelOrion" as Sistem
 database "Database" as Database
 
-note over Pengguna,Database
-Diagram ini dibuat untuk laporan, jadi hanya menampilkan bagian penting:
-pengguna, halaman sistem, proses sistem, dan database.
-end note
 
 Sistem -> Halaman: Mengirim hasil ke halaman
 Halaman -> Sistem: Meminta halaman logout

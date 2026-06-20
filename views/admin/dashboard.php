@@ -20,34 +20,34 @@
 
     <!-- Stat Cards -->
     <div class="stats-grid">
-      <div class="stat-card animate-fade-in delay-1">
+      <a href="index.php?page=admin-siswa" class="stat-card stat-card-link animate-fade-in delay-1">
         <div class="icon blue"><i class="fas fa-user-graduate"></i></div>
         <div class="info">
-          <h3>-</h3>
+          <h3><?= isset($totalSiswa) ? (int)$totalSiswa : 0 ?></h3>
           <p>Total Siswa</p>
         </div>
-      </div>
-      <div class="stat-card animate-fade-in delay-2">
+      </a>
+      <a href="index.php?page=admin-guru" class="stat-card stat-card-link animate-fade-in delay-2">
         <div class="icon green"><i class="fas fa-chalkboard-user"></i></div>
         <div class="info">
-          <h3>-</h3>
+          <h3><?= isset($totalGuru) ? (int)$totalGuru : 0 ?></h3>
           <p>Total Guru</p>
         </div>
-      </div>
-      <div class="stat-card animate-fade-in delay-3">
+      </a>
+      <a href="index.php?page=admin-jadwal" class="stat-card stat-card-link animate-fade-in delay-3">
         <div class="icon orange"><i class="fas fa-calendar-days"></i></div>
         <div class="info">
           <h3><?= isset($totalJadwal) ? (int)$totalJadwal : '-' ?></h3>
           <p>Total Jadwal</p>
         </div>
-      </div>
-      <div class="stat-card animate-fade-in delay-4">
+      </a>
+      <a href="index.php?page=admin-user" class="stat-card stat-card-link animate-fade-in delay-4">
         <div class="icon purple"><i class="fas fa-envelope-open-text"></i></div>
         <div class="info">
           <h3><?= isset($totalPendaftar) ? (int)$totalPendaftar : '-' ?></h3>
           <p>Pendaftaran Baru</p>
         </div>
-      </div>
+      </a>
     </div>
 
     <!-- Pendaftaran Terbaru -->

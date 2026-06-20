@@ -5,45 +5,6 @@
   <main class="main-content">
     <?php require __DIR__ . '/../layouts/dashboard-navbar.php'; ?>
 
-    <?php
-      $totalAbsensi = (int)($metrics['total'] ?? 0);
-      $totalHadir = (int)($metrics['hadir'] ?? 0);
-      $totalIzinSakit = (int)($metrics['izin'] ?? 0) + (int)($metrics['sakit'] ?? 0);
-      $totalAlpa = (int)($metrics['alpa'] ?? 0);
-      $totalAnak = count($groupedByStudent ?? []);
-    ?>
-
-    <section class="wali-hero animate-fade-in">
-      <div class="wali-hero-content">
-        <div class="wali-hero-copy">
-          <span class="wali-hero-label"><i class="fas fa-user-check"></i> Absensi Anak</span>
-          <h1>Riwayat Kehadiran Anak</h1>
-          <p>Lihat kehadiran anak-anak Anda per siswa, lengkap dengan status, alasan ketidakhadiran, dan catatan dari guru.</p>
-        </div>
-        <div class="wali-hero-badge">
-          <i class="fas fa-clipboard-list"></i>
-          <div>
-            <strong><?= $totalAbsensi ?></strong>
-            <span>Total Absensi</span>
-          </div>
-        </div>
-      </div>
-      <div class="wali-hero-meta">
-        <div class="wali-hero-meta-card">
-          <span>Anak Dipantau</span>
-          <strong><?= $totalAnak ?></strong>
-        </div>
-        <div class="wali-hero-meta-card">
-          <span>Total Hadir</span>
-          <strong><?= $totalHadir ?></strong>
-        </div>
-        <div class="wali-hero-meta-card">
-          <span>Izin + Sakit</span>
-          <strong><?= $totalIzinSakit ?></strong>
-        </div>
-      </div>
-    </section>
-
     <div class="page-header animate-fade-in">
       <h1>Rekap Kehadiran</h1>
       <p>Absensi setiap anak ditampilkan dalam panel terpisah agar lebih ringkas dan mudah ditelusuri.</p>

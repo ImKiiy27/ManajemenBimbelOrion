@@ -19,7 +19,6 @@ require __DIR__ . '/../layouts/header.php';
       <ul class="navbar-nav ms-auto align-items-lg-center">
         <li class="nav-item"><a class="nav-link" href="#beranda">Beranda</a></li>
         <li class="nav-item"><a class="nav-link" href="#fitur">Program</a></li>
-        <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
         <li class="nav-item"><a class="nav-link" href="#keunggulan">Keunggulan</a></li>
         <li class="nav-item"><a class="nav-link" href="#testimoni">Kenapa Orion</a></li>
         <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
